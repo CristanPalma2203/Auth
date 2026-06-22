@@ -1,0 +1,89 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Fabricas\**" />
+    <EmbeddedResource Remove="Fabricas\**" />
+    <None Remove="Fabricas\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20211112022845_RolesModuloVeterianrio.cs" />
+    <Compile Remove="Migrations\20211112022845_RolesModuloVeterianrio.Designer.cs" />
+    <Compile Remove="Migrations\20220402011939_FirstMigration.cs" />
+    <Compile Remove="Migrations\20220402011939_FirstMigration.Designer.cs" />
+    <Compile Remove="Migrations\20220402013315_AddFirstMigration.cs" />
+    <Compile Remove="Migrations\20220402013315_AddFirstMigration.Designer.cs" />
+    <Compile Remove="Migrations\20220508223428_FirstMigrationss.cs" />
+    <Compile Remove="Migrations\20220508223428_FirstMigrationss.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="CorreoTemplate\ActulizacionCorreoImportador.html" />
+    <None Remove="CorreoTemplate\CodigoTemporal.html" />
+    <None Remove="CorreoTemplate\gestionAccesosIportador.html" />
+    <None Remove="CorreoTemplate\notificacionRolCreado.html" />
+    <None Remove="CorreoTemplate\notificacionRolEditado.html" />
+    <None Remove="CorreoTemplate\notificacionUsuarioCreado.html" />
+    <None Remove="CorreoTemplate\notificaCorreoTemporal.html" />
+    <None Remove="CorreoTemplate\notificionRechazoUsuario.html" />
+    <None Remove="CorreoTemplate\verificarCorreo.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="CorreoTemplate\notificacionRolEditado.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CorreoTemplate\notificacionRolCreado.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CorreoTemplate\notificionRechazoUsuario.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CorreoTemplate\verificarCorreo.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CorreoTemplate\notificaCorreoTemporal.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CorreoTemplate\notificacionUsuarioCreado.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
+    <PackageReference Include="Stubble.Core" Version="1.10.8" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.1" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.4.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aplicacion\Aplicacion.csproj" />
+    <ProjectReference Include="..\Dominio\Dominio.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="CorreoTemplate\CodigoTemporal.html" />
+  </ItemGroup>
+
+</Project>
