@@ -1,4 +1,4 @@
-﻿using Aplicacion.Commands.Importador;
+using Aplicacion.Commands.Importador;
 using Aplicacion.Services.Validaciones;
 using Dominio.Repositories;
 using FluentValidation;
@@ -8,9 +8,9 @@ namespace Aplicacion.Validators.Importador
 {
     public class RechazarSolicitudAccesoValidator : Validador<RechazarSolicitudAcceso>
     {
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
 
-        public RechazarSolicitudAccesoValidator(IAutenticationHelper autenticationHelper, IImportadorRepository importadorRepository) : base(autenticationHelper)
+        public RechazarSolicitudAccesoValidator(IAutenticationHelper autenticationHelper, IUsuarioExternoRepository importadorRepository) : base(autenticationHelper)
         {
             RuleFor(x => x.ImportadorId).NotEmpty().Must(c=>ImportadorSolicitudExiste(c)).WithMessage("No es posible gestinar esta solictud por que ya fue aprobada o no existe");
             RuleFor(x => x.Motivo).NotEmpty().WithMessage("Comentario Obligatorio Al Rechazar");
@@ -23,6 +23,6 @@ namespace Aplicacion.Validators.Importador
             if (importador.AccesoAprobado) return false;
             return true;
         }
-        public override IList<string> Permisos => new List<string> { "gestionar-importador" };
+        public override IList<string> Permisos => new List<string> { "gestionar-importador", "gestionar-usuario-externo" };
     }
 }

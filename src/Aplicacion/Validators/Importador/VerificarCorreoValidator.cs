@@ -12,9 +12,9 @@ namespace Aplicacion.Validators.Importador
 {
     public class VerificarCorreoValidator : Validador<VerificarCorreo>
     {
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
 
-        public VerificarCorreoValidator(IAutenticationHelper autenticationHelper, IImportadorRepository importadorRepository) : base(autenticationHelper)
+        public VerificarCorreoValidator(IAutenticationHelper autenticationHelper, IUsuarioExternoRepository importadorRepository) : base(autenticationHelper)
         {
             RuleFor(x => x.Token).NotEmpty().Must(x=>ExisteSolicitud(x)).WithMessage("No encontramos registro de la solicitud.");
             this.importadorRepository = importadorRepository;

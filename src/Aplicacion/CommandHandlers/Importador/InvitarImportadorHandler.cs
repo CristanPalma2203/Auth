@@ -11,13 +11,13 @@ namespace Aplicacion.CommandHandlers.Importador
     public class InvitarImportadorHandler : AbstractHandler<InvitarImportador>
     {
         private readonly IUsuarioRepository usuarioRepository;
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
         private readonly ICorreoHelper correoHelper;
         private readonly ITokenService tokenService;
 
         public InvitarImportadorHandler(
             IUsuarioRepository usuarioRepository,
-            IImportadorRepository importadorRepository,
+            IUsuarioExternoRepository importadorRepository,
             ICorreoHelper correoHelper,
             ITokenService tokenService)
         {
@@ -41,7 +41,7 @@ namespace Aplicacion.CommandHandlers.Importador
                 DepartamentoId = 14
             };
 
-            usuario.Inicializar(Dominio.Models.Usuario.tipoUsuarioImportador, message.Accesos);
+            usuario.Inicializar(Dominio.Models.Usuario.tipoUsuarioExterno, message.Accesos);
             usuarioRepository.Create(usuario);
             correoHelper.EnviarCorreoUsuarioCreado(importador.Identificador, contrasena, importador.Correo);
             importador.FinalizarEnvitacion(tokenService.GetIdUsuario(), message.Accesos);

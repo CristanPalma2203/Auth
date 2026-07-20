@@ -11,9 +11,9 @@ namespace Aplicacion.CommandHandlers.Importador
 {
     public class CrearImportadorHandler : AbstractHandler<CrearImportador>
     {
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
         private readonly IMapper mapper;
-        public CrearImportadorHandler(IImportadorRepository importadorRepository, IMapper mapper)
+        public CrearImportadorHandler(IUsuarioExternoRepository importadorRepository, IMapper mapper)
         {
             this.importadorRepository = importadorRepository;
             this.mapper = mapper;
@@ -21,7 +21,7 @@ namespace Aplicacion.CommandHandlers.Importador
 
         public override IResponse Handle(CrearImportador message)
         {
-            var importador = mapper.Map<Dominio.Models.Importardor>(message.Importador);
+            var importador = mapper.Map<Dominio.Models.UsuarioExterno>(message.Importador);
             importador.CorreoVerificado = false;
             var importadorCreado = importadorRepository.Create(importador);
             return mapper.Map<DtoImportador>(importadorCreado);

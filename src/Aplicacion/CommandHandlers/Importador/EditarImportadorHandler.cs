@@ -15,12 +15,12 @@ namespace Aplicacion.CommandHandlers.Importador
 {
     public class EditarImportadorHandler : AbstractHandler<EditarImportador>
     {
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
         private readonly ITokenService tokenSrvice;
         private readonly IUnitOfWork unitOfWork;
         private readonly ICorreoHelper correoHelper;
         private readonly IMapper mapper;
-        public EditarImportadorHandler(IImportadorRepository importadorRepository, ITokenService tokenSrvice,
+        public EditarImportadorHandler(IUsuarioExternoRepository importadorRepository, ITokenService tokenSrvice,
              IUnitOfWork unitOfWork, ICorreoHelper correoHelper, IMapper mapper)
         {
             this.mapper = mapper;
@@ -33,7 +33,7 @@ namespace Aplicacion.CommandHandlers.Importador
         public override IResponse Handle(EditarImportador message)
         {
             var importardor = importadorRepository.GetById(message.Importador.Id.Value);
-            var impo = mapper.Map<Dominio.Models.Importardor>(message.Importador);
+            var impo = mapper.Map<Dominio.Models.UsuarioExterno>(message.Importador);
             var CorreoViejo = importardor.Correo;
             var cambioCorreo = importardor.Correo != message.Importador.Correo;
             importardor.ActulizarImportador(impo);

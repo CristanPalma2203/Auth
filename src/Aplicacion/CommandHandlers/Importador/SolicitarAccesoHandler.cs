@@ -13,11 +13,11 @@ namespace Aplicacion.CommandHandlers.Importador
 {
     public class SolicitarAccesoHandler : AbstractHandler<SolicitarAcceso>
     {
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
         private readonly IMapper mapper;
         private readonly ICorreoHelper correoHelper;
 
-        public SolicitarAccesoHandler(IImportadorRepository importadorRepository, IMapper mapper, ICorreoHelper correoHelper)
+        public SolicitarAccesoHandler(IUsuarioExternoRepository importadorRepository, IMapper mapper, ICorreoHelper correoHelper)
         {
             this.importadorRepository = importadorRepository;
             this.mapper = mapper;
@@ -26,9 +26,9 @@ namespace Aplicacion.CommandHandlers.Importador
         public override IResponse Handle(SolicitarAcceso message)
         {
             
-            var importador = mapper.Map<Dominio.Models.Importardor>(message.Importador);
+            var importador = mapper.Map<Dominio.Models.UsuarioExterno>(message.Importador);
             importador.SolicitarAcceso();
-            var impotadorBusquedad = importadorRepository.Filter(new Func<Importardor, bool>(c => c.Identificador == message.Importador.Identificador)).FirstOrDefault();
+            var impotadorBusquedad = importadorRepository.Filter(new Func<Dominio.Models.UsuarioExterno, bool>(c => c.Identificador == message.Importador.Identificador)).FirstOrDefault();
             if (impotadorBusquedad == null)
             {
                 importadorRepository.Create(importador);

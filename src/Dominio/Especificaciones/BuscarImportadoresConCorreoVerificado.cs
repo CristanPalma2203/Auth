@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Dominio.Especificaciones
 {
-    public class BuscarImportadoresConCorreoVerificado : ISpecification<Importardor>
+    public class BuscarImportadoresConCorreoVerificado : ISpecification<UsuarioExterno>
     {
-        public Func<Importardor, bool> Traer()
+        public Func<UsuarioExterno, bool> Traer()
         {
-            return new Func<Importardor, bool>(c => c.CorreoVerificado==true && c.FechaAprobacionAcceso==null );
+            return new Func<UsuarioExterno, bool>(c => c.CorreoVerificado==true && c.FechaAprobacionAcceso==null );
         }
     }
 }

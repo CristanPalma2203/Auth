@@ -9,7 +9,7 @@ namespace Dominio.Models
     public class Usuario : IEntity
     {
         public static string usuarioInterno = "usuario-interno";
-        public static string tipoUsuarioImportador = "importador";
+        public static string tipoUsuarioExterno = "usuario-externo";
         public static int idUsuarioAdmin = 1;
         public static string correoUsuarioAdmin = "admin@gmail.com";
         public static List<int> PermisosUsuarioExterno = new List<int>() {25};
@@ -63,6 +63,16 @@ namespace Dominio.Models
             CambiarContrasena = true;
             Contrasena = getPassword(Contrasena);
             TipoUsuario = tipoUsuario == null ? usuarioInterno : tipoUsuario;
+            CrearUsuarioRol(roles);
+        }
+
+        public void InicializarExterno(IList<int> roles)
+        {
+            Activo = false;
+            FechaRegistro = DateTime.Now;
+            CambiarContrasena = false;
+            Contrasena = getPassword(Contrasena);
+            TipoUsuario = tipoUsuarioExterno;
             CrearUsuarioRol(roles);
         }
 

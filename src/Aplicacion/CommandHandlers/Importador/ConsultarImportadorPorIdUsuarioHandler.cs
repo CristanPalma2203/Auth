@@ -14,11 +14,11 @@ namespace Aplicacion.CommandHandlers.Importador
     public class ConsultarImportadorPorIdUsuarioHandler : AbstractHandler<ConsultarImportadorPorIdUsuario>
     {
         private readonly IUsuarioRepository usuarioRepository;
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
         private readonly IMapper mapper;
 
 
-        public ConsultarImportadorPorIdUsuarioHandler(IImportadorRepository importadorRepository, IMapper mapper, IUsuarioRepository usuarioRepository)
+        public ConsultarImportadorPorIdUsuarioHandler(IUsuarioExternoRepository importadorRepository, IMapper mapper, IUsuarioRepository usuarioRepository)
         {
             this.usuarioRepository = usuarioRepository;
             this.importadorRepository = importadorRepository;

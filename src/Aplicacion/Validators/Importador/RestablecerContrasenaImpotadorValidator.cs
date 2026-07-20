@@ -13,12 +13,12 @@ namespace Aplicacion.Validators.Importador
 {
     public class RestablecerContrasenaImpotadorValidator : Validador<RestablecerContrasenaImpotador>
     {
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
         private readonly IUsuarioRepository usuarioRepository;
         
 
         public RestablecerContrasenaImpotadorValidator(IAutenticationHelper autenticationHelper,
-            IImportadorRepository importadorRepository, IUsuarioRepository usuarioRepository) : base(autenticationHelper)
+            IUsuarioExternoRepository importadorRepository, IUsuarioRepository usuarioRepository) : base(autenticationHelper)
         {
             RuleFor(x => x.Correo).NotEmpty().EmailAddress();
             RuleFor(x => x.Usuario).NotEmpty().Must(c=> RegexUtilities.IsValidEmail(c)==false).WithMessage("El usuario no puede ser un correo, para usuarios internos contacta al departamento de IT");

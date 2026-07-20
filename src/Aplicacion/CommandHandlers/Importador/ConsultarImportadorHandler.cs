@@ -13,10 +13,10 @@ namespace Aplicacion.CommandHandlers.Importador
 {
     public class ConsultarImportadorHandler : AbstractHandler<ConsultarImportador>
     {
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
         private readonly IMapper mapper;
 
-        public ConsultarImportadorHandler(IImportadorRepository importadorRepository, IMapper mapper)
+        public ConsultarImportadorHandler(IUsuarioExternoRepository importadorRepository, IMapper mapper)
         {
             this.importadorRepository = importadorRepository;
             this.mapper = mapper;

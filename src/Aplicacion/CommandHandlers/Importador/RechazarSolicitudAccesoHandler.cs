@@ -11,11 +11,11 @@ namespace Aplicacion.CommandHandlers.Importador
 {
     public class RechazarSolicitudAccesoHandler : AbstractHandler<RechazarSolicitudAcceso>
     {
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
         private readonly ITokenService tokenService;
         private readonly ICorreoHelper correoHelper;
 
-        public RechazarSolicitudAccesoHandler(IImportadorRepository importadorRepository, ITokenService tokenService, ICorreoHelper correoHelper)
+        public RechazarSolicitudAccesoHandler(IUsuarioExternoRepository importadorRepository, ITokenService tokenService, ICorreoHelper correoHelper)
         {
             this.importadorRepository = importadorRepository;
             this.tokenService = tokenService;

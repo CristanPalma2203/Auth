@@ -1,4 +1,4 @@
-﻿using Aplicacion.Commands.Importador;
+using Aplicacion.Commands.Importador;
 using Aplicacion.Dtos.Importador;
 using Aplicacion.Services.Validaciones;
 using Dominio.Especificaciones;
@@ -15,10 +15,10 @@ namespace Aplicacion.Validators.Importador
 {
     public class EditarImportadorValidator : Validador<EditarImportador>
     {
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
         private readonly ITokenService tokenService;
         public EditarImportadorValidator(IAutenticationHelper autenticationHelper,
-            IImportadorRepository importadorRepository,
+            IUsuarioExternoRepository importadorRepository,
             ITokenService tokenService) : base(autenticationHelper)
         {
 
@@ -36,13 +36,13 @@ namespace Aplicacion.Validators.Importador
         {
             var imp = importadorRepository.GetById(importador.Id.Value);
 
-            var todosConMismoCorreo = importadorRepository.Filter(new Func<Importardor, bool>(p => p.Correo == importador.Correo));
+            var todosConMismoCorreo = importadorRepository.Filter(new Func<Dominio.Models.UsuarioExterno, bool>(p => p.Correo == importador.Correo));
             if (todosConMismoCorreo.Count() == 0) return true;
             if (todosConMismoCorreo.Count() > 1) return false;
             if (todosConMismoCorreo.Count() == 1 && todosConMismoCorreo.First().Correo == imp.Correo) return true;
             return true;
         }
-        public override IList<string> Permisos => new List<string> { "perfil-importador","importador-editar" };
+        public override IList<string> Permisos => new List<string> { "perfil-importador", "importador-editar", "usuario-externo-editar" };
     }
 
 }

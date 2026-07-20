@@ -1,4 +1,4 @@
-﻿using Aplicacion.Commands.Importador;
+using Aplicacion.Commands.Importador;
 using Aplicacion.Services.Validaciones;
 using Dominio.Repositories;
 using FluentValidation;
@@ -11,9 +11,9 @@ namespace Aplicacion.Validators.Importador
 {
     public class GestionarAccesoValidator : Validador<GestionarAcceso>
     {
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
 
-        public GestionarAccesoValidator(IAutenticationHelper autenticationHelper, IImportadorRepository importadorRepository) : base(autenticationHelper)
+        public GestionarAccesoValidator(IAutenticationHelper autenticationHelper, IUsuarioExternoRepository importadorRepository) : base(autenticationHelper)
         {
             RuleFor(x => x.ImportadorId).NotEmpty().Must(c => ImportadorTieneAcceso(c))
                 .WithMessage("No se le ha creado un usuario al importador");
@@ -34,6 +34,6 @@ namespace Aplicacion.Validators.Importador
             return false;
         }
 
-        public override IList<string> Permisos => new List<string> { "gestionar-accesos-importador" };
+        public override IList<string> Permisos => new List<string> { "gestionar-accesos-importador", "gestionar-accesos-usuario-externo" };
     }
 }

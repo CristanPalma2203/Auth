@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Dominio.Models
 {
-    public class Importardor : IEntity
+    public class UsuarioExterno : IEntity
     {
         public static string TipoIngresoManual = "manual";
 
@@ -16,6 +16,7 @@ namespace Dominio.Models
         public int TipoPersonaId { get; set; }
         public Catalogo TipoPersona { get; set; }
         public string Nombre { get; set; }
+        public string Apellidos { get; set; }
         public int NacionalidadId { get; set; }
         public Catalogo Nacionalidad { get; set; }
         public string Telefono { get; set; }
@@ -41,6 +42,15 @@ namespace Dominio.Models
         public Usuario UsuarioGention { get; set; }
         public string TokenVerificacion { get; set; }
         public string MotivoRechazo { get; set; }
+
+        public void RegistrarCuenta() {
+            FechaRegistro = DateTime.Now;
+            TokenVerificacion = Guid.NewGuid().ToString();
+            AccesoAprobado = true;
+            CorreoVerificado = false;
+            CorreoEnviado = false;
+            TipoIngreso = "WEB";
+        }
 
         public void SolicitarAcceso() {
             FechaRegistro = DateTime.Now;
@@ -75,7 +85,7 @@ namespace Dominio.Models
             AccesoAprobado = false;
             MotivoRechazo = motivoRechazo;
         }
-        public void ActulizarImportador(Importardor imporN)
+        public void ActulizarImportador(UsuarioExterno imporN)
         {
             this.MunicipioId = imporN.MunicipioId;
             this.DepartamentoId = imporN.DepartamentoId;

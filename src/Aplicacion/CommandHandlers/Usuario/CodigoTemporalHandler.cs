@@ -13,11 +13,11 @@ namespace Aplicacion.CommandHandlers.Usuario
     {
         private readonly IUsuarioRepository usuarioRepository;
         private readonly ICorreoHelper correoHelper;
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
 
         public CodigoTemporalHandler(
             ICorreoHelper correoHelper,
-            IImportadorRepository importadorRepository,
+            IUsuarioExternoRepository importadorRepository,
             IUsuarioRepository usuarioRepository)
         {
             this.usuarioRepository = usuarioRepository;
@@ -39,7 +39,7 @@ namespace Aplicacion.CommandHandlers.Usuario
                 usuarioRepository.Update(solicitud.Id, solicitud);
                 var motivo = "Codigo de Verificaci?n: ".ToString();
                 var lista = new List<string>();
-                if (solicitud.TipoUsuario == "importador")
+                if (solicitud.TipoUsuario == "usuario-externo")
                 {
                     var importador = importadorRepository.Filter(new BuscarImportadorPorIdentificador(message.IdentificadorAcceso)).FirstOrDefault();
                     if (solicitud != null)

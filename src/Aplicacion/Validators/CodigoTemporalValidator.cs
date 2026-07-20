@@ -12,9 +12,9 @@ namespace Aplicacion.Validators
 {
      class CodigoTemporalValidator : Validador<CodigoTemporal>
     {
-        private readonly IImportadorRepository importRepo;
+        private readonly IUsuarioExternoRepository importRepo;
         private readonly IUsuarioRepository user;
-        public CodigoTemporalValidator(IAutenticationHelper autenticationHelper, IImportadorRepository importRepo, IUsuarioRepository user) : base(autenticationHelper)
+        public CodigoTemporalValidator(IAutenticationHelper autenticationHelper, IUsuarioExternoRepository importRepo, IUsuarioRepository user) : base(autenticationHelper)
         {
             RuleFor(x => x.IdentificadorAcceso).NotEmpty().WithMessage("Ingrese un Correo/Identificacion");
             RuleFor(x => x).NotEmpty()

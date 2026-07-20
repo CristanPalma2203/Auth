@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dominio.Service;
 
 namespace Infraestructura.Data
@@ -19,13 +19,15 @@ namespace Infraestructura.Data
             {
                 _context.SaveChanges();
             }
-            catch (Exception error)
+            catch
             {
-              _context.Database.CurrentTransaction.Rollback();
-               throw;
+                var tx = _context.Database.CurrentTransaction;
+                if (tx != null)
+                {
+                    tx.Rollback();
+                }
+                throw;
             }
-                
-           
         }
 
         public void Dispose()
@@ -46,7 +48,5 @@ namespace Infraestructura.Data
 
             _disposed = true;
         }
-
-    
     }
 }

@@ -1,4 +1,4 @@
-﻿using Aplicacion.Commands.Importador;
+using Aplicacion.Commands.Importador;
 using Aplicacion.Services.Validaciones;
 using Dominio.Models;
 using Dominio.Repositories;
@@ -14,13 +14,13 @@ namespace Aplicacion.Validators.Importador
     public class SolicitarAccesoValidator : Validador<SolicitarAcceso>
     {
         private readonly IArchivoRepository archivoRepository;
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
         private readonly IUsuarioRepository usuarioRepository;
 
 
 
         public SolicitarAccesoValidator(IAutenticationHelper autenticationHelper, IArchivoRepository archivoRepository,
-            IImportadorRepository importadorRepository, IUsuarioRepository usuarioRepository) : base(autenticationHelper)
+            IUsuarioExternoRepository importadorRepository, IUsuarioRepository usuarioRepository) : base(autenticationHelper)
         {
 
             RuleFor(x => x).NotEmpty()
@@ -43,7 +43,7 @@ namespace Aplicacion.Validators.Importador
 
         private bool Tieneusuario(string identificador, SolicitarAcceso importadorAcceso)
         {
-            var impotador = importadorRepository.Filter(new Func<Importardor, bool>(c => c.Identificador == identificador)).FirstOrDefault();
+            var impotador = importadorRepository.Filter(new Func<Dominio.Models.UsuarioExterno, bool>(c => c.Identificador == identificador)).FirstOrDefault();
             var usuario = usuarioRepository.Filter(new BuscarUsuarioPorIdentificador(identificador));
             if (usuario.Count() == 0) { return true; }
             else
@@ -65,7 +65,7 @@ namespace Aplicacion.Validators.Importador
             if (usuario.Count() == 0) { return true; }
             else
             {
-                var impotador = importadorRepository.Filter(new Func<Importardor, bool>(c => c.Identificador == identificador)).FirstOrDefault();
+                var impotador = importadorRepository.Filter(new Func<Dominio.Models.UsuarioExterno, bool>(c => c.Identificador == identificador)).FirstOrDefault();
                 if (impotador != null && Correo == impotador.Correo)
                 { return true; }
                 else
@@ -80,7 +80,7 @@ namespace Aplicacion.Validators.Importador
         private bool UsuarioYaRegistrado(string identificador, string Correo, SolicitarAcceso importadorAcceso)
         {
             
-            var impotador = importadorRepository.Filter(new Func<Importardor, bool>(c => c.Identificador == identificador)).FirstOrDefault();
+            var impotador = importadorRepository.Filter(new Func<Dominio.Models.UsuarioExterno, bool>(c => c.Identificador == identificador)).FirstOrDefault();
             if (impotador == null)
             {
                 return true;
@@ -100,7 +100,7 @@ namespace Aplicacion.Validators.Importador
         private bool UsuarioNoExiste(string identificador, string Correo, SolicitarAcceso importadorAcceso)
         {
 
-            var impotador = importadorRepository.Filter(new Func<Importardor, bool>(c => c.Identificador == identificador && c.Correo == Correo)).FirstOrDefault();
+            var impotador = importadorRepository.Filter(new Func<Dominio.Models.UsuarioExterno, bool>(c => c.Identificador == identificador && c.Correo == Correo)).FirstOrDefault();
 
             if (importadorAcceso.Importador.UserExist)
             {

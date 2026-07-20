@@ -13,12 +13,12 @@ namespace Aplicacion.CommandHandlers.Importador
 {
     public class RestablecerContrasenaImpotadorHandler : AbstractHandler<RestablecerContrasenaImpotador>
     {
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
         private readonly IUsuarioRepository usuarioRepository;
 
         private readonly ICorreoHelper correoHelper;
 
-        public RestablecerContrasenaImpotadorHandler(IImportadorRepository importadorRepository, IUsuarioRepository usuarioRepository, ICorreoHelper correoHelper)
+        public RestablecerContrasenaImpotadorHandler(IUsuarioExternoRepository importadorRepository, IUsuarioRepository usuarioRepository, ICorreoHelper correoHelper)
         {
             this.importadorRepository = importadorRepository;
             this.usuarioRepository = usuarioRepository;

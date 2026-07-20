@@ -16,7 +16,7 @@ namespace Aplicacion.Mappers
         {
             config.NewConfig<Catalogo, DtoCatalogo>().TwoWays();
             config.NewConfig<Permiso, DtoPermiso>().TwoWays();
-            config.NewConfig<Importardor, DtoImportador>().TwoWays();
+            config.NewConfig<UsuarioExterno, DtoImportador>().TwoWays();
             config.NewConfig<DtoTipoProducto, TipoProductoResponse>().TwoWays();
             config.NewConfig<UsuarioRegional, DtoUsuarioRegional>().TwoWays();
             config.NewConfig<UsuarioArea, DtoUsuarioArea>().TwoWays();
@@ -39,7 +39,7 @@ namespace Aplicacion.Mappers
                 .Map(dest => dest.Metadata, src => GetMetadata(src))
                 .Map(dest => dest.valores, src => MapUsuariosPaginadosValores(src));
 
-            config.NewConfig<IPagina<Importardor>, DtoImportadoresPaginados>()
+            config.NewConfig<IPagina<UsuarioExterno>, DtoImportadoresPaginados>()
                 .Map(dest => dest.Metadata, src => GetMetadata(src))
                 .Map(dest => dest.valores, src => src.Select(i => i.Adapt<DtoImportador>()).ToList());
         }

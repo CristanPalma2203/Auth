@@ -9,9 +9,9 @@ namespace Dominio.Models.Regla
 {
     class ImportadoresCorreoEnviado : IImportadoresCorreoEnviado
     {
-        private readonly IImportadorRepository importadoreRepo;
+        private readonly IUsuarioExternoRepository importadoreRepo;
 
-        public ImportadoresCorreoEnviado(IImportadorRepository importadoreRepo)
+        public ImportadoresCorreoEnviado(IUsuarioExternoRepository importadoreRepo)
         {
             this.importadoreRepo = importadoreRepo;
         }

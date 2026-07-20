@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Dominio.Especificaciones
 {
-    public class BuscarImportadorPorIdentificadorYNombre : ISpecification<Importardor>
+    public class BuscarImportadorPorIdentificadorYNombre : ISpecification<UsuarioExterno>
 
     {
         private readonly string identificador; 
@@ -17,19 +17,19 @@ namespace Dominio.Especificaciones
             this.nombre = nombre;
         }
 
-        public Func<Importardor, bool> Traer()
+        public Func<UsuarioExterno, bool> Traer()
         {
             if (this.identificador != null && this.nombre != null)
             {
-                return new Func<Importardor, bool>(c => c.Nombre.ToLower().Contains(nombre.ToLower()) && c.Identificador.Replace("-", "").Trim().Contains(identificador.Replace("-", "").Trim()));
+                return new Func<UsuarioExterno, bool>(c => c.Nombre.ToLower().Contains(nombre.ToLower()) && c.Identificador.Replace("-", "").Trim().Contains(identificador.Replace("-", "").Trim()));
             }
             else if (this.identificador != null)
             {
-                return new Func<Importardor, bool>(c => c.Identificador.Replace("-", "").Trim().Contains(identificador.Replace("-", "").Trim()));
+                return new Func<UsuarioExterno, bool>(c => c.Identificador.Replace("-", "").Trim().Contains(identificador.Replace("-", "").Trim()));
             }
             else
             {
-                return new Func<Importardor, bool>(c => c.Nombre.ToLower().Contains(nombre.ToLower()));
+                return new Func<UsuarioExterno, bool>(c => c.Nombre.ToLower().Contains(nombre.ToLower()));
             }
 
         }

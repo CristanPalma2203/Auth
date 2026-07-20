@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Dominio.Especificaciones
 {
-    public class BuscarImportadorPorCorreoIdentificador : ISpecification<Importardor>
+    public class BuscarImportadorPorCorreoIdentificador : ISpecification<UsuarioExterno>
     {
         private readonly string correo;
         private readonly string identificador;
@@ -16,9 +16,9 @@ namespace Dominio.Especificaciones
             this.identificador = identificador;
         }
 
-        public Func<Importardor, bool> Traer()
+        public Func<UsuarioExterno, bool> Traer()
         {
-        return new Func<Importardor, bool>(c => c.Correo.ToLower().Trim() == correo.ToLower().Trim() && c.Identificador.Replace("-", "").Trim() == identificador.Replace("-", "").Trim());
+        return new Func<UsuarioExterno, bool>(c => c.Correo.ToLower().Trim() == correo.ToLower().Trim() && c.Identificador.Replace("-", "").Trim() == identificador.Replace("-", "").Trim());
 
         }
     }

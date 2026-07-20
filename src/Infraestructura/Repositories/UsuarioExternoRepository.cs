@@ -11,25 +11,25 @@ using System.Linq.Dynamic.Core;
 
 namespace Infraestructura.Repositories
 {
-    public class ImportadorRepository : GenericRepository<Importardor>, IImportadorRepository
+    public class UsuarioExternoRepository : GenericRepository<UsuarioExterno>, IUsuarioExternoRepository
     {
         private readonly AutenticationContext dbContext;
 
-        public ImportadorRepository(AutenticationContext dbContext) : base(dbContext)
+        public UsuarioExternoRepository(AutenticationContext dbContext) : base(dbContext)
         {
             this.dbContext = dbContext;
         }
 
-        public IPagina<Importardor> Filter(IConsulta ownerParameters, string especificaciones)
+        public IPagina<UsuarioExterno> Filter(IConsulta ownerParameters, string especificaciones)
         {
-            return PagedList<Importardor>.ToPagedList(dbContext.Set<Importardor>()
+            return PagedList<UsuarioExterno>.ToPagedList(dbContext.Set<UsuarioExterno>()
                   .Where(especificaciones),
                       ownerParameters.PageNumber,
                       ownerParameters.PageSize);
         }
-        public Importardor GetByIdConDependencias(int id)
+        public UsuarioExterno GetByIdConDependencias(int id)
         {
-            return dbContext.Set<Importardor>().AsNoTracking().
+            return dbContext.Set<UsuarioExterno>().AsNoTracking().
                 Include(c=>c.Departamento).Include(c=>c.Municipio).Include(c=>c.Nacionalidad).
                 FirstOrDefault("Id="+id);
         }

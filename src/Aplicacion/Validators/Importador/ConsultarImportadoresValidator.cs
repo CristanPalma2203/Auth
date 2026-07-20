@@ -1,4 +1,4 @@
-﻿using Aplicacion.Commands.Importador;
+using Aplicacion.Commands.Importador;
 using Aplicacion.Services.Validaciones;
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,6 @@ namespace Aplicacion.Validators.Importador
         {
         }
 
-        public override IList<string> Permisos => new List<string> { "listar-importadores", "importador-semilla-crear", "crear-establecimiento-salud-animal", "proveedor-fertilizante-crear" };
+        public override IList<string> Permisos => new List<string> { "listar-importadores", "listar-usuarios-externos", "importador-semilla-crear", "crear-establecimiento-salud-animal", "proveedor-fertilizante-crear" };
     }
 }

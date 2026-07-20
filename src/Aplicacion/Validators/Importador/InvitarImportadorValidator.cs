@@ -1,4 +1,4 @@
-﻿using Aplicacion.Commands.Importador;
+using Aplicacion.Commands.Importador;
 using Aplicacion.Services.Validaciones;
 using Dominio.Especificaciones;
 using Dominio.Models.Regla;
@@ -14,10 +14,10 @@ namespace Aplicacion.Validators.Importador
 {
     public class InvitarImportadorValidator : Validador<InvitarImportador>
     {
-        private readonly IImportadorRepository importadorRepository;
+        private readonly IUsuarioExternoRepository importadorRepository;
         private readonly IUsuarioRepository usuarioRepository;
 
-        public InvitarImportadorValidator(IAutenticationHelper autenticationHelper, IImportadorRepository importadorRepository, IImportadoresCorreoEnviado importadoresCorreoEnviado, IUsuarioRepository usuarioRepository) : base(autenticationHelper)
+        public InvitarImportadorValidator(IAutenticationHelper autenticationHelper, IUsuarioExternoRepository importadorRepository, IImportadoresCorreoEnviado importadoresCorreoEnviado, IUsuarioRepository usuarioRepository) : base(autenticationHelper)
         {
             //RuleFor(x => x).NotEmpty().Must(c => !importadoresCorreoEnviado.VerificarCorreoEnviado(c.ImportadorId))
             //    .WithMessage("El usuario ya fue invitado").Must(c=>NoExisteUsuario(c.ImportadorId, c)).WithMessage("No puedes volver asignarle roles que ya tiene el usuario");
@@ -63,6 +63,6 @@ namespace Aplicacion.Validators.Importador
             return usuario.Count() == 0;
         }
         
-        public override IList<string> Permisos => new List<string> { "gestionar-importador" };
+        public override IList<string> Permisos => new List<string> { "gestionar-importador", "gestionar-usuario-externo" };
     }
 }

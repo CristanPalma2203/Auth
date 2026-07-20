@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+using Infraestructura.Service;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net;
-using System.Net.Mail;
 
 namespace WebApi.DependencyInjection
 {
@@ -9,19 +7,7 @@ namespace WebApi.DependencyInjection
     {
         public static void AddMail(this IServiceCollection services)
         {
-            services.AddScoped((serviceProvider) =>
-            {
-                var config = serviceProvider.GetRequiredService<IConfiguration>();
-                return new SmtpClient()
-                {
-                    Host = config.GetValue<string>("Email:Smtp:Host"),
-                    Port = config.GetValue<int>("Email:Smtp:Port"),
-                    Credentials = new NetworkCredential(
-                            config.GetValue<string>("Email:Smtp:Username"),
-                            config.GetValue<string>("Email:Smtp:Password")
-                        )
-                };
-            });
+            services.AddSingleton<ResendEmailClient>();
         }
     }
 }
