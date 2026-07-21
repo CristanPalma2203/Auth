@@ -9,5 +9,7 @@ namespace Aplicacion.Commands.Importador
         public string Nombre { get; set; }
         public string Apellidos { get; set; }
         public string Telefono { get; set; }
+        /// <summary>storefront | erp — define URL de verificacion de correo</summary>
+        public string Origen { get; set; }
     }
 }

@@ -9,4 +9,4 @@ services:
         - 8081:80
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
-        - TZ=America/Tegucigalpa  
+        - TZ=America/El_Salvador  

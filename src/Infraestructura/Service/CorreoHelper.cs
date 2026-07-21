@@ -62,8 +62,16 @@ namespace Infraestructura.Service
         }
         void ICorreoHelper.EnviarCorreoParaVerificacion(string correoDestino, string tokenVerificacion)
         {
+            ((ICorreoHelper)this).EnviarCorreoParaVerificacion(correoDestino, tokenVerificacion, null);
+        }
+
+        void ICorreoHelper.EnviarCorreoParaVerificacion(string correoDestino, string tokenVerificacion, string verificarBaseUrl)
+        {
             var html = ReadResource(rutaHtmlVerificacion);
-            var url = configuration.GetValue<string>("AppSettings:VerificarCorreo") + "/" + tokenVerificacion;
+            var baseUrl = string.IsNullOrWhiteSpace(verificarBaseUrl)
+                ? configuration.GetValue<string>("AppSettings:VerificarCorreo")
+                : verificarBaseUrl.TrimEnd('/');
+            var url = baseUrl + "/" + tokenVerificacion;
             html = html.Replace("URLPORTAL", url);
             SendMsj("Verifica tu correo — ERP Base", correoDestino, html);
         }

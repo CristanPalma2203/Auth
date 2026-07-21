@@ -3,6 +3,7 @@ using Aplicacion.Dtos;
 using Dominio.Helpers;
 using Dominio.Repositories;
 using Dominio.Service;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 
 namespace Aplicacion.CommandHandlers.Importador
@@ -13,17 +14,20 @@ namespace Aplicacion.CommandHandlers.Importador
         private readonly IUsuarioExternoRepository usuarioExternoRepository;
         private readonly ICorreoHelper correoHelper;
         private readonly IUnitOfWork unitOfWork;
+        private readonly IConfiguration configuration;
 
         public RegistrarUsuarioExternoHandler(
             IUsuarioRepository usuarioRepository,
             IUsuarioExternoRepository usuarioExternoRepository,
             ICorreoHelper correoHelper,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IConfiguration configuration)
         {
             this.usuarioRepository = usuarioRepository;
             this.usuarioExternoRepository = usuarioExternoRepository;
             this.correoHelper = correoHelper;
             this.unitOfWork = unitOfWork;
+            this.configuration = configuration;
         }
 
         public override IResponse Handle(RegistrarUsuarioExterno message)
@@ -40,7 +44,6 @@ namespace Aplicacion.CommandHandlers.Importador
                 Nombre = nombreCompleto,
                 DepartamentoId = null
             };
-            // Sin roles ERP: el externo solo usa landing/ecommerce tras verificar correo.
             usuario.InicializarExterno(new List<int>());
             usuarioRepository.Create(usuario);
 
@@ -56,9 +59,20 @@ namespace Aplicacion.CommandHandlers.Importador
             perfil.RegistrarCuenta();
             usuarioExternoRepository.Create(perfil);
 
-            // Persistir antes del mail: si falla la BD, no se envía verificación engañosa.
             unitOfWork.Save();
-            correoHelper.EnviarCorreoParaVerificacion(perfil.Correo, perfil.TokenVerificacion);
+
+            var origen = message.Origen?.Trim().ToLowerInvariant();
+            if (origen == "storefront" || origen == "tempora")
+            {
+                var baseUrl = configuration["AppSettings:VerificarCorreoStorefront"]
+                              ?? configuration["AppSettings:VerificarCorreo"]
+                              ?? "http://localhost:3001/verificar-correo";
+                correoHelper.EnviarCorreoParaVerificacion(perfil.Correo, perfil.TokenVerificacion, baseUrl);
+            }
+            else
+            {
+                correoHelper.EnviarCorreoParaVerificacion(perfil.Correo, perfil.TokenVerificacion);
+            }
 
             return new OkResponse();
         }

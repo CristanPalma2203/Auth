@@ -104,7 +104,7 @@ namespace Aplicacion.Mappers
         }
     }
 
-    internal static class UsuarioMappingHelper
+    public static class UsuarioMappingHelper
     {
         public static DtoUsuarioResponse ToDtoResponse(Usuario usuario, IRolRepository rolRepository)
         {

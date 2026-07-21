@@ -49,6 +49,7 @@ namespace WebApi
 
             services.AddTransient<ICorreoHelper, CorreoHelper>();
             services.AddMail();
+            services.AddHttpClient();
 
             services.AddControllers(options =>
             {

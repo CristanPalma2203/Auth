@@ -10,6 +10,7 @@ namespace Dominio.Helpers
         void EnviarCorreoUsuarioCreado(string Usuario, string contrasena, string correoDestino);
 
         void EnviarCorreoParaVerificacion(string correoDestino, string tokenVerificacion);
+        void EnviarCorreoParaVerificacion(string correoDestino, string tokenVerificacion, string verificarBaseUrl);
         void EnviarCorreoParaActulizacion(string correoDestino, string tokenVerificacion,DateTime fechaActulizacion, string correoNuevo);
         void EnviarCorreoDenegacionAcceso(string correoDestino, string motivo);
         void EnviarCorreoAccesosImportador(UsuarioExterno importador);
