@@ -1,11 +1,10 @@
 using Aplicacion.Commands.Rol;
 using Aplicacion.Dtos;
-using MapsterMapper;
 using Dominio.Especificaciones;
 using Dominio.Repositories;
-using System;
+using Dominio.Service;
+using MapsterMapper;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Aplicacion.CommandHandlers.Rol
 {
@@ -13,17 +12,24 @@ namespace Aplicacion.CommandHandlers.Rol
     {
         private readonly IRolRepository rolRepository;
         private readonly IMapper mapper;
+        private readonly ITenantContext tenantContext;
 
-        public ConsultarRolesSinPaginarHandler(IRolRepository rolRepository, IMapper mapper)
+        public ConsultarRolesSinPaginarHandler(
+            IRolRepository rolRepository,
+            IMapper mapper,
+            ITenantContext tenantContext)
         {
             this.rolRepository = rolRepository;
             this.mapper = mapper;
+            this.tenantContext = tenantContext;
         }
 
         public override IResponse Handle(ConsultarRolesSinPaginar message)
         {
             var listaDto = new List<DtoRol>();
-            var lista = (message.all==true) ? rolRepository.GetAll() : rolRepository.Filter(new BuscarRolesAsignables());
+            var lista = message.all == true && tenantContext.IsPlatformAdmin
+                ? rolRepository.GetAll()
+                : rolRepository.Filter(new BuscarRolesPorTenant(tenantContext.TenantId, tenantContext.IsPlatformAdmin, soloAsignables: true));
             foreach (var item in lista) listaDto.Add(mapper.Map<DtoRol>(item));
 
             return new DtoListaRolesSinPaginar { Lista = listaDto };

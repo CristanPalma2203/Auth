@@ -1,14 +1,12 @@
 using Aplicacion.Commands.Usuario;
 using Aplicacion.Dtos;
 using Aplicacion.Dtos.Usuario;
-using MapsterMapper;
 using Dominio.Especificaciones;
 using Dominio.Repositories;
 using Dominio.Repositories.Extensiones;
-using System;
-using System.Collections.Generic;
+using Dominio.Service;
+using MapsterMapper;
 using System.Linq;
-using System.Text;
 
 namespace Aplicacion.CommandHandlers.Usuario
 {
@@ -16,24 +14,54 @@ namespace Aplicacion.CommandHandlers.Usuario
     {
         private readonly IUsuarioRepository usuariosRepository;
         private readonly IMapper mapper;
+        private readonly ITenantContext tenantContext;
 
-        public ConsultarUsuariosHandler(IUsuarioRepository usuariosRepository, IMapper mapper)
+        public ConsultarUsuariosHandler(
+            IUsuarioRepository usuariosRepository,
+            IMapper mapper,
+            ITenantContext tenantContext)
         {
             this.usuariosRepository = usuariosRepository;
             this.mapper = mapper;
+            this.tenantContext = tenantContext;
         }
+
         public override IResponse Handle(ConsultarUsuarios message)
         {
-            IPagina<Dominio.Models.Usuario> respuesta; 
-            if (!string.IsNullOrWhiteSpace(message.Nombre) || !string.IsNullOrWhiteSpace(message.correo)  ||  message.idDepartamento != 0){ 
-                respuesta = usuariosRepository.ConsultarPaginadoConRol(message, new BuscarUsuarioPorNombreYCorreo(message.Nombre, message.correo,message.idDepartamento)); }
+            IPagina<Dominio.Models.Usuario> respuesta;
+            var tenantSpec = new BuscarUsuariosPorTenant(tenantContext.TenantId, tenantContext.IsPlatformAdmin);
+
+            if (!string.IsNullOrWhiteSpace(message.Nombre) || !string.IsNullOrWhiteSpace(message.correo) || message.idDepartamento != 0)
+            {
+                var nameSpec = new BuscarUsuarioPorNombreYCorreo(message.Nombre, message.correo, message.idDepartamento);
+                respuesta = usuariosRepository.ConsultarPaginadoConRol(message, new SpecAnd<Dominio.Models.Usuario>(nameSpec, tenantSpec));
+            }
             else
             {
-                respuesta = usuariosRepository.ConsultarPaginadoConRol(message);
+                respuesta = usuariosRepository.ConsultarPaginadoConRol(message, tenantSpec);
             }
-       
-            return mapper.Map<DtoUsuariosPaginados>(respuesta); 
 
+            return mapper.Map<DtoUsuariosPaginados>(respuesta);
+        }
+    }
+
+    /// <summary>Combina dos especificaciones con AND.</summary>
+    internal class SpecAnd<T> : ISpecification<T>
+    {
+        private readonly ISpecification<T> a;
+        private readonly ISpecification<T> b;
+
+        public SpecAnd(ISpecification<T> a, ISpecification<T> b)
+        {
+            this.a = a;
+            this.b = b;
+        }
+
+        public System.Func<T, bool> Traer()
+        {
+            var fa = a.Traer();
+            var fb = b.Traer();
+            return x => fa(x) && fb(x);
         }
     }
 }

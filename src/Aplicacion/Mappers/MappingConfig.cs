@@ -146,6 +146,8 @@ namespace Aplicacion.Mappers
                 DepartamentoNombre = usuario.Departamento != null ? usuario.Departamento.Nombre : null,
                 FechaRegistro = usuario.FechaRegistro,
                 TipoUsuario = usuario.TipoUsuario,
+                TenantId = usuario.TenantId,
+                TenantCodigo = usuario.Tenant?.Codigo,
                 Roles = MapLoginRoles(usuario, permisoRepository),
                 UsuarioRegional = usuario.UsuarioRegional != null
                     ? usuario.UsuarioRegional.Select(r => r.Adapt<DtoUsuarioRegional>()).ToList()

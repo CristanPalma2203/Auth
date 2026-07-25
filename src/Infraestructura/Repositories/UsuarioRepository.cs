@@ -6,10 +6,7 @@ using Dominio.Repositories.Extensiones;
 using Infraestructura.Data;
 using Infraestructura.Repositories.Extenciones;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Infraestructura.Repositories
 {
@@ -30,23 +27,36 @@ namespace Infraestructura.Repositories
                     ownerParameters.PageSize);
         }
 
-
         public IPagina<Usuario> ConsultarPaginadoConRol(IConsulta ownerParameters)
         {
-            return PagedList<Usuario>.ToPagedList(dbContext.Set<Usuario>().OrderBy(on => on.Id).Include("Roles.Rol").Include(c => c.Departamento).Where(c=>c.TipoUsuario==Usuario.usuarioInterno),
+            var q = dbContext.Set<Usuario>().OrderBy(on => on.Id)
+                .Include("Roles.Rol")
+                .Include(c => c.Departamento)
+                .Where(c => c.TipoUsuario == Usuario.usuarioInterno);
+            return PagedList<Usuario>.ToPagedList(q,
                         ownerParameters.PageNumber,
                         ownerParameters.PageSize);
         }
 
         public Usuario GetByIdConRoles(int id)
         {
-            return dbContext.Set<Usuario>().AsNoTracking().Include("Roles.Rol").Include(c=>c.UsuarioRegional).Include(c => c.UsuarioArea).FirstOrDefault(e => e.Id == id);
+            return dbContext.Set<Usuario>().AsNoTracking()
+                .Include("Roles.Rol")
+                .Include(c => c.UsuarioRegional)
+                .Include(c => c.UsuarioArea)
+                .Include(c => c.Tenant)
+                .FirstOrDefault(e => e.Id == id);
         }
 
         public Usuario GetUsuarioConRolPermiso(ISpecification<Usuario> busqueda)
         {
-           return dbContext.Set<Usuario>().AsNoTracking().Include("Roles.Rol.Permisos.Permiso").Include(c => c.Departamento).Include(c=> c.UsuarioArea).Include(c => c.UsuarioRegional).FirstOrDefault(busqueda.Traer());
+            return dbContext.Set<Usuario>().AsNoTracking()
+                .Include("Roles.Rol.Permisos.Permiso")
+                .Include(c => c.Departamento)
+                .Include(c => c.Tenant)
+                .Include(c => c.UsuarioArea)
+                .Include(c => c.UsuarioRegional)
+                .FirstOrDefault(busqueda.Traer());
         }
     }
-    
 }

@@ -21,6 +21,8 @@ namespace Aplicacion.Dtos.Usuario
         public DateTime? FechaActualizacion { get; set; }
         public ICollection<DtoUsuarioRegional> UsuarioRegional { get; set; }
         public ICollection<DtoUsuarioArea> UsuarioArea { get; set; }
+        public int? TenantId { get; set; }
+        public string TenantCodigo { get; set; }
 
     }
 

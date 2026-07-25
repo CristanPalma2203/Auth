@@ -15,6 +15,8 @@ namespace Dominio.Service
 
         string GetIdentificadorUsuario();
         int GetIdUsuario();
+        int? GetTenantId();
+        string GetTenantCodigo();
 
         List<Permiso> TraerPermisos();
     }

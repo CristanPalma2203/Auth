@@ -1,9 +1,11 @@
 using Aplicacion.Commands.Usuario;
 using Aplicacion.Dtos;
 using Aplicacion.Dtos.Usuario;
+using Aplicacion.Exceptions;
 using Aplicacion.Mappers;
 using Dominio.Especificaciones;
 using Dominio.Repositories;
+using Dominio.Service;
 using MapsterMapper;
 using System.Linq;
 
@@ -17,6 +19,7 @@ namespace Aplicacion.CommandHandlers.Usuario
         private readonly IUsuarioRolRepository usuarioRolRepository;
         private readonly IUsuarioRegionalRepository usuarioRegionalRepository;
         private readonly IUsuarioAreaRepository usuarioAreaRepository;
+        private readonly ITenantContext tenantContext;
 
         public EditarUsuarioHandler(
             IUsuarioAreaRepository usuarioAreaRepository,
@@ -24,7 +27,8 @@ namespace Aplicacion.CommandHandlers.Usuario
             IMapper mapper,
             IRolRepository rolRepository,
             IUsuarioRolRepository usuarioRolRepository,
-            IUsuarioRegionalRepository usuarioRegionalRepository)
+            IUsuarioRegionalRepository usuarioRegionalRepository,
+            ITenantContext tenantContext)
         {
             this.usuarioRegionalRepository = usuarioRegionalRepository;
             this.usuarioRepository = usuarioRepository;
@@ -32,12 +36,19 @@ namespace Aplicacion.CommandHandlers.Usuario
             this.rolRepository = rolRepository;
             this.usuarioRolRepository = usuarioRolRepository;
             this.usuarioAreaRepository = usuarioAreaRepository;
+            this.tenantContext = tenantContext;
         }
 
         public override IResponse Handle(EditarUsuario message)
         {
             var usuario = mapper.Map<Dominio.Models.Usuario>(message.Usuario);
             var dbUser = usuarioRepository.GetByIdConRoles(message.Usuario.Id);
+            if (dbUser == null)
+                throw new HttpException(404, "Usuario no encontrado");
+
+            tenantContext.EnsureSameTenantOrPlatform(dbUser.TenantId);
+            EnsureRolesDelTenant(message.Usuario.Roles?.Select(c => c.Id).ToList());
+
             foreach (var item in dbUser.Roles)
             {
                 usuarioRolRepository.Delete(item.Id);
@@ -57,6 +68,18 @@ namespace Aplicacion.CommandHandlers.Usuario
             usuarioRepository.Update(dbUser.Id, dbUser);
             return UsuarioMappingHelper.ToDtoResponse(dbUser, rolRepository);
         }
+
+        private void EnsureRolesDelTenant(System.Collections.Generic.IList<int> roleIds)
+        {
+            if (tenantContext.IsPlatformAdmin || roleIds == null) return;
+            foreach (var roleId in roleIds)
+            {
+                var rol = rolRepository.GetById(roleId);
+                if (rol == null || rol.TenantId != tenantContext.TenantId)
+                    throw new HttpException(403, "Solo puede asignar roles de su empresa");
+            }
+        }
+
         private void LimpiarUsuarioRegional(int idUsuarioRegional)
         {
             var usuariosRegionales = usuarioRegionalRepository.Filter(new BuscarUsuarioRegionalPorUsuario(idUsuarioRegional));
@@ -68,5 +91,4 @@ namespace Aplicacion.CommandHandlers.Usuario
             foreach (var areas in usuarioAreas) usuarioAreaRepository.Delete(areas);
         }
     }
-
 }

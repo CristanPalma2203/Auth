@@ -16,6 +16,7 @@ namespace WebApi.DependencyInjection
 
             services.AddTransient<IAutenticationHelper, AutenticationHelper>();
             services.AddTransient<ITokenService, TokenService>();
+            services.AddScoped<ITenantContext, TenantContext>();
             var appSettingsSection = configuration.GetSection("AppSettings");
              services.Configure<AppSettings>(appSettingsSection);
 

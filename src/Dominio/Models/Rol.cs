@@ -20,6 +20,10 @@ namespace Dominio.Models
         public IList<RolPermiso> Permisos { get; set; }
         public bool Asignable { get; set; }
 
+        /// <summary>NULL = rol de plataforma; NOT NULL = rol local del tenant.</summary>
+        public int? TenantId { get; set; }
+        public Tenant Tenant { get; set; }
+
         public void CrearRolPermiso(IList<int> permisosLista) {
             this.Permisos = new List<RolPermiso>();
             foreach (var item in permisosLista)

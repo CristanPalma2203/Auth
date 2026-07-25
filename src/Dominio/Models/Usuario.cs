@@ -39,6 +39,10 @@ namespace Dominio.Models
         public DateTime? FechaRestableceContrasena { get; set; }
         public string TipoUsuario { get; set; }
 
+        /// <summary>NULL = platform admin; NOT NULL = usuario de una empresa.</summary>
+        public int? TenantId { get; set; }
+        public Tenant Tenant { get; set; }
+
         public ICollection<UsuarioRegional> UsuarioRegional { get; set; }
         public ICollection<UsuarioArea> UsuarioArea { get; set; }
         public void RestablecerContrasenaImportador(string contrasena) {

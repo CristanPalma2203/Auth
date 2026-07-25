@@ -2,7 +2,6 @@
 using Aplicacion.Commands;
 using Aplicacion.Dtos;
 using Aplicacion.Services.ConsultaPermiso;
-using AutoMapper;
 using Dominio.Models;
 using Dominio.Repositories;
 using Moq;
@@ -19,14 +18,18 @@ namespace Aplicacion.Test.ComandHanlderTest
         [TestCase]
         public void consultaPermisos_retornaLitaEstructurada() {
             var mockRepo =new Mock<IPermisoRepository>();
-            mockRepo.Setup(p => p.GetAll()).Returns(permiso());
-            var MockMapper = new Mock<IMapper>();
+            mockRepo.Setup(p => p.Filter(It.IsAny<Dominio.Especificaciones.ISpecification<Permiso>>())).Returns(permiso());
+            var MockMapper = new Mock<MapsterMapper.IMapper>();
 
             MockMapper.Setup(p => p.Map<DtoPermiso>(It.IsAny<Permiso>())).Returns(new DtoPermiso());
             var servicio = new Mock<IConsultaPermisoService>();
             servicio.Setup(p => p.Estructurar(It.IsAny<IEnumerable<DtoPermiso>>())).Returns(new List<DtoPermiso>());
+            var token = new Mock<Dominio.Service.ITokenService>();
+            token.Setup(t => t.TraerPermisos()).Returns(new List<Permiso>());
+            var tenant = new Mock<Dominio.Service.ITenantContext>();
+            tenant.SetupGet(t => t.IsPlatformAdmin).Returns(true);
 
-            var instancia = new ConsultarPermisosHandler(MockMapper.Object, mockRepo.Object, servicio.Object);
+            var instancia = new ConsultarPermisosHandler(MockMapper.Object, mockRepo.Object, servicio.Object, token.Object, tenant.Object);
             var lista = instancia.ejecutar(new ConsultarPermisos());
 
             Assert.IsInstanceOf<DtoPermisos>(lista);

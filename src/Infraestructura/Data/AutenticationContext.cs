@@ -29,6 +29,7 @@ namespace Infraestructura.Data
         public DbSet<Catalogo> catalogo { get; set; }
         public DbSet<UsuarioRol> usuarioRol { get; set; }
         public DbSet<UsuarioExterno> usuarioExterno { get; set; }
+        public DbSet<Tenant> tenant { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             PermisoSeeder.Seed(builder);

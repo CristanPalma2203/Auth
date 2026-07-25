@@ -42,12 +42,7 @@ namespace Infraestructura.Service
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Email, usuario.IdentificadorAcceso.Trim()),
-                    new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-                    new Claim(ClaimTypes.Surname, ""),
-                }),
+                Subject = new ClaimsIdentity(BuildClaims(usuario)),
                 Expires = DateTime.UtcNow.AddHours(appSettings.TokenTiempoHoras),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -119,6 +114,36 @@ namespace Infraestructura.Service
                 var clain = GetToken().Claims.Where(c => c.Type == "nameid").FirstOrDefault();
                 return int.Parse(clain.Value);
        
+        }
+
+        public int? GetTenantId()
+        {
+            var claim = GetToken().Claims.FirstOrDefault(c => c.Type == TenantContext.ClaimTenantId);
+            if (claim != null && int.TryParse(claim.Value, out var id) && id > 0)
+                return id;
+            return null;
+        }
+
+        public string GetTenantCodigo()
+        {
+            return GetToken().Claims.FirstOrDefault(c => c.Type == TenantContext.ClaimTenantCodigo)?.Value;
+        }
+
+        private static Claim[] BuildClaims(Usuario usuario)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, usuario.IdentificadorAcceso.Trim()),
+                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+                new Claim(ClaimTypes.Surname, ""),
+            };
+            if (usuario.TenantId.HasValue)
+            {
+                claims.Add(new Claim(TenantContext.ClaimTenantId, usuario.TenantId.Value.ToString()));
+                if (usuario.Tenant != null && !string.IsNullOrWhiteSpace(usuario.Tenant.Codigo))
+                    claims.Add(new Claim(TenantContext.ClaimTenantCodigo, usuario.Tenant.Codigo));
+            }
+            return claims.ToArray();
         }
 
         public void EliminarToken()

@@ -57,6 +57,14 @@ namespace WebApi.Controllers
             return respuesta;
         }
 
+        /// <summary>Perfil del usuario autenticado (tenant + identidad).</summary>
+        [HttpGet]
+        [Route("me")]
+        public IResponse Me()
+        {
+            return commandBus.execute(new ConsultarUsuarioMe());
+        }
+
         [HttpPost]
         [Route("cerrar-session")]
         public IResponse CerrarSesion([FromBody] CerrarSesion cerrarSesion)
