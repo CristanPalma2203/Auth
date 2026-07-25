@@ -37,7 +37,12 @@ namespace Infraestructura.Service
         public string CrearOtraerToken(Usuario usuario)
         {
             var tokenCreado = TarerTokenSiExiste(usuario.Id);
-            if (!string.IsNullOrWhiteSpace(tokenCreado)) return tokenCreado;
+            if (!string.IsNullOrWhiteSpace(tokenCreado) && TokenMatchesUsuario(tokenCreado, usuario))
+                return tokenCreado;
+
+            // Recrear si no hay token o el cache no trae los claims de tenant actuales
+            cache.Remove(usuario.Id.ToString());
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -57,6 +62,35 @@ namespace Infraestructura.Service
             var id =  usuario.Id.ToString();
             cache.Set(id, encodedCurrentTimeUTC, options);
             return tokenHandler.WriteToken(token);
+        }
+
+        private static bool TokenMatchesUsuario(string token, Usuario usuario)
+        {
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                if (!handler.CanReadToken(token)) return false;
+                var jwt = handler.ReadJwtToken(token);
+                var tidClaim = jwt.Claims.FirstOrDefault(c => c.Type == TenantContext.ClaimTenantId)?.Value;
+                var codeClaim = jwt.Claims.FirstOrDefault(c => c.Type == TenantContext.ClaimTenantCodigo)?.Value;
+
+                if (!usuario.TenantId.HasValue)
+                    return string.IsNullOrEmpty(tidClaim);
+
+                if (!int.TryParse(tidClaim, out var tid) || tid != usuario.TenantId.Value)
+                    return false;
+
+                var expectedCode = usuario.Tenant?.Codigo;
+                if (!string.IsNullOrWhiteSpace(expectedCode)
+                    && !string.Equals(codeClaim, expectedCode, StringComparison.OrdinalIgnoreCase))
+                    return false;
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
         
         public List<Permiso> TraerPermisos()
