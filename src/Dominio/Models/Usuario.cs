@@ -19,8 +19,8 @@ namespace Dominio.Models
         public bool IsActive { get; set; }
         public string Password { get; set; }
         public string TemporaryCode { get; set; }
-        public int? DepartamentoId { get; set; }
-        public Catalogo Departamento { get; set; }
+        public int? DepartmentId { get; set; }
+        public Catalogo Department { get; set; }
 
         public IList<UsuarioRol> Roles { get; set; }
         public bool MustChangePassword { get; set; }
@@ -104,7 +104,7 @@ namespace Dominio.Models
         {
             this.Name = nombre;
             this.IsActive = activo;
-            this.DepartamentoId = departamento;
+            this.DepartmentId = departamento;
             this.UpdatedAt = DateTime.Now;
             if (!string.IsNullOrWhiteSpace(contrasena))
             {

@@ -36,14 +36,14 @@ namespace Aplicacion.CommandHandlers.Importador
             var usuario = new Dominio.Models.Usuario
             {
                 Password = contrasena,
-                AccessIdentifier = importador.Identificador,
+                AccessIdentifier = importador.Identifier,
                 Name = importador.Name,
-                DepartamentoId = 14
+                DepartmentId = 14
             };
 
             usuario.Inicializar(Dominio.Models.Usuario.tipoUsuarioExterno, message.Accesos);
             usuarioRepository.Create(usuario);
-            correoHelper.EnviarCorreoUsuarioCreado(importador.Identificador, contrasena, importador.Email);
+            correoHelper.EnviarCorreoUsuarioCreado(importador.Identifier, contrasena, importador.Email);
             importador.FinalizarEnvitacion(tokenService.GetIdUsuario(), message.Accesos);
             importadorRepository.Update(importador.Id, importador);
 

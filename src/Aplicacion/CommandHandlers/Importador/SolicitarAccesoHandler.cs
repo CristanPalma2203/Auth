@@ -28,7 +28,7 @@ namespace Aplicacion.CommandHandlers.Importador
             
             var importador = mapper.Map<Dominio.Models.UsuarioExterno>(message.Importador);
             importador.SolicitarAcceso();
-            var impotadorBusquedad = importadorRepository.Filter(new Func<Dominio.Models.UsuarioExterno, bool>(c => c.Identificador == message.Importador.Identificador)).FirstOrDefault();
+            var impotadorBusquedad = importadorRepository.Filter(new Func<Dominio.Models.UsuarioExterno, bool>(c => c.Identifier == message.Importador.Identifier)).FirstOrDefault();
             if (impotadorBusquedad == null)
             {
                 importadorRepository.Create(importador);

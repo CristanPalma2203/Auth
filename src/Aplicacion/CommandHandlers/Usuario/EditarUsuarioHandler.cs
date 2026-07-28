@@ -56,7 +56,7 @@ namespace Aplicacion.CommandHandlers.Usuario
 
             dbUser.AdministradorCambiaContrasena(
                 message.Usuario.Name,
-                message.Usuario.DepartamentoId,
+                message.Usuario.DepartmentId,
                 message.Usuario.Password,
                 message.Usuario.Roles.Select(c => c.Id).ToList(),
                 message.Usuario.IsActive);

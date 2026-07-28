@@ -182,7 +182,7 @@ namespace WebApi.Controllers
                     Name = parts.Length > 0 ? parts[0] : profile.Name,
                     LastName = parts.Length > 1 ? parts[1] : "",
                     Email = profile.Email,
-                    Identificador = profile.Email,
+                    Identifier = profile.Email,
                     Phone = "",
                     Mobile = ""
                 };

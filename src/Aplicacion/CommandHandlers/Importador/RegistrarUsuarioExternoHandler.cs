@@ -42,7 +42,7 @@ namespace Aplicacion.CommandHandlers.Importador
                 Password = message.Password,
                 AccessIdentifier = correo,
                 Name = nombreCompleto,
-                DepartamentoId = null
+                DepartmentId = null
             };
             usuario.InicializarExterno(new List<int>());
             usuarioRepository.Create(usuario);
@@ -52,7 +52,7 @@ namespace Aplicacion.CommandHandlers.Importador
                 Name = message.Name?.Trim(),
                 LastName = message.LastName?.Trim(),
                 Email = correo,
-                Identificador = correo,
+                Identifier = correo,
                 Phone = message.Phone?.Trim(),
                 Mobile = message.Phone?.Trim()
             };

@@ -25,7 +25,7 @@ namespace Aplicacion.CommandHandlers.Importador
         public override IResponse Handle(ConsultarImportador message)
         {
             var importador = importadorRepository.Set().AsNoTracking().
-                Include(c => c.Departamento).Include(c => c.Municipio).Include(c => c.Nacionalidad)
+                Include(c => c.Department).Include(c => c.Municipality).Include(c => c.Nationality)
                 .FirstOrDefault(c => c.Id == message.IdImportador);
             if (importador !=null) return mapper.Map<DtoImportador>(importador);
             return new DtoImportador();

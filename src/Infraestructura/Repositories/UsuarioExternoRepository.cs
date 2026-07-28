@@ -30,7 +30,7 @@ namespace Infraestructura.Repositories
         public UsuarioExterno GetByIdConDependencias(int id)
         {
             return dbContext.Set<UsuarioExterno>().AsNoTracking().
-                Include(c=>c.Departamento).Include(c=>c.Municipio).Include(c=>c.Nacionalidad).
+                Include(c=>c.Department).Include(c=>c.Municipality).Include(c=>c.Nationality).
                 FirstOrDefault("Id="+id);
         }
     }

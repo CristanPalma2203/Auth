@@ -16,7 +16,7 @@ namespace Dominio.Especificaciones
 
     public Func<UsuarioExterno, bool> Traer()
     {
-        return new Func<UsuarioExterno, bool>(c => c.AccessApproved==true && c.Identificador.Replace("-", "").Trim() == identificador.Replace("-", "").Trim());
+        return new Func<UsuarioExterno, bool>(c => c.AccessApproved==true && c.Identifier.Replace("-", "").Trim() == identificador.Replace("-", "").Trim());
 
     }
 }

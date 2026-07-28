@@ -5,7 +5,7 @@ namespace Aplicacion.Dtos.Usuario
 {
     public class DtoUsuarioBase
     {
-        public int? DepartamentoId { get; set; }
+        public int? DepartmentId { get; set; }
         public string DepartamentoNombre { get; set; }
         public IList<DtoRol> Roles { get; set; }
         public int Id { get; set; }

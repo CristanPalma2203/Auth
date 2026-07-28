@@ -10,6 +10,6 @@ namespace Dominio.Models
         public Catalogo Regional { get; set; }
         public int RegionalId { get; set; }
         public Usuario Usuario { get; set; }
-        public int UsuarioId { get; set; } 
+        public int UserId { get; set; } 
     }
 }

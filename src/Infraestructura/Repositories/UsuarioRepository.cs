@@ -22,7 +22,7 @@ namespace Infraestructura.Repositories
 
         public IPagina<Usuario> ConsultarPaginadoConRol(IConsulta ownerParameters, ISpecification<Usuario> busqueda)
         {
-            return PagedList<Usuario>.ToPagedList(dbContext.Set<Usuario>().OrderBy(on => on.Id).Include("Roles.Rol").Include(c => c.Departamento).Where(busqueda.Traer()).AsQueryable(),
+            return PagedList<Usuario>.ToPagedList(dbContext.Set<Usuario>().OrderBy(on => on.Id).Include("Roles.Rol").Include(c => c.Department).Where(busqueda.Traer()).AsQueryable(),
                     ownerParameters.PageNumber,
                     ownerParameters.PageSize);
         }
@@ -31,7 +31,7 @@ namespace Infraestructura.Repositories
         {
             var q = dbContext.Set<Usuario>().OrderBy(on => on.Id)
                 .Include("Roles.Rol")
-                .Include(c => c.Departamento)
+                .Include(c => c.Department)
                 .Where(c => c.UserType == Usuario.usuarioInterno);
             return PagedList<Usuario>.ToPagedList(q,
                         ownerParameters.PageNumber,
@@ -52,7 +52,7 @@ namespace Infraestructura.Repositories
         {
             return dbContext.Set<Usuario>().AsNoTracking()
                 .Include("Roles.Rol.Permisos.Permiso")
-                .Include(c => c.Departamento)
+                .Include(c => c.Department)
                 .Include(c => c.Tenant)
                 .Include(c => c.UsuarioArea)
                 .Include(c => c.UsuarioRegional)

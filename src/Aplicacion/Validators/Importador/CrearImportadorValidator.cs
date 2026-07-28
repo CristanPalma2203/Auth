@@ -15,12 +15,12 @@ namespace Aplicacion.Validators.Importador
         {
             RuleFor(x => x.Importador.Name).NotEmpty().Must(c => importadorRepository.Filter(new Func<Dominio.Models.UsuarioExterno, bool>(p => p.Name == c)).Count() == 0)
                 .WithMessage("Ya existe un Importador con el mismo nombre");
-            RuleFor(x => x.Importador.Identificador).NotEmpty().Must(c => importadorRepository.Filter(new Func<Dominio.Models.UsuarioExterno, bool>(p => p.Identificador == c)).Count() == 0)
-                .WithMessage("Ya existe un Importador con el mismo Identificador");
-            RuleFor(x => x.Importador.Identificador).NotEmpty();
-            RuleFor(x => x.Importador.NacionalidadId).NotEmpty();
-            RuleFor(x => x.Importador.DepartamentoId).NotEmpty();
-            RuleFor(x => x.Importador.MunicipioId).NotEmpty();
+            RuleFor(x => x.Importador.Identifier).NotEmpty().Must(c => importadorRepository.Filter(new Func<Dominio.Models.UsuarioExterno, bool>(p => p.Identifier == c)).Count() == 0)
+                .WithMessage("Ya existe un Importador con el mismo Identifier");
+            RuleFor(x => x.Importador.Identifier).NotEmpty();
+            RuleFor(x => x.Importador.NationalityId).NotEmpty();
+            RuleFor(x => x.Importador.DepartmentId).NotEmpty();
+            RuleFor(x => x.Importador.MunicipalityId).NotEmpty();
         }
         public override IList<string> Permisos => new List<string> { };
     }

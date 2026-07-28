@@ -16,7 +16,7 @@ namespace Aplicacion.Validators
             RuleFor(x => x.Usuario.AccessIdentifier).NotEmpty().Must(c => usuarioRepository.Filter(new BuscarUsuarioInternoPorIdentificador(c)).Count() == 0)
                 .WithMessage("Ya existe un usuario con el mismo Email");
             RuleFor(x => x.Usuario.Roles).NotEmpty();
-            RuleFor(x => x.Usuario.DepartamentoId).NotEmpty();
+            RuleFor(x => x.Usuario.DepartmentId).NotEmpty();
         }
 
         public override IList<string> Permisos => new List<string> { "usuario-crear" };

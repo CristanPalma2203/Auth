@@ -28,8 +28,8 @@ namespace Aplicacion.Validators.Importador
 
         private bool NoExisteUsuario(int importadorId, InvitarImportador iv) {
             var importador = importadorRepository.GetById(importadorId);
-            var usuario = usuarioRepository.Filter(new BuscarUsuarioPorIdentificador(importador.Identificador));
-            var user = usuarioRepository.GetUsuarioConRolPermiso(new BuscarUsuarioPorIdentificador(importador.Identificador));
+            var usuario = usuarioRepository.Filter(new BuscarUsuarioPorIdentificador(importador.Identifier));
+            var user = usuarioRepository.GetUsuarioConRolPermiso(new BuscarUsuarioPorIdentificador(importador.Identifier));
             if (usuario.Count() != 0)
             {
                 foreach (var roles in iv.Accesos)

@@ -12,7 +12,7 @@ namespace Dominio.Especificaciones
         }
         public Func<UsuarioArea, bool> Traer()
         {
-            return new Func<UsuarioArea, bool>(c => c.UsuarioId == idUsuarioArea);
+            return new Func<UsuarioArea, bool>(c => c.UserId == idUsuarioArea);
         }
     }
 }

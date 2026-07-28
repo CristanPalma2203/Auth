@@ -19,7 +19,7 @@ namespace Aplicacion.Validators
             RuleFor(x => x.AccessIdentifier).NotEmpty().WithMessage("Ingrese un Email/Identification");
             RuleFor(x => x).NotEmpty()
                .Must(c => ValidarUsuario(c.AccessIdentifier))
-               .WithMessage("Identificador / Email no registrado ");
+               .WithMessage("Identifier / Email no registrado ");
             this.importRepo = importRepo;
             this.user = user;
         }

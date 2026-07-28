@@ -11,16 +11,16 @@ namespace Aplicacion.Dtos.Importador
         public int PersonTypeId { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }
-        public int NacionalidadId { get; set; }
-        public DtoCatalogo Nacionalidad { get; set; }
-        public string Identificador { get; set; }
+        public int NationalityId { get; set; }
+        public DtoCatalogo Nationality { get; set; }
+        public string Identifier { get; set; }
         public string Phone { get; set; }
         public string Mobile { get; set; }
-        public int DepartamentoId { get; set; }
-        public DtoCatalogo Departamento { get; set; }
-        public int MunicipioId { get; set; }
-        public DtoCatalogo Municipio { get; set; }
-        public DtoCatalogo TipoIdentificador { get; set; }
+        public int DepartmentId { get; set; }
+        public DtoCatalogo Department { get; set; }
+        public int MunicipalityId { get; set; }
+        public DtoCatalogo Municipality { get; set; }
+        public DtoCatalogo IdentificationType { get; set; }
         public string Address { get; set; }
         public string Email { get; set; }
         public int? Id { get; set; }

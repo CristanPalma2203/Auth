@@ -14,11 +14,11 @@ namespace Infraestructura.Configuration
         {
             builder.ToTable("usuario_externo");
             builder.Property(c => c.Email).HasMaxLength(50);
-            builder.Property(c => c.Identificador).HasMaxLength(50);
+            builder.Property(c => c.Identifier).HasMaxLength(50);
 
 
             /*builder.HasIndex(c => c.Email).IsUnique();
-            builder.HasIndex(c => c.Identificador).IsUnique();*/
+            builder.HasIndex(c => c.Identifier).IsUnique();*/
         }
     }
 }

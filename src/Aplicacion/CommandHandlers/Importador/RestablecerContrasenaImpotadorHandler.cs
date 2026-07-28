@@ -38,7 +38,7 @@ namespace Aplicacion.CommandHandlers.Importador
                 {
                     usuario.RestablecerContrasenaImportador(contrasena);
                     usuarioRepository.Update(usuario.Id, usuario);
-                    correoHelper.EnviarCorreoUsuarioCreado(importador.Identificador, contrasena, importador.Email);
+                    correoHelper.EnviarCorreoUsuarioCreado(importador.Identifier, contrasena, importador.Email);
                     return new OkResponse();
                 }
             }

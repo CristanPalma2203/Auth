@@ -34,7 +34,7 @@ namespace Aplicacion.CommandHandlers.Importador
             usuarioExternoRepository.Update(perfil.Id, perfil);
 
             var usuario = usuarioRepository
-                .Filter(new BuscarUsuarioPorIdentificador(perfil.Identificador ?? perfil.Email))
+                .Filter(new BuscarUsuarioPorIdentificador(perfil.Identifier ?? perfil.Email))
                 .FirstOrDefault();
             if (usuario != null && !usuario.IsActive)
             {

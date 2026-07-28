@@ -21,11 +21,11 @@ namespace Dominio.Especificaciones
         {
             if (this.identificador != null && this.nombre != null)
             {
-                return new Func<UsuarioExterno, bool>(c => c.Name.ToLower().Contains(nombre.ToLower()) && c.Identificador.Replace("-", "").Trim().Contains(identificador.Replace("-", "").Trim()));
+                return new Func<UsuarioExterno, bool>(c => c.Name.ToLower().Contains(nombre.ToLower()) && c.Identifier.Replace("-", "").Trim().Contains(identificador.Replace("-", "").Trim()));
             }
             else if (this.identificador != null)
             {
-                return new Func<UsuarioExterno, bool>(c => c.Identificador.Replace("-", "").Trim().Contains(identificador.Replace("-", "").Trim()));
+                return new Func<UsuarioExterno, bool>(c => c.Identifier.Replace("-", "").Trim().Contains(identificador.Replace("-", "").Trim()));
             }
             else
             {

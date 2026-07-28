@@ -8,6 +8,6 @@ namespace Aplicacion.Dtos.Usuario
     {
         public int Id { get; set; }
         public int RegionalId { get; set; }
-        public int UsuarioId { get; set; }
+        public int UserId { get; set; }
     }
 }

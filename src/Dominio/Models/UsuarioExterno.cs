@@ -7,24 +7,24 @@ namespace Dominio.Models
 {
     public class UsuarioExterno : IEntity
     {
-        public static string TipoIngresoManual = "manual";
+        public static string ManualEntryType = "manual";
 
         public int Id { get; set; }
         public int IdentificationTypeId { get; set; }
-        public Catalogo TipoIdentificador { get; set; }
-        public string Identificador { get; set; }
+        public Catalogo IdentificationType { get; set; }
+        public string Identifier { get; set; }
         public int PersonTypeId { get; set; }
         public Catalogo TipoPersona { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }
-        public int NacionalidadId { get; set; }
-        public Catalogo Nacionalidad { get; set; }
+        public int NationalityId { get; set; }
+        public Catalogo Nationality { get; set; }
         public string Phone { get; set; }
         public string Mobile { get; set; }
-        public int DepartamentoId { get; set; }
-        public Catalogo Departamento { get; set; }
-        public int MunicipioId { get; set; }
-        public Catalogo Municipio { get; set; }
+        public int DepartmentId { get; set; }
+        public Catalogo Department { get; set; }
+        public int MunicipalityId { get; set; }
+        public Catalogo Municipality { get; set; }
         public string Address { get; set; }
         public string Email { get; set; }
         public int? ArchivoId { get; set; }
@@ -87,8 +87,8 @@ namespace Dominio.Models
         }
         public void ActulizarImportador(UsuarioExterno imporN)
         {
-            this.MunicipioId = imporN.MunicipioId;
-            this.DepartamentoId = imporN.DepartamentoId;
+            this.MunicipalityId = imporN.MunicipalityId;
+            this.DepartmentId = imporN.DepartmentId;
             this.Mobile = imporN.Mobile;
             this.Phone = imporN.Phone;
             this.Email = imporN.Email;
