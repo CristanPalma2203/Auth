@@ -16,6 +16,6 @@ namespace Dominio.Helpers
         void EnviarCorreoAccesosImportador(UsuarioExterno importador);
         void EnviarCorreoRolCreado(string Usuario, string NombreRol);
         void EnviarCorreoRolEditado(string Usuario, string NombreRol);
-        void EnviarCorreoModificarSolicitud(List<string> correoDestino, string motivo, string CodigoTemporal);
+        void EnviarCorreoModificarSolicitud(List<string> correoDestino, string motivo, string TemporaryCode);
     }
 }

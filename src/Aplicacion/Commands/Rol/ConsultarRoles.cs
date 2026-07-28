@@ -9,6 +9,6 @@ namespace Aplicacion.Commands.Rol
 {
     public class ConsultarRoles : QueryStringParameters, IAppMessage
     {
-        public string Nombre { get; set; }
+        public string Name { get; set; }
     }
 }

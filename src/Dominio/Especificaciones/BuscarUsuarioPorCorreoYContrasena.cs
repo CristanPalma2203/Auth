@@ -20,10 +20,10 @@ namespace Dominio.Especificaciones
         {
             if (RegexUtilities.IsValidEmail(identificador))
             {
-                return new Func<Usuario, bool>(c => c.IdentificadorAcceso.ToLower().Trim() == this.identificador.ToLower().Trim() && c.CodigoTemporal == codigo);
+                return new Func<Usuario, bool>(c => c.AccessIdentifier.ToLower().Trim() == this.identificador.ToLower().Trim() && c.TemporaryCode == codigo);
             }
             else {
-                return new Func<Usuario, bool>(c => c.IdentificadorAcceso.Replace("-", "").Trim() == this.identificador.Replace("-", "").Trim() && c.CodigoTemporal == codigo);
+                return new Func<Usuario, bool>(c => c.AccessIdentifier.Replace("-", "").Trim() == this.identificador.Replace("-", "").Trim() && c.TemporaryCode == codigo);
             }
         
         }

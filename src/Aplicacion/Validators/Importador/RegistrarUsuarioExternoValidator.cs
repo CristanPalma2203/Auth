@@ -21,12 +21,12 @@ namespace Aplicacion.Validators.Importador
             this.usuarioRepository = usuarioRepository;
             this.usuarioExternoRepository = usuarioExternoRepository;
 
-            RuleFor(x => x.Correo).NotEmpty().EmailAddress();
-            RuleFor(x => x.Contrasena).NotEmpty().MinimumLength(6);
-            RuleFor(x => x.Nombre).NotEmpty();
-            RuleFor(x => x.Apellidos).NotEmpty();
-            RuleFor(x => x.Telefono).NotEmpty();
-            RuleFor(x => x.Correo)
+            RuleFor(x => x.Email).NotEmpty().EmailAddress();
+            RuleFor(x => x.Password).NotEmpty().MinimumLength(6);
+            RuleFor(x => x.Name).NotEmpty();
+            RuleFor(x => x.LastName).NotEmpty();
+            RuleFor(x => x.Phone).NotEmpty();
+            RuleFor(x => x.Email)
                 .Must(CorreoDisponible)
                 .WithMessage("Ya existe una cuenta con este correo.");
         }
@@ -37,7 +37,7 @@ namespace Aplicacion.Validators.Importador
             var existeUsuario = usuarioRepository.Filter(new BuscarUsuarioPorIdentificador(correo)).Any();
             if (existeUsuario) return false;
             var existePerfil = usuarioExternoRepository
-                .Filter(c => c.Correo != null && c.Correo.ToLower().Trim() == correo.ToLower().Trim())
+                .Filter(c => c.Email != null && c.Email.ToLower().Trim() == correo.ToLower().Trim())
                 .Any();
             return !existePerfil;
         }

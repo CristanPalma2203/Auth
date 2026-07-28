@@ -20,7 +20,7 @@ namespace Aplicacion.Validators.Importador
         public RestablecerContrasenaImpotadorValidator(IAutenticationHelper autenticationHelper,
             IUsuarioExternoRepository importadorRepository, IUsuarioRepository usuarioRepository) : base(autenticationHelper)
         {
-            RuleFor(x => x.Correo).NotEmpty().EmailAddress();
+            RuleFor(x => x.Email).NotEmpty().EmailAddress();
             RuleFor(x => x.Usuario).NotEmpty().Must(c=> RegexUtilities.IsValidEmail(c)==false).WithMessage("El usuario no puede ser un correo, para usuarios internos contacta al departamento de IT");
             RuleFor(x => x).Must(c => Buscarusuario(c)).WithMessage("No se ha encontrado un importador con el usuario y correo especificado");
             this.importadorRepository = importadorRepository;
@@ -33,7 +33,7 @@ namespace Aplicacion.Validators.Importador
             var usuario = usuarioRepository.Filter(new BuscarUsuarioPorIdentificador(rc.Usuario)).FirstOrDefault();
             if (usuario != null)
             {
-                var importador = importadorRepository.Filter(new BuscarImportadorPorCorreoIdentificador(rc.Correo, rc.Usuario));
+                var importador = importadorRepository.Filter(new BuscarImportadorPorCorreoIdentificador(rc.Email, rc.Usuario));
                 if (importador.Count() > 0)encuentraUsuario = true;
             }
             return encuentraUsuario;

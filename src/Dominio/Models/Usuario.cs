@@ -14,30 +14,30 @@ namespace Dominio.Models
         public static string correoUsuarioAdmin = "admin@gmail.com";
         public static List<int> PermisosUsuarioExterno = new List<int>() {25};
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string IdentificadorAcceso { get; set; }
-        public bool Activo { get; set; }
-        public string Contrasena { get; set; }
-        public string CodigoTemporal { get; set; }
+        public string Name { get; set; }
+        public string AccessIdentifier { get; set; }
+        public bool IsActive { get; set; }
+        public string Password { get; set; }
+        public string TemporaryCode { get; set; }
         public int? DepartamentoId { get; set; }
         public Catalogo Departamento { get; set; }
 
         public IList<UsuarioRol> Roles { get; set; }
-        public bool CambiarContrasena { get; set; }
+        public bool MustChangePassword { get; set; }
 
         public void PropietarioCambiaContrasena(string contrasena)
         {
-            Contrasena = getPassword(contrasena);
-            this.FechaActualizacion = DateTime.Now;
-            this.CambiarContrasena = false;
+            Password = getPassword(contrasena);
+            this.UpdatedAt = DateTime.Now;
+            this.MustChangePassword = false;
         }
 
-        public DateTime? FechaRegistro { get; set; }
+        public DateTime? RegisteredAt { get; set; }
 
-        public DateTime? FechaActualizacion { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
-        public DateTime? FechaRestableceContrasena { get; set; }
-        public string TipoUsuario { get; set; }
+        public DateTime? PasswordResetAt { get; set; }
+        public string UserType { get; set; }
 
         /// <summary>NULL = platform admin; NOT NULL = usuario de una empresa.</summary>
         public int? TenantId { get; set; }
@@ -46,43 +46,43 @@ namespace Dominio.Models
         public ICollection<UsuarioRegional> UsuarioRegional { get; set; }
         public ICollection<UsuarioArea> UsuarioArea { get; set; }
         public void RestablecerContrasenaImportador(string contrasena) {
-            Contrasena = getPassword(contrasena);
-            FechaRestableceContrasena = DateTime.Now;
-            FechaActualizacion = DateTime.Now;
-            CambiarContrasena = true;
+            Password = getPassword(contrasena);
+            PasswordResetAt = DateTime.Now;
+            UpdatedAt = DateTime.Now;
+            MustChangePassword = true;
         }
         public void Enable()
         {
-            Activo = true;
+            IsActive = true;
         }
         public void Disable()
         {
-            Activo = false;
+            IsActive = false;
         }
 
         public void Inicializar(string tipoUsuario, IList<int> roles)
         {
             Enable();
-            FechaRegistro = DateTime.Now;
-            CambiarContrasena = true;
-            Contrasena = getPassword(Contrasena);
-            TipoUsuario = tipoUsuario == null ? usuarioInterno : tipoUsuario;
+            RegisteredAt = DateTime.Now;
+            MustChangePassword = true;
+            Password = getPassword(Password);
+            UserType = tipoUsuario == null ? usuarioInterno : tipoUsuario;
             CrearUsuarioRol(roles);
         }
 
         public void InicializarExterno(IList<int> roles)
         {
-            Activo = false;
-            FechaRegistro = DateTime.Now;
-            CambiarContrasena = false;
-            Contrasena = getPassword(Contrasena);
-            TipoUsuario = tipoUsuarioExterno;
+            IsActive = false;
+            RegisteredAt = DateTime.Now;
+            MustChangePassword = false;
+            Password = getPassword(Password);
+            UserType = tipoUsuarioExterno;
             CrearUsuarioRol(roles);
         }
 
         public void ActualizarFecha(IList<int> roles, string tipoUsuario) {
-            this.FechaActualizacion = DateTime.Now;
-            TipoUsuario = tipoUsuario == null ? usuarioInterno : tipoUsuario;
+            this.UpdatedAt = DateTime.Now;
+            UserType = tipoUsuario == null ? usuarioInterno : tipoUsuario;
             CrearUsuarioRol(roles);
         }
 
@@ -102,14 +102,14 @@ namespace Dominio.Models
 
         public void AdministradorCambiaContrasena(string nombre, int? departamento, string contrasena, IList<int> roles, bool activo)
         {
-            this.Nombre = nombre;
-            this.Activo = activo;
+            this.Name = nombre;
+            this.IsActive = activo;
             this.DepartamentoId = departamento;
-            this.FechaActualizacion = DateTime.Now;
+            this.UpdatedAt = DateTime.Now;
             if (!string.IsNullOrWhiteSpace(contrasena))
             {
-                Contrasena = getPassword(contrasena);
-                CambiarContrasena = true;
+                Password = getPassword(contrasena);
+                MustChangePassword = true;
             };
             this.CrearUsuarioRol(roles);
 

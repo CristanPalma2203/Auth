@@ -19,13 +19,13 @@ namespace Aplicacion.Validators
         public IniciarSesionValidator(IUsuarioRepository usuarioRepository, IAutenticationHelper autenticationHelper) : base(autenticationHelper)
         {
             RuleFor(x => x.Usuario).NotEmpty().WithMessage("Ingrese el identificador")
-                .Must(c => usuarioRepository.Filter(new Func<Usuario, bool>(p => p.IdentificadorAcceso == c && p.Activo == false)).Count() == 0)
+                .Must(c => usuarioRepository.Filter(new Func<Usuario, bool>(p => p.AccessIdentifier == c && p.IsActive == false)).Count() == 0)
                 .WithMessage("Usuario Inactivo");
 
-            RuleFor(x => x.Contrasena).NotEmpty().WithMessage("Ingrese la Contraseña");
+            RuleFor(x => x.Password).NotEmpty().WithMessage("Ingrese la Contraseña");
 
             RuleFor(x => x).NotEmpty()
-                .Must(c => ValidarCredencialesUsuario(c.Usuario, c.Contrasena))
+                .Must(c => ValidarCredencialesUsuario(c.Usuario, c.Password))
                 .WithMessage("Usuario o contraseña es incorrecto");
 
             this.usuarioRepository = usuarioRepository;

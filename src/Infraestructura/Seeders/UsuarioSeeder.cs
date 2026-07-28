@@ -14,7 +14,7 @@ namespace Infraestructura.Seeders
 
         public static void Seed(ModelBuilder builder)
         {
-            var usuarioAdmin = new Usuario {Id=Usuario.idUsuarioAdmin, Activo = true, CambiarContrasena = false,IdentificadorAcceso=Usuario.correoUsuarioAdmin, FechaRegistro=DateTime.Now, Nombre="Administrador del sistema", TipoUsuario= "usuario-interno", Contrasena= "52A5D13A7FD60FFFFF425FA65C3830A165969AA983F06C365E48BAC0F8C75CD9",  };
+            var usuarioAdmin = new Usuario {Id=Usuario.idUsuarioAdmin, IsActive = true, MustChangePassword = false,AccessIdentifier=Usuario.correoUsuarioAdmin, RegisteredAt=DateTime.Now, Name="Administrador del sistema", UserType= "usuario-interno", Password= "52A5D13A7FD60FFFFF425FA65C3830A165969AA983F06C365E48BAC0F8C75CD9",  };
            builder.Entity<Usuario>().HasData(usuarioAdmin);
         }
     }

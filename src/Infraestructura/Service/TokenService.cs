@@ -80,7 +80,7 @@ namespace Infraestructura.Service
                 if (!int.TryParse(tidClaim, out var tid) || tid != usuario.TenantId.Value)
                     return false;
 
-                var expectedCode = usuario.Tenant?.Codigo;
+                var expectedCode = usuario.Tenant?.Code;
                 if (!string.IsNullOrWhiteSpace(expectedCode)
                     && !string.Equals(codeClaim, expectedCode, StringComparison.OrdinalIgnoreCase))
                     return false;
@@ -167,15 +167,15 @@ namespace Infraestructura.Service
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, usuario.IdentificadorAcceso.Trim()),
+                new Claim(ClaimTypes.Email, usuario.AccessIdentifier.Trim()),
                 new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
                 new Claim(ClaimTypes.Surname, ""),
             };
             if (usuario.TenantId.HasValue)
             {
                 claims.Add(new Claim(TenantContext.ClaimTenantId, usuario.TenantId.Value.ToString()));
-                if (usuario.Tenant != null && !string.IsNullOrWhiteSpace(usuario.Tenant.Codigo))
-                    claims.Add(new Claim(TenantContext.ClaimTenantCodigo, usuario.Tenant.Codigo));
+                if (usuario.Tenant != null && !string.IsNullOrWhiteSpace(usuario.Tenant.Code))
+                    claims.Add(new Claim(TenantContext.ClaimTenantCodigo, usuario.Tenant.Code));
             }
             return claims.ToArray();
         }

@@ -12,13 +12,13 @@ namespace Dominio.Models
 
 
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Descripcion { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
     
-        public DateTime? FechaCreacion { get; set; }
-        public DateTime? FechaActualizacion { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         public IList<RolPermiso> Permisos { get; set; }
-        public bool Asignable { get; set; }
+        public bool IsAssignable { get; set; }
 
         /// <summary>NULL = rol de plataforma; NOT NULL = rol local del tenant.</summary>
         public int? TenantId { get; set; }
@@ -33,7 +33,7 @@ namespace Dominio.Models
            
         }
         public void setFechaCreacion() {
-            this.FechaCreacion = DateTime.Now;
+            this.CreatedAt = DateTime.Now;
         }
 
         public void limpiaPermisos()
@@ -43,9 +43,9 @@ namespace Dominio.Models
 
         public void actualizar(string nombre, string descripcion, IList<int> permisos)
         {
-            this.Nombre=nombre ;
-            this.Descripcion = descripcion;
-            this.FechaActualizacion = DateTime.Now;
+            this.Name=nombre ;
+            this.Description = descripcion;
+            this.UpdatedAt = DateTime.Now;
             this.CrearRolPermiso(permisos);
         }
     }

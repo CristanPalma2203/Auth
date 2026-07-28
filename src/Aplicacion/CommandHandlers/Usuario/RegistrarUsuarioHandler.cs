@@ -39,12 +39,12 @@ namespace Aplicacion.CommandHandlers.Usuario
 
             var contrasena = StringHelper.RandomString(7);
             var usuario = mapper.Map<Dominio.Models.Usuario>(message.Usuario);
-            usuario.Contrasena = contrasena;
+            usuario.Password = contrasena;
             if (!tenantContext.IsPlatformAdmin)
                 usuario.TenantId = tenantContext.TenantId;
             usuario.Inicializar(Dominio.Models.Usuario.usuarioInterno, message.Usuario.Roles.Select(c => c.Id).ToList());
             usuarioRepository.Create(usuario);
-            correoHelper.EnviarCorreoUsuarioCreado(message.Usuario.IdentificadorAcceso, contrasena, message.Usuario.IdentificadorAcceso);
+            correoHelper.EnviarCorreoUsuarioCreado(message.Usuario.AccessIdentifier, contrasena, message.Usuario.AccessIdentifier);
             return new OkResponse();
         }
 

@@ -29,7 +29,7 @@ namespace Aplicacion.CommandHandlers.Usuario
         public override IResponse Handle(IniciarSesion message)
         {
             var usuario = usuarioRepository.GetUsuarioConRolPermiso(
-                new BuscarUsuarioPorIdentificadorYContrasena(message.Usuario, message.Contrasena));
+                new BuscarUsuarioPorIdentificadorYContrasena(message.Usuario, message.Password));
 
             var respuesta = UsuarioMappingHelper.ToDtoLogin(usuario, permisoRepository);
             respuesta.Token = tokenService.CrearOtraerToken(usuario);

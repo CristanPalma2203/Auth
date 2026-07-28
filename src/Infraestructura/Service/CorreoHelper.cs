@@ -82,7 +82,7 @@ namespace Infraestructura.Service
             html = html.Replace("correo", correoNuevo);
             html = html.Replace("fechaActulizacion", fechaActulizacion.ToString());
             html = html.Replace("URLPORTAL", configuration.GetValue<string>("AppSettings:DireccionPortal"));
-            SendMsj("Actulizacion del Correo Electronico", correoDestino, html);
+            SendMsj("Actulizacion del Email Electronico", correoDestino, html);
         }
 
 
@@ -127,13 +127,13 @@ namespace Infraestructura.Service
             var html = ReadResource(rutaAccesosImportador);
             var stubble = new StubbleBuilder().Build();
             html = stubble.Render(html,  new { Importador = importador, Roles = "hoola test", Url = configuration.GetValue<string>("AppSettings:DireccionPortal") });
-            SendMsj("Notificación de acceso", importador.Correo, html);
+            SendMsj("Notificación de acceso", importador.Email, html);
         }
-        public void EnviarCorreoModificarSolicitud(List<string> correoDestino, string motivo, string CodigoTemporal)
+        public void EnviarCorreoModificarSolicitud(List<string> correoDestino, string motivo, string TemporaryCode)
         {
             var html = ReadResource(rutaHtmlSolicitudAcceso);
             var stubble = new StubbleBuilder().Build();
-            html = html.Replace("CodigoTemporalId", CodigoTemporal);
+            html = html.Replace("CodigoTemporalId", TemporaryCode);
             html = html.Replace("MotivoId", motivo);
             foreach (var item in correoDestino)
             {

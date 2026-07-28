@@ -34,13 +34,13 @@ namespace Aplicacion.CommandHandlers.Importador
         {
             var importardor = importadorRepository.GetById(message.Importador.Id.Value);
             var impo = mapper.Map<Dominio.Models.UsuarioExterno>(message.Importador);
-            var CorreoViejo = importardor.Correo;
-            var cambioCorreo = importardor.Correo != message.Importador.Correo;
+            var CorreoViejo = importardor.Email;
+            var cambioCorreo = importardor.Email != message.Importador.Email;
             importardor.ActulizarImportador(impo);
             if (cambioCorreo){
                 importadorRepository.Update(importardor.Id, importardor);
                 unitOfWork.Save();
-                correoHelper.EnviarCorreoParaActulizacion(CorreoViejo, impo.TokenVerificacion,(DateTime)importardor.FechaModificacion,impo.Correo);
+                correoHelper.EnviarCorreoParaActulizacion(CorreoViejo, impo.VerificationToken,(DateTime)importardor.UpdatedAt,impo.Email);
             }else{
                 importadorRepository.Update(importardor.Id, importardor);
             }

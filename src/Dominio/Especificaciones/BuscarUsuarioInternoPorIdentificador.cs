@@ -16,7 +16,7 @@ namespace Dominio.Especificaciones
         public Func<Usuario, bool> Traer()
         {
 
-            return new Func<Usuario, bool>(c => c.IdentificadorAcceso == correo && c.TipoUsuario==Usuario.usuarioInterno);
+            return new Func<Usuario, bool>(c => c.AccessIdentifier == correo && c.UserType==Usuario.usuarioInterno);
         }
     }
 }

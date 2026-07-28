@@ -10,14 +10,14 @@ namespace Aplicacion.Services.ConsultaPermiso
     {
         public IEnumerable<DtoPermiso> Estructurar(IEnumerable<DtoPermiso> Permisos)
         {
-            var padres = Permisos.Where(c=>c.PermisoPadre==null);
+            var padres = Permisos.Where(c=>c.ParentPermissionId==null);
             foreach (var permiso in padres)getHijos(permiso,Permisos);
             return padres;
         }
 
         private void getHijos(DtoPermiso permiso,IEnumerable<DtoPermiso> dtoPermisos) {
 
-            var hijos = dtoPermisos.Where(c=>c.PermisoPadre==permiso.Id);
+            var hijos = dtoPermisos.Where(c=>c.ParentPermissionId==permiso.Id);
             if (hijos == null || hijos.Count() == 0) return;
             foreach (var hijo in hijos)getHijos(hijo, dtoPermisos);
             permiso.Hijos = hijos;

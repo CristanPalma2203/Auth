@@ -25,9 +25,9 @@ namespace Aplicacion.CommandHandlers.Rol
         {
             var tenantSpec = new BuscarRolesPorTenant(tenantContext.TenantId, tenantContext.IsPlatformAdmin, soloAsignables: true);
 
-            if (message.Nombre != null)
+            if (message.Name != null)
             {
-                var nameSpec = new BuscarRolPorNombre(message.Nombre);
+                var nameSpec = new BuscarRolPorNombre(message.Name);
                 var respuestaFiltrada = rolRepository.ConsultarPaginado(message, new SpecAndRol(nameSpec, tenantSpec));
                 return mapper.Map<RolPaginado>(respuestaFiltrada);
             }

@@ -23,7 +23,7 @@ namespace Dominio.Models.Regla
                 respuesta.Cumple = false;
                 return respuesta;
             }
-            if (Usuario.getPassword(passwor).Equals(user.Contrasena)) respuesta.Cumple = false;
+            if (Usuario.getPassword(passwor).Equals(user.Password)) respuesta.Cumple = false;
             return respuesta;
         }
     }

@@ -83,7 +83,7 @@ namespace WebApi.Controllers
                 var login = UpsertGoogleUser(profile);
                 return Redirect(AppendQuery(returnUrl,
                     "token=" + Uri.EscapeDataString(login.Token) +
-                    "&tipoUsuario=" + Uri.EscapeDataString(login.TipoUsuario ?? "usuario-externo")));
+                    "&tipoUsuario=" + Uri.EscapeDataString(login.UserType ?? "usuario-externo")));
             }
             catch (Exception ex)
             {
@@ -169,9 +169,9 @@ namespace WebApi.Controllers
                 var parts = (profile.Name ?? profile.Email).Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
                 var usuarioNuevo = new Usuario
                 {
-                    IdentificadorAcceso = profile.Email,
-                    Nombre = profile.Name ?? profile.Email,
-                    Contrasena = Guid.NewGuid().ToString("N") + "Aa1!"
+                    AccessIdentifier = profile.Email,
+                    Name = profile.Name ?? profile.Email,
+                    Password = Guid.NewGuid().ToString("N") + "Aa1!"
                 };
                 usuarioNuevo.InicializarExterno(new List<int>());
                 usuarioNuevo.Enable();
@@ -179,19 +179,19 @@ namespace WebApi.Controllers
 
                 var perfil = new UsuarioExterno
                 {
-                    Nombre = parts.Length > 0 ? parts[0] : profile.Name,
-                    Apellidos = parts.Length > 1 ? parts[1] : "",
-                    Correo = profile.Email,
+                    Name = parts.Length > 0 ? parts[0] : profile.Name,
+                    LastName = parts.Length > 1 ? parts[1] : "",
+                    Email = profile.Email,
                     Identificador = profile.Email,
-                    Telefono = "",
-                    Celular = ""
+                    Phone = "",
+                    Mobile = ""
                 };
                 perfil.RegistrarCuenta();
                 perfil.VerificarCorreo();
                 usuarioExternoRepository.Create(perfil);
                 unitOfWork.Save();
             }
-            else if (!existente.Activo)
+            else if (!existente.IsActive)
             {
                 var user = usuarioRepository.GetUsuarioConRolPermiso(new BuscarUsuarioPorIdentificador(profile.Email));
                 user.Enable();

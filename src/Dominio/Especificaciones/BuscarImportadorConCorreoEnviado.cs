@@ -14,7 +14,7 @@ namespace Dominio.Especificaciones
         }
         public Func<UsuarioExterno, bool> Traer()
         {
-            return new Func<UsuarioExterno, bool>(c => c.Id == id && c.CorreoEnviado==true);
+            return new Func<UsuarioExterno, bool>(c => c.Id == id && c.EmailSent==true);
         }
     }
 }

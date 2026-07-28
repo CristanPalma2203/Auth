@@ -50,9 +50,9 @@ namespace Aplicacion.CommandHandlers.Rol
             EnsurePermisosHeredables(message.Rol.Permisos);
 
             foreach (var item in dbrol.Permisos) rolPermisoRepository.Delete(item.Id);
-            dbrol.actualizar(message.Rol.Nombre, message.Rol.Descripcion, message.Rol.Permisos);
+            dbrol.actualizar(message.Rol.Name, message.Rol.Description, message.Rol.Permisos);
             var rolCreado = rolRepository.Update(message.Id, dbrol);
-            correoHelper.EnviarCorreoRolCreado(usuario.Nombre, message.Rol.Nombre);
+            correoHelper.EnviarCorreoRolCreado(usuario.Name, message.Rol.Name);
             return mapper.Map<DtoRol>(rolCreado);
         }
 

@@ -13,14 +13,14 @@ namespace Aplicacion.Validators.Importador
         public RechazarSolicitudAccesoValidator(IAutenticationHelper autenticationHelper, IUsuarioExternoRepository importadorRepository) : base(autenticationHelper)
         {
             RuleFor(x => x.ImportadorId).NotEmpty().Must(c=>ImportadorSolicitudExiste(c)).WithMessage("No es posible gestinar esta solictud por que ya fue aprobada o no existe");
-            RuleFor(x => x.Motivo).NotEmpty().WithMessage("Comentario Obligatorio Al Rechazar");
+            RuleFor(x => x.Motivo).NotEmpty().WithMessage("Comment Obligatorio Al Rechazar");
             this.importadorRepository = importadorRepository;
         }
 
         public bool ImportadorSolicitudExiste(int importadorId) {
             var importador = importadorRepository.GetById(importadorId);
             if (importador == null) return false;
-            if (importador.AccesoAprobado) return false;
+            if (importador.AccessApproved) return false;
             return true;
         }
         public override IList<string> Permisos => new List<string> { "gestionar-importador", "gestionar-usuario-externo" };

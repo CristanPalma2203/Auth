@@ -9,7 +9,7 @@ namespace Aplicacion.Commands.Usuario
     public class IniciarSesion: IAppMessage
     {
         public string Usuario { get; set; }
-        public string Contrasena { get; set; }
+        public string Password { get; set; }
 
     }
 }

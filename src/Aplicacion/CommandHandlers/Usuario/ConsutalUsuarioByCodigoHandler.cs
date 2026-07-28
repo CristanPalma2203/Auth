@@ -20,7 +20,7 @@ namespace Aplicacion.CommandHandlers.Usuario
         public override IResponse Handle(ConsutalUsuarioByCodigo message)
         {
             var usuario = usuarioRepository.GetUsuarioConRolPermiso(
-                new BuscarUsuarioPorIdentificadorYCodigo(message.Correo, message.CodigoTemporal));
+                new BuscarUsuarioPorIdentificadorYCodigo(message.Email, message.TemporaryCode));
             return UsuarioMappingHelper.ToDtoResponse(usuario, rolRepository);
         }
     }

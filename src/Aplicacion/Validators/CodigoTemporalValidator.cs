@@ -10,16 +10,16 @@ using System.Text;
 
 namespace Aplicacion.Validators
 {
-     class CodigoTemporalValidator : Validador<CodigoTemporal>
+     class CodigoTemporalValidator : Validador<TemporaryCode>
     {
         private readonly IUsuarioExternoRepository importRepo;
         private readonly IUsuarioRepository user;
         public CodigoTemporalValidator(IAutenticationHelper autenticationHelper, IUsuarioExternoRepository importRepo, IUsuarioRepository user) : base(autenticationHelper)
         {
-            RuleFor(x => x.IdentificadorAcceso).NotEmpty().WithMessage("Ingrese un Correo/Identificacion");
+            RuleFor(x => x.AccessIdentifier).NotEmpty().WithMessage("Ingrese un Email/Identification");
             RuleFor(x => x).NotEmpty()
-               .Must(c => ValidarUsuario(c.IdentificadorAcceso))
-               .WithMessage("Identificador / Correo no registrado ");
+               .Must(c => ValidarUsuario(c.AccessIdentifier))
+               .WithMessage("Identificador / Email no registrado ");
             this.importRepo = importRepo;
             this.user = user;
         }

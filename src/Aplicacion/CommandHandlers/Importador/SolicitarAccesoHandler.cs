@@ -37,7 +37,7 @@ namespace Aplicacion.CommandHandlers.Importador
                 importadorRepository.Update(impotadorBusquedad.Id, importador);
             }
             
-            correoHelper.EnviarCorreoParaVerificacion(importador.Correo, importador.TokenVerificacion);
+            correoHelper.EnviarCorreoParaVerificacion(importador.Email, importador.VerificationToken);
 
             return new OkResponse();
         }

@@ -25,7 +25,7 @@ namespace Aplicacion.CommandHandlers.Importador
                 .Filter(new BuscarImportadorPorTokenDeVerificacion(message.Token))
                 .FirstOrDefault();
 
-            if (perfil.CorreoVerificado)
+            if (perfil.EmailVerified)
             {
                 return new OkResponse();
             }
@@ -34,9 +34,9 @@ namespace Aplicacion.CommandHandlers.Importador
             usuarioExternoRepository.Update(perfil.Id, perfil);
 
             var usuario = usuarioRepository
-                .Filter(new BuscarUsuarioPorIdentificador(perfil.Identificador ?? perfil.Correo))
+                .Filter(new BuscarUsuarioPorIdentificador(perfil.Identificador ?? perfil.Email))
                 .FirstOrDefault();
-            if (usuario != null && !usuario.Activo)
+            if (usuario != null && !usuario.IsActive)
             {
                 usuario.Enable();
                 usuarioRepository.Update(usuario.Id, usuario);

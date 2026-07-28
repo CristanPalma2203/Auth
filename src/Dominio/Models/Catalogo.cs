@@ -7,14 +7,14 @@ namespace Dominio.Models
     public class Catalogo : IEntity
     {
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Tipo { get; set; }
-        public string Abreviatura { get; set; }
-        public int? IdPadre { get; set; }
-        public DateTime? FechaCreacion { get; set; }
-        public int? UsuarioCrea { get; set; }
-        public DateTime? FechaActualizacion { get; set; }
-        public int? UsuarioActualiza { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public string Abbreviation { get; set; }
+        public int? ParentId { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public int? CreatedByUserId { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public int? UpdatedByUserId { get; set; }
 
     }
 }

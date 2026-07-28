@@ -31,9 +31,9 @@ namespace Aplicacion.CommandHandlers.Usuario
             IPagina<Dominio.Models.Usuario> respuesta;
             var tenantSpec = new BuscarUsuariosPorTenant(tenantContext.TenantId, tenantContext.IsPlatformAdmin);
 
-            if (!string.IsNullOrWhiteSpace(message.Nombre) || !string.IsNullOrWhiteSpace(message.correo) || message.idDepartamento != 0)
+            if (!string.IsNullOrWhiteSpace(message.Name) || !string.IsNullOrWhiteSpace(message.correo) || message.idDepartamento != 0)
             {
-                var nameSpec = new BuscarUsuarioPorNombreYCorreo(message.Nombre, message.correo, message.idDepartamento);
+                var nameSpec = new BuscarUsuarioPorNombreYCorreo(message.Name, message.correo, message.idDepartamento);
                 respuesta = usuariosRepository.ConsultarPaginadoConRol(message, new SpecAnd<Dominio.Models.Usuario>(nameSpec, tenantSpec));
             }
             else

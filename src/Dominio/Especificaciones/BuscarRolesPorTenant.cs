@@ -21,11 +21,11 @@ namespace Dominio.Especificaciones
             if (platformSeesAll)
             {
                 if (soloAsignables)
-                    return c => c.Asignable;
+                    return c => c.IsAssignable;
                 return c => true;
             }
             if (soloAsignables)
-                return c => c.Asignable && c.TenantId == tenantId;
+                return c => c.IsAssignable && c.TenantId == tenantId;
             return c => c.TenantId == tenantId;
         }
     }

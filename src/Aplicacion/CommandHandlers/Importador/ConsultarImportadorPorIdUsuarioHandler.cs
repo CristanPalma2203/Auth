@@ -28,7 +28,7 @@ namespace Aplicacion.CommandHandlers.Importador
         public override IResponse Handle(ConsultarImportadorPorIdUsuario message)
         {
             var usuario = usuarioRepository.GetById(message.IdUsuario);
-            var importador = importadorRepository.Filter(new BuscarImportadorPorIdentificador(usuario.IdentificadorAcceso)).FirstOrDefault();
+            var importador = importadorRepository.Filter(new BuscarImportadorPorIdentificador(usuario.AccessIdentifier)).FirstOrDefault();
             if (importador != null) return mapper.Map<DtoImportador>(importador);
             return new DtoImportador();
         }

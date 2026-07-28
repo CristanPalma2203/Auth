@@ -6,8 +6,8 @@ using System.Text;
 
 namespace Aplicacion.Commands.Usuario
 {
-    public class CodigoTemporal : IAppMessage
+    public class TemporaryCode : IAppMessage
     {
-        public string IdentificadorAcceso { get; set; }
+        public string AccessIdentifier { get; set; }
     }
 }

@@ -8,8 +8,8 @@ namespace Aplicacion.Commands
 {
     public class ConsultarCatalogo: IAppMessage
     {
-        public string Tipo { get; set; }
-        public int IdPadre { get; set; }
+        public string Type { get; set; }
+        public int ParentId { get; set; }
     }
 }
  

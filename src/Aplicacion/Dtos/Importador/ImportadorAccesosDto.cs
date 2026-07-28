@@ -8,7 +8,7 @@ namespace Aplicacion.Dtos.Importador
     {
         public int Id { get; set; }
         public int AccesoId { get; set; }
-        public bool Activo { get; set; }
+        public bool IsActive { get; set; }
         public DtoRol Acceso { get; set; }
     }
 }

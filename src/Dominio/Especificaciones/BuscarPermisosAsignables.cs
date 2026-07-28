@@ -15,7 +15,7 @@ namespace Dominio.Especificaciones
 
         Func<Permiso, bool> ISpecification<Permiso>.Traer()
         {
-            return new Func<Permiso, bool>(c => c.Asignable == true);
+            return new Func<Permiso, bool>(c => c.IsAssignable == true);
         }
     }
 }

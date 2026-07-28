@@ -11,7 +11,7 @@ namespace Aplicacion.Validators
     {
         public ConsutalUsuarioByCodigoValidator(IAutenticationHelper autenticationHelper) : base(autenticationHelper)
         {
-            RuleFor(x => x.CodigoTemporal).NotEmpty();
+            RuleFor(x => x.TemporaryCode).NotEmpty();
         }
         public override IList<string> Permisos => new List<string>();
     }

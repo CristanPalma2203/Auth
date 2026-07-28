@@ -13,11 +13,11 @@ namespace Infraestructura.Configuration
         public void Configure(EntityTypeBuilder<UsuarioExterno> builder)
         {
             builder.ToTable("usuario_externo");
-            builder.Property(c => c.Correo).HasMaxLength(50);
+            builder.Property(c => c.Email).HasMaxLength(50);
             builder.Property(c => c.Identificador).HasMaxLength(50);
 
 
-            /*builder.HasIndex(c => c.Correo).IsUnique();
+            /*builder.HasIndex(c => c.Email).IsUnique();
             builder.HasIndex(c => c.Identificador).IsUnique();*/
         }
     }

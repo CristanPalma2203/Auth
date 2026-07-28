@@ -6,7 +6,7 @@ namespace Aplicacion.Dtos.Usuario
 {
     public class DtoUsuario : DtoUsuarioBase
     {
-        public string Contrasena { get; set; }
+        public string Password { get; set; }
     }
 
 }

@@ -23,12 +23,12 @@ namespace Aplicacion.Validators
         {
             RuleFor(x => x.Id).NotEmpty().Must(c => TokenService.VerificarToken())
                 .WithMessage("Token Invalido");
-            RuleFor(x => x.Contrasena).Must(c =>!string.IsNullOrWhiteSpace(c)).WithMessage("La contrasena es requerida");
+            RuleFor(x => x.Password).Must(c =>!string.IsNullOrWhiteSpace(c)).WithMessage("La contrasena es requerida");
 
             RuleFor(x => x).Must(c=>VerificarPropietario(c.Id)).WithMessage("No puedes cambiar la contraseña por que la cuenta no es propietaria").
-                        Must(x => VerificarContrasena(x.Id,x.Contrasena)).WithMessage("No puedes utilizar la misma contraseña");
-            RuleFor(x => x).NotEmpty().Must(c => usuarioRepository.Filter(new BuscarUsuarioInternoPorIdentificador(c.IdentificadorAcceso)).Where(s=>s.Id != c.Id).Count() == 0  )
-               .WithMessage("Ya existe un usuario con el mismo Correo");
+                        Must(x => VerificarContrasena(x.Id,x.Password)).WithMessage("No puedes utilizar la misma contraseña");
+            RuleFor(x => x).NotEmpty().Must(c => usuarioRepository.Filter(new BuscarUsuarioInternoPorIdentificador(c.AccessIdentifier)).Where(s=>s.Id != c.Id).Count() == 0  )
+               .WithMessage("Ya existe un usuario con el mismo Email");
             this.cambioPassword = cambioPassword;
             tokenService = TokenService;
         }

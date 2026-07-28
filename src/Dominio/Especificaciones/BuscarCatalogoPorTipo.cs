@@ -15,7 +15,7 @@ namespace Dominio.Especificaciones
         public Func<Catalogo, bool> Traer()
         {
 
-            return new Func<Catalogo, bool>(c => c.Tipo == tipo);
+            return new Func<Catalogo, bool>(c => c.Type == tipo);
         }
     }
 }

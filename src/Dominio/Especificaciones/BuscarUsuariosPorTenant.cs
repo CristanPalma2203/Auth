@@ -17,8 +17,8 @@ namespace Dominio.Especificaciones
         public Func<Usuario, bool> Traer()
         {
             if (platformSeesAll)
-                return c => c.TipoUsuario == Usuario.usuarioInterno;
-            return c => c.TipoUsuario == Usuario.usuarioInterno && c.TenantId == tenantId;
+                return c => c.UserType == Usuario.usuarioInterno;
+            return c => c.UserType == Usuario.usuarioInterno && c.TenantId == tenantId;
         }
     }
 }

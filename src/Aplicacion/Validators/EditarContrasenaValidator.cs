@@ -16,9 +16,9 @@ namespace Aplicacion.Validators
 
         public EditarContrasenaValidator(IAutenticationHelper autenticationHelper, ICambioPassword cambioPassword, IUsuarioRepository usuarioRepository) : base(autenticationHelper)
         {
-            RuleFor(x => x.Contrasena).Must(c => !string.IsNullOrWhiteSpace(c)).WithMessage("La contrasena es requerida");
+            RuleFor(x => x.Password).Must(c => !string.IsNullOrWhiteSpace(c)).WithMessage("La contrasena es requerida");
 
-            RuleFor(x => x).Must(x => VerificarContrasena(x.Id, x.Contrasena)).WithMessage("No puedes utilizar la misma contraseña");
+            RuleFor(x => x).Must(x => VerificarContrasena(x.Id, x.Password)).WithMessage("No puedes utilizar la misma contraseña");
             this.cambioPassword = cambioPassword;
         }
         private bool VerificarContrasena(int id, string contrasena)

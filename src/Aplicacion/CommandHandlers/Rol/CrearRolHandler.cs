@@ -45,11 +45,11 @@ namespace Aplicacion.CommandHandlers.Rol
             var rol = mapper.Map<Dominio.Models.Rol>(message.Rol);
             rol.setFechaCreacion();
             rol.CrearRolPermiso(message.Rol.Permisos);
-            rol.Asignable = true;
+            rol.IsAssignable = true;
             if (!tenantContext.IsPlatformAdmin)
                 rol.TenantId = tenantContext.TenantId;
             var rolCreado = rolRepository.Create(rol);
-            correoHelper.EnviarCorreoRolCreado(usuario.Nombre, message.Rol.Nombre);
+            correoHelper.EnviarCorreoRolCreado(usuario.Name, message.Rol.Name);
             return mapper.Map<DtoRol>(rolCreado);
         }
 

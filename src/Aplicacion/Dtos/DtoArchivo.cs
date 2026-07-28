@@ -7,9 +7,9 @@ namespace Aplicacion.Dtos
     public class DtoArchivo 
     {
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public bool Activo { get; set; }
-        public string PathFisico { get; set; }
+        public string Name { get; set; }
+        public bool IsActive { get; set; }
+        public string PhysicalPath { get; set; }
 
     }
 }

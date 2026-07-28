@@ -68,22 +68,22 @@ namespace Aplicacion.Mappers
                 {
                     foreach (var rol in item.Roles)
                     {
-                        roles.Add(new DtoRol { Id = rol.Id, Nombre = rol.Rol.Nombre });
+                        roles.Add(new DtoRol { Id = rol.Id, Name = rol.Rol.Name });
                     }
                 }
 
                 lista.Add(new DtoUsuarioResponse
                 {
-                    CambiarContrasena = item.CambiarContrasena,
-                    Activo = item.Activo,
-                    IdentificadorAcceso = item.IdentificadorAcceso,
+                    MustChangePassword = item.MustChangePassword,
+                    IsActive = item.IsActive,
+                    AccessIdentifier = item.AccessIdentifier,
                     Id = item.Id,
-                    Nombre = item.Nombre,
+                    Name = item.Name,
                     DepartamentoId = item.DepartamentoId,
-                    DepartamentoDescripcion = item.Departamento != null ? item.Departamento.Nombre : "",
+                    DepartamentoDescripcion = item.Departamento != null ? item.Departamento.Name : "",
                     Roles = roles,
-                    FechaRegistro = item.FechaRegistro,
-                    TipoUsuario = item.TipoUsuario
+                    RegisteredAt = item.RegisteredAt,
+                    UserType = item.UserType
                 });
             }
 
@@ -114,22 +114,22 @@ namespace Aplicacion.Mappers
                 foreach (var item in usuario.Roles)
                 {
                     var rol = rolRepository.GetByIdConPermisos(item.RolId);
-                    roles.Add(new DtoRol { Id = item.RolId, Descripcion = rol.Nombre });
+                    roles.Add(new DtoRol { Id = item.RolId, Description = rol.Name });
                 }
             }
 
             return new DtoUsuarioResponse
             {
-                CambiarContrasena = usuario.CambiarContrasena,
-                Activo = usuario.Activo,
-                IdentificadorAcceso = usuario.IdentificadorAcceso,
+                MustChangePassword = usuario.MustChangePassword,
+                IsActive = usuario.IsActive,
+                AccessIdentifier = usuario.AccessIdentifier,
                 Id = usuario.Id,
-                Nombre = usuario.Nombre,
+                Name = usuario.Name,
                 DepartamentoId = usuario.DepartamentoId,
-                DepartamentoDescripcion = usuario.Departamento != null ? usuario.Departamento.Nombre : "",
+                DepartamentoDescripcion = usuario.Departamento != null ? usuario.Departamento.Name : "",
                 Roles = roles,
-                FechaRegistro = usuario.FechaRegistro,
-                TipoUsuario = usuario.TipoUsuario
+                RegisteredAt = usuario.RegisteredAt,
+                UserType = usuario.UserType
             };
         }
 
@@ -137,17 +137,17 @@ namespace Aplicacion.Mappers
         {
             var respuesta = new DtoUsuarioLogin
             {
-                CambiarContrasena = usuario.CambiarContrasena,
-                Activo = usuario.Activo,
-                IdentificadorAcceso = usuario.IdentificadorAcceso,
+                MustChangePassword = usuario.MustChangePassword,
+                IsActive = usuario.IsActive,
+                AccessIdentifier = usuario.AccessIdentifier,
                 Id = usuario.Id,
-                Nombre = usuario.Nombre,
+                Name = usuario.Name,
                 DepartamentoId = usuario.DepartamentoId,
-                DepartamentoNombre = usuario.Departamento != null ? usuario.Departamento.Nombre : null,
-                FechaRegistro = usuario.FechaRegistro,
-                TipoUsuario = usuario.TipoUsuario,
+                DepartamentoNombre = usuario.Departamento != null ? usuario.Departamento.Name : null,
+                RegisteredAt = usuario.RegisteredAt,
+                UserType = usuario.UserType,
                 TenantId = usuario.TenantId,
-                TenantCodigo = usuario.Tenant?.Codigo,
+                TenantCodigo = usuario.Tenant?.Code,
                 Roles = MapLoginRoles(usuario, permisoRepository),
                 UsuarioRegional = usuario.UsuarioRegional != null
                     ? usuario.UsuarioRegional.Select(r => r.Adapt<DtoUsuarioRegional>()).ToList()
@@ -163,9 +163,9 @@ namespace Aplicacion.Mappers
         private static IList<DtoRol> MapLoginRoles(Usuario usuario, IPermisoRepository permisoRepository)
         {
             var respuesta = new List<DtoRol>();
-            if (usuario.IdentificadorAcceso == Usuario.correoUsuarioAdmin)
+            if (usuario.AccessIdentifier == Usuario.correoUsuarioAdmin)
             {
-                respuesta.Add(new DtoRol { Nombre = "Admin", PermisosConMetadata = GetAllPermisos(permisoRepository) });
+                respuesta.Add(new DtoRol { Name = "Admin", PermisosConMetadata = GetAllPermisos(permisoRepository) });
                 return respuesta;
             }
 
@@ -179,7 +179,7 @@ namespace Aplicacion.Mappers
                 respuesta.Add(new DtoRol
                 {
                     Id = rol.RolId,
-                    Descripcion = rol.Rol.Nombre,
+                    Description = rol.Rol.Name,
                     PermisosConMetadata = GetPermisos(rol.Rol.Permisos)
                 });
             }

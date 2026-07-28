@@ -15,7 +15,7 @@ namespace Dominio.Especificaciones
 
         Func<Rol, bool> ISpecification<Rol>.Traer()
         {
-            return new Func<Rol, bool>(c => c.Asignable == true);
+            return new Func<Rol, bool>(c => c.IsAssignable == true);
         }
     }
 }

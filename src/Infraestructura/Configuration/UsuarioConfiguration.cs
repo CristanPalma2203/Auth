@@ -11,9 +11,9 @@ namespace Infraestructura.Configuration
     {
         public void Configure(EntityTypeBuilder<Usuario> builder)
         {
-            builder.Property(c => c.IdentificadorAcceso).HasMaxLength(100);
+            builder.Property(c => c.AccessIdentifier).HasMaxLength(100);
 
-            builder.HasIndex(c => c.IdentificadorAcceso).IsUnique();
+            builder.HasIndex(c => c.AccessIdentifier).IsUnique();
         }
     }
     

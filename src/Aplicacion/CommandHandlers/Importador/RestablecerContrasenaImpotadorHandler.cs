@@ -32,13 +32,13 @@ namespace Aplicacion.CommandHandlers.Importador
             var usuario = usuarioRepository.Filter(new BuscarUsuarioPorIdentificador(message.Usuario)).FirstOrDefault();
             if (usuario != null)
             {
-                var importador = importadorRepository.Filter(new BuscarImportadorPorCorreoIdentificador(message.Correo, message.Usuario)).FirstOrDefault();
+                var importador = importadorRepository.Filter(new BuscarImportadorPorCorreoIdentificador(message.Email, message.Usuario)).FirstOrDefault();
 
                 if (importador != null)
                 {
                     usuario.RestablecerContrasenaImportador(contrasena);
                     usuarioRepository.Update(usuario.Id, usuario);
-                    correoHelper.EnviarCorreoUsuarioCreado(importador.Identificador, contrasena, importador.Correo);
+                    correoHelper.EnviarCorreoUsuarioCreado(importador.Identificador, contrasena, importador.Email);
                     return new OkResponse();
                 }
             }

@@ -25,7 +25,7 @@ namespace Aplicacion.Validators.Importador
         private bool ImportadorTieneAcceso(int importadorId)
         {
             var importado = importadorRepository.GetById(importadorId);
-            return importado.AccesoAprobado;
+            return importado.AccessApproved;
         }
         public bool PuedeSolicitarAcceso(GestionarAcceso gestionAcceso)
         {

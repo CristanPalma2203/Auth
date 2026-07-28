@@ -12,9 +12,9 @@ namespace Aplicacion.Validators
     public class RegistrarUsuarioValidator : Validador<RegistrarUsuario>
     {
         public RegistrarUsuarioValidator(IUsuarioRepository usuarioRepository, IAutenticationHelper autenticationHelper) : base(autenticationHelper) {
-            RuleFor(x => x.Usuario.Nombre).NotEmpty();
-            RuleFor(x => x.Usuario.IdentificadorAcceso).NotEmpty().Must(c => usuarioRepository.Filter(new BuscarUsuarioInternoPorIdentificador(c)).Count() == 0)
-                .WithMessage("Ya existe un usuario con el mismo Correo");
+            RuleFor(x => x.Usuario.Name).NotEmpty();
+            RuleFor(x => x.Usuario.AccessIdentifier).NotEmpty().Must(c => usuarioRepository.Filter(new BuscarUsuarioInternoPorIdentificador(c)).Count() == 0)
+                .WithMessage("Ya existe un usuario con el mismo Email");
             RuleFor(x => x.Usuario.Roles).NotEmpty();
             RuleFor(x => x.Usuario.DepartamentoId).NotEmpty();
         }

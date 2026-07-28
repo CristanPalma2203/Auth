@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Aplicacion.CommandHandlers.Usuario
 {
-    public class CodigoTemporalHandler : AbstractHandler<CodigoTemporal>
+    public class CodigoTemporalHandler : AbstractHandler<TemporaryCode>
     {
         private readonly IUsuarioRepository usuarioRepository;
         private readonly ICorreoHelper correoHelper;
@@ -25,33 +25,33 @@ namespace Aplicacion.CommandHandlers.Usuario
             this.importadorRepository = importadorRepository;
         }
 
-        public override IResponse Handle(CodigoTemporal message)
+        public override IResponse Handle(TemporaryCode message)
         {
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var random = new Random();
             var result = new string(Enumerable.Repeat(chars, 4).Select(s => s[random.Next(s.Length)]).ToArray());
 
             var resp = result;
-            var solicitud = usuarioRepository.GetAll().FirstOrDefault(x => x.IdentificadorAcceso == message.IdentificadorAcceso);
+            var solicitud = usuarioRepository.GetAll().FirstOrDefault(x => x.AccessIdentifier == message.AccessIdentifier);
             if (solicitud != null)
             {
-                solicitud.CodigoTemporal = resp;
+                solicitud.TemporaryCode = resp;
                 usuarioRepository.Update(solicitud.Id, solicitud);
-                var motivo = "Codigo de Verificaci?n: ".ToString();
+                var motivo = "Code de Verificaci?n: ".ToString();
                 var lista = new List<string>();
-                if (solicitud.TipoUsuario == "usuario-externo")
+                if (solicitud.UserType == "usuario-externo")
                 {
-                    var importador = importadorRepository.Filter(new BuscarImportadorPorIdentificador(message.IdentificadorAcceso)).FirstOrDefault();
+                    var importador = importadorRepository.Filter(new BuscarImportadorPorIdentificador(message.AccessIdentifier)).FirstOrDefault();
                     if (solicitud != null)
                     {
-                        lista.Add(importador.Correo);
+                        lista.Add(importador.Email);
                     }
                 }
                 else
                 {
                     if (solicitud != null)
                     {
-                        lista.Add(solicitud.IdentificadorAcceso);
+                        lista.Add(solicitud.AccessIdentifier);
                     }
                 }
 

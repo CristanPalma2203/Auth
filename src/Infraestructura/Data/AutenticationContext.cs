@@ -52,16 +52,16 @@ namespace Infraestructura.Data
 
                     if (changedEntity.State == EntityState.Added)
                     {
-                        entity.FechaCreacion = DateTime.Now;
-                        entity.UsuarioCreo = tokenService.GetIdUsuario();
+                        entity.CreatedAt = DateTime.Now;
+                        entity.CreatedByUserId = tokenService.GetIdUsuario();
                     }
                     if (changedEntity.State == EntityState.Modified)
                     {
 
-                        changedEntity.Context.Entry(entity).Property(x => x.FechaCreacion).IsModified = false;
-                        changedEntity.Context.Entry(entity).Property(x => x.UsuarioCreo).IsModified = false;
-                        entity.FechaModificacion = DateTime.Now;
-                        entity.UsuarioModifica = tokenService.GetIdUsuario();
+                        changedEntity.Context.Entry(entity).Property(x => x.CreatedAt).IsModified = false;
+                        changedEntity.Context.Entry(entity).Property(x => x.CreatedByUserId).IsModified = false;
+                        entity.UpdatedAt = DateTime.Now;
+                        entity.UpdatedByUserId = tokenService.GetIdUsuario();
                     }
                 }
             }

@@ -8,7 +8,7 @@ namespace Aplicacion.Commands.Usuario
 {
     public class ConsutalUsuarioByCodigo : IAppMessage
     {
-        public string CodigoTemporal { get; set; }
-        public string Correo { get; set; }
+        public string TemporaryCode { get; set; }
+        public string Email { get; set; }
     }
 }

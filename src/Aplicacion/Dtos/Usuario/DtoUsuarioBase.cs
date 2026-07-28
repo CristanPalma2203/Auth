@@ -9,16 +9,16 @@ namespace Aplicacion.Dtos.Usuario
         public string DepartamentoNombre { get; set; }
         public IList<DtoRol> Roles { get; set; }
         public int Id { get; set; }
-        public string Nombre { get; set; }
+        public string Name { get; set; }
 
-        public string IdentificadorAcceso { get; set; }
-        public bool Activo { get; set; }
-        public bool CambiarContrasena { get; set; }
+        public string AccessIdentifier { get; set; }
+        public bool IsActive { get; set; }
+        public bool MustChangePassword { get; set; }
 
-        public string CodigoTemporal { get; set; }
-        public string TipoUsuario { get; set; }
-        public DateTime? FechaRegistro { get; set; }
-        public DateTime? FechaActualizacion { get; set; }
+        public string TemporaryCode { get; set; }
+        public string UserType { get; set; }
+        public DateTime? RegisteredAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         public ICollection<DtoUsuarioRegional> UsuarioRegional { get; set; }
         public ICollection<DtoUsuarioArea> UsuarioArea { get; set; }
         public int? TenantId { get; set; }

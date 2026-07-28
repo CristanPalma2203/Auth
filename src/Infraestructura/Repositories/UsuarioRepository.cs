@@ -32,7 +32,7 @@ namespace Infraestructura.Repositories
             var q = dbContext.Set<Usuario>().OrderBy(on => on.Id)
                 .Include("Roles.Rol")
                 .Include(c => c.Departamento)
-                .Where(c => c.TipoUsuario == Usuario.usuarioInterno);
+                .Where(c => c.UserType == Usuario.usuarioInterno);
             return PagedList<Usuario>.ToPagedList(q,
                         ownerParameters.PageNumber,
                         ownerParameters.PageSize);

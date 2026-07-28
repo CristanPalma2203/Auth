@@ -9,8 +9,8 @@ namespace Aplicacion.Commands.Usuario
    public class CambioContrasena: IAppMessage
     {
  
-        public string Contrasena { get; set; }
-        public string IdentificadorAcceso { get; set; }
+        public string Password { get; set; }
+        public string AccessIdentifier { get; set; }
         public int Id { get; set; }
 
     }

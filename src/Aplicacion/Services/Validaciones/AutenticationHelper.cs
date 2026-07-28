@@ -36,7 +36,7 @@ namespace Aplicacion.Services.Validaciones
             var encuentra = false;
             foreach (var item in ListaPermisos)
             {
-                var resultado = permisosToken.Where(c => c.Codigo == item).FirstOrDefault();
+                var resultado = permisosToken.Where(c => c.Code == item).FirstOrDefault();
                 if (resultado != null) {
                     encuentra = true;
                 }

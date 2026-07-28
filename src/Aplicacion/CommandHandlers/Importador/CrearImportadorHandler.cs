@@ -22,7 +22,7 @@ namespace Aplicacion.CommandHandlers.Importador
         public override IResponse Handle(CrearImportador message)
         {
             var importador = mapper.Map<Dominio.Models.UsuarioExterno>(message.Importador);
-            importador.CorreoVerificado = false;
+            importador.EmailVerified = false;
             var importadorCreado = importadorRepository.Create(importador);
             return mapper.Map<DtoImportador>(importadorCreado);
         }

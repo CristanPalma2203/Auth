@@ -9,50 +9,50 @@ namespace Infraestructura.Seeders
         {
             var permiso = new Permiso
             {
-                PermisoPadre = Permiso.idPermisoAdministracion,
+                ParentPermissionId = Permiso.idPermisoAdministracion,
                 Id = 13,
-                Codigo = "usuarios-externos",
-                EsMenu = true,
-                Nombre = "Usuarios externos",
-                Orden = 1,
+                Code = "usuarios-externos",
+                IsMenu = true,
+                Name = "Usuarios externos",
+                SortOrder = 1,
                 Url = "/usuarios-externos",
-                Icono = "usuario-externo",
-                Asignable = true,
-                TieneHijos = true
+                Icon = "usuario-externo",
+                IsAssignable = true,
+                HasChildren = true
             };
             var permisoInvitarUsuario = new Permiso
             {
-                PermisoPadre = permiso.Id,
+                ParentPermissionId = permiso.Id,
                 Id = 14,
-                Codigo = "gestionar-usuario-externo",
-                EsMenu = false,
-                Nombre = "Gestionar usuario externo",
-                Orden = 1,
+                Code = "gestionar-usuario-externo",
+                IsMenu = false,
+                Name = "Gestionar usuario externo",
+                SortOrder = 1,
                 Url = "/usuarios-externos/gestionar/:id",
-                Asignable = true,
-                TieneHijos = false
+                IsAssignable = true,
+                HasChildren = false
             };
             var listarPermiso = new Permiso
             {
-                PermisoPadre = permiso.Id,
+                ParentPermissionId = permiso.Id,
                 Id = 15,
-                Codigo = "listar-usuarios-externos",
-                EsMenu = true,
-                Nombre = "Usuarios externos",
+                Code = "listar-usuarios-externos",
+                IsMenu = true,
+                Name = "Usuarios externos",
                 Url = "/usuarios-externos",
-                Asignable = true,
-                TieneHijos = false
+                IsAssignable = true,
+                HasChildren = false
             };
             var gestionarAccesos = new Permiso
             {
-                PermisoPadre = permiso.Id,
+                ParentPermissionId = permiso.Id,
                 Id = 16,
-                Codigo = "gestionar-accesos-usuario-externo",
-                EsMenu = false,
-                Nombre = "Gestión de accesos",
+                Code = "gestionar-accesos-usuario-externo",
+                IsMenu = false,
+                Name = "Gestión de accesos",
                 Url = "/usuarios-externos/accesos",
-                Asignable = true,
-                TieneHijos = false
+                IsAssignable = true,
+                HasChildren = false
             };
 
             builder.Entity<Permiso>().HasData(permiso);

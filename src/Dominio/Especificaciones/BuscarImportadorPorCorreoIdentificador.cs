@@ -18,7 +18,7 @@ namespace Dominio.Especificaciones
 
         public Func<UsuarioExterno, bool> Traer()
         {
-        return new Func<UsuarioExterno, bool>(c => c.Correo.ToLower().Trim() == correo.ToLower().Trim() && c.Identificador.Replace("-", "").Trim() == identificador.Replace("-", "").Trim());
+        return new Func<UsuarioExterno, bool>(c => c.Email.ToLower().Trim() == correo.ToLower().Trim() && c.Identificador.Replace("-", "").Trim() == identificador.Replace("-", "").Trim());
 
         }
     }

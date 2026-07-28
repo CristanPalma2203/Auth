@@ -32,16 +32,16 @@ namespace Aplicacion.CommandHandlers.Importador
 
         public override IResponse Handle(RegistrarUsuarioExterno message)
         {
-            var correo = message.Correo?.Trim();
-            var nombreCompleto = string.IsNullOrWhiteSpace(message.Apellidos)
-                ? message.Nombre?.Trim()
-                : $"{message.Nombre?.Trim()} {message.Apellidos?.Trim()}".Trim();
+            var correo = message.Email?.Trim();
+            var nombreCompleto = string.IsNullOrWhiteSpace(message.LastName)
+                ? message.Name?.Trim()
+                : $"{message.Name?.Trim()} {message.LastName?.Trim()}".Trim();
 
             var usuario = new Dominio.Models.Usuario
             {
-                Contrasena = message.Contrasena,
-                IdentificadorAcceso = correo,
-                Nombre = nombreCompleto,
+                Password = message.Password,
+                AccessIdentifier = correo,
+                Name = nombreCompleto,
                 DepartamentoId = null
             };
             usuario.InicializarExterno(new List<int>());
@@ -49,12 +49,12 @@ namespace Aplicacion.CommandHandlers.Importador
 
             var perfil = new Dominio.Models.UsuarioExterno
             {
-                Nombre = message.Nombre?.Trim(),
-                Apellidos = message.Apellidos?.Trim(),
-                Correo = correo,
+                Name = message.Name?.Trim(),
+                LastName = message.LastName?.Trim(),
+                Email = correo,
                 Identificador = correo,
-                Telefono = message.Telefono?.Trim(),
-                Celular = message.Telefono?.Trim()
+                Phone = message.Phone?.Trim(),
+                Mobile = message.Phone?.Trim()
             };
             perfil.RegistrarCuenta();
             usuarioExternoRepository.Create(perfil);
@@ -67,11 +67,11 @@ namespace Aplicacion.CommandHandlers.Importador
                 var baseUrl = configuration["AppSettings:VerificarCorreoStorefront"]
                               ?? configuration["AppSettings:VerificarCorreo"]
                               ?? "http://localhost:3001/verificar-correo";
-                correoHelper.EnviarCorreoParaVerificacion(perfil.Correo, perfil.TokenVerificacion, baseUrl);
+                correoHelper.EnviarCorreoParaVerificacion(perfil.Email, perfil.VerificationToken, baseUrl);
             }
             else
             {
-                correoHelper.EnviarCorreoParaVerificacion(perfil.Correo, perfil.TokenVerificacion);
+                correoHelper.EnviarCorreoParaVerificacion(perfil.Email, perfil.VerificationToken);
             }
 
             return new OkResponse();

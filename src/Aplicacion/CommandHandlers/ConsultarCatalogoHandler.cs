@@ -24,8 +24,8 @@ namespace Aplicacion.CommandHandlers
         {
             IList<Catalogo> listaCatalogo; 
 
-            if (message.IdPadre != 0) listaCatalogo = catalogoRepository.Filter(new ConsultarCatalogoPorTipoYPadre(message.Tipo, message.IdPadre)).ToList();
-            else listaCatalogo = catalogoRepository.Filter(new BuscarCatalogoPorTipo(message.Tipo)).ToList();
+            if (message.ParentId != 0) listaCatalogo = catalogoRepository.Filter(new ConsultarCatalogoPorTipoYPadre(message.Type, message.ParentId)).ToList();
+            else listaCatalogo = catalogoRepository.Filter(new BuscarCatalogoPorTipo(message.Type)).ToList();
             var listaDto = new List<DtoCatalogo>();
             foreach (var item in listaCatalogo) listaDto.Add(mapper.Map<DtoCatalogo>(item));
             return new DtoListaCatalogo { Lista = listaDto };

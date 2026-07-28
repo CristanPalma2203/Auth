@@ -13,9 +13,9 @@ namespace Aplicacion.Validators
     {
         public CrearRolValidator(IRolRepository rolRepository,IAutenticationHelper autenticationHelper):base(autenticationHelper)
         {
-            RuleFor(x => x.Rol.Nombre).NotEmpty().Must(c => rolRepository.Filter(new Func<Dominio.Models.Rol, bool>(p => p.Nombre == c)).Count() == 0)
+            RuleFor(x => x.Rol.Name).NotEmpty().Must(c => rolRepository.Filter(new Func<Dominio.Models.Rol, bool>(p => p.Name == c)).Count() == 0)
                 .WithMessage("Ya existe un rol con el mismo nombre"); 
-            RuleFor(x => x.Rol.Descripcion).NotEmpty();
+            RuleFor(x => x.Rol.Description).NotEmpty();
             RuleFor(x => x.Rol.Permisos).NotEmpty();
         }
         public override IList<string> Permisos => new List<string> { "rol-crear" };

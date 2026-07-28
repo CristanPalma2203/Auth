@@ -26,7 +26,7 @@ namespace Aplicacion.CommandHandlers.Importador
         {
             var importador = importadorRepository.Set().AsNoTracking().
                 Include(c => c.Departamento).Include(c => c.Municipio).Include(c => c.Nacionalidad)
-                .FirstOrDefault(c => c.Identificador == message.IdImportador && c.AccesoAprobado== true);
+                .FirstOrDefault(c => c.Identificador == message.IdImportador && c.AccessApproved== true);
             if (importador !=null) return mapper.Map<DtoImportador>(importador);
             return new DtoImportador();
         }

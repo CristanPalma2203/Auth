@@ -35,15 +35,15 @@ namespace Aplicacion.CommandHandlers.Importador
 
             var usuario = new Dominio.Models.Usuario
             {
-                Contrasena = contrasena,
-                IdentificadorAcceso = importador.Identificador,
-                Nombre = importador.Nombre,
+                Password = contrasena,
+                AccessIdentifier = importador.Identificador,
+                Name = importador.Name,
                 DepartamentoId = 14
             };
 
             usuario.Inicializar(Dominio.Models.Usuario.tipoUsuarioExterno, message.Accesos);
             usuarioRepository.Create(usuario);
-            correoHelper.EnviarCorreoUsuarioCreado(importador.Identificador, contrasena, importador.Correo);
+            correoHelper.EnviarCorreoUsuarioCreado(importador.Identificador, contrasena, importador.Email);
             importador.FinalizarEnvitacion(tokenService.GetIdUsuario(), message.Accesos);
             importadorRepository.Update(importador.Id, importador);
 

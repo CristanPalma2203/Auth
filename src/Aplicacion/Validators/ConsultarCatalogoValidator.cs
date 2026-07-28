@@ -11,7 +11,7 @@ namespace Aplicacion.Validators
     {
         public ConsultarCatalogoValidator(IAutenticationHelper autenticationHelper): base(autenticationHelper)
         {
-            RuleFor(x => x.Tipo).NotEmpty();
+            RuleFor(x => x.Type).NotEmpty();
         }
         public override IList<string> Permisos => new List<string>();
     }

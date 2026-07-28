@@ -26,7 +26,7 @@ namespace Aplicacion.CommandHandlers.Importador
             }
             else
             {
-                var consulta = !string.IsNullOrWhiteSpace(message.Consulta) ? message.Consulta : "FechaAprobacionAcceso = null AND CorreoVerificado=true"; //"FechaAprobacionAcceso = null AND FechaDenegacionAcceso = null AND CorreoVerificado=true";
+                var consulta = !string.IsNullOrWhiteSpace(message.Consulta) ? message.Consulta : "AccessApprovedAt = null AND EmailVerified=true"; //"AccessApprovedAt = null AND FechaDenegacionAcceso = null AND EmailVerified=true";
                 respuesta = importadorRepository.Filter(message, consulta);
             }
            

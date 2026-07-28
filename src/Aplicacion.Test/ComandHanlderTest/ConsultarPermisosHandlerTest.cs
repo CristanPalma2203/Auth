@@ -38,11 +38,11 @@ namespace Aplicacion.Test.ComandHanlderTest
 
         public IQueryable<Permiso> permiso() {
             var lista = new List<Permiso>();
-            var permisoModuloAutenticacion = new Permiso { Id = getId(), Codigo = "administracion", EsMenu = true, Nombre = "ADMINISTRACIÓN", Orden = 1, Url = "" };
-            var permisoUsuario = new Permiso { PermisoPadre = permisoModuloAutenticacion.Id, Id = getId(), Codigo = "usuarios", EsMenu = true, Nombre = "Lista Usuarios", Orden = 1, Url = "/usuario", Icono = "icon-people" };
-            var permisoUsuarioCrear = new Permiso { PermisoPadre = permisoModuloAutenticacion.Id, Id = getId(), Codigo = "usuario-crear", EsMenu = false, Nombre = "Crear usuario", Orden = 1, Url = "/usuario/crear" };
-            var permisoRol = new Permiso { PermisoPadre = permisoModuloAutenticacion.Id, Id = getId(), Codigo = "roles", EsMenu = true, Nombre = "Lista roles", Orden = permisoUsuario.Orden + 1, Url = "/rol", Icono = "icon-key" };
-            var permisoRolCrear = new Permiso { PermisoPadre = permisoModuloAutenticacion.Id, Id = getId(), Codigo = "rol-crear", EsMenu = false, Nombre = "Crear rol", Orden = 1, Url = "/rol/crear" };
+            var permisoModuloAutenticacion = new Permiso { Id = getId(), Code = "administracion", IsMenu = true, Name = "ADMINISTRACIÓN", SortOrder = 1, Url = "" };
+            var permisoUsuario = new Permiso { ParentPermissionId = permisoModuloAutenticacion.Id, Id = getId(), Code = "usuarios", IsMenu = true, Name = "Lista Usuarios", SortOrder = 1, Url = "/usuario", Icon = "icon-people" };
+            var permisoUsuarioCrear = new Permiso { ParentPermissionId = permisoModuloAutenticacion.Id, Id = getId(), Code = "usuario-crear", IsMenu = false, Name = "Crear usuario", SortOrder = 1, Url = "/usuario/crear" };
+            var permisoRol = new Permiso { ParentPermissionId = permisoModuloAutenticacion.Id, Id = getId(), Code = "roles", IsMenu = true, Name = "Lista roles", SortOrder = permisoUsuario.SortOrder + 1, Url = "/rol", Icon = "icon-key" };
+            var permisoRolCrear = new Permiso { ParentPermissionId = permisoModuloAutenticacion.Id, Id = getId(), Code = "rol-crear", IsMenu = false, Name = "Crear rol", SortOrder = 1, Url = "/rol/crear" };
             lista.Add(permisoModuloAutenticacion);
             lista.Add(permisoUsuario);
             lista.Add(permisoUsuarioCrear);

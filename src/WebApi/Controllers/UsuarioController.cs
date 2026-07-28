@@ -75,7 +75,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("cambiar-contrasena")]
-        public IResponse CambiarContrasena([FromBody] CambioContrasena crenciales)
+        public IResponse MustChangePassword([FromBody] CambioContrasena crenciales)
         {
             var respuesta = commandBus.execute(crenciales);
             return respuesta;
@@ -97,7 +97,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("codigo-temporal")]
-        public IResponse CodigoTemportal([FromBody] CodigoTemporal codigoTemporal)
+        public IResponse CodigoTemportal([FromBody] TemporaryCode codigoTemporal)
         {
             var respuesta = commandBus.execute(codigoTemporal);
             return respuesta;
@@ -105,7 +105,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("codigo")]
-        public IResponse Codigo([FromBody] ConsutalUsuarioByCodigo codigoTemporal)
+        public IResponse Code([FromBody] ConsutalUsuarioByCodigo codigoTemporal)
         {
             var respuesta = commandBus.execute(codigoTemporal);
             return respuesta;

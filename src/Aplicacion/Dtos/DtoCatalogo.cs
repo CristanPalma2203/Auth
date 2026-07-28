@@ -7,7 +7,7 @@ namespace Aplicacion.Dtos
    public class DtoCatalogo
     {
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public int IdPadre { get; set; }
+        public string Name { get; set; }
+        public int ParentId { get; set; }
     }
 }

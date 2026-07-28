@@ -24,14 +24,14 @@ namespace Aplicacion.Validators.Importador
         {
 
             RuleFor(x => x).NotEmpty()
-                .Must(c => UsuarioNoExiste(c.Importador.Identificador, c.Importador.Correo, c))
-                .WithMessage("Su combinacion de Nit y Correo no existe");
+                .Must(c => UsuarioNoExiste(c.Importador.Identificador, c.Importador.Email, c))
+                .WithMessage("Su combinacion de Nit y Email no existe");
             RuleFor(x => x).NotEmpty()
-                .Must(c => UsuarioYaRegistrado(c.Importador.Identificador, c.Importador.Correo, c))
+                .Must(c => UsuarioYaRegistrado(c.Importador.Identificador, c.Importador.Email, c))
                 .WithMessage("El Importador ya esta ingresado en el sistema");
             RuleFor(x => x).NotEmpty()
               .Must(c => Tieneusuario(c.Importador.Identificador, c)).WithMessage(("Ya existe un usuario con los roles que ha solicitado"));
-            RuleFor(x => x.Importador.Correo).NotEmpty().EmailAddress();
+            RuleFor(x => x.Importador.Email).NotEmpty().EmailAddress();
             RuleFor(x => x.Importador.Identificador).NotEmpty().WithMessage(("Debe ingresar un numero de identificación"));
 
 
@@ -58,7 +58,7 @@ namespace Aplicacion.Validators.Importador
                 else { return false; }
             }
         }
-        private bool MismoCorreo(string identificador, string Correo, SolicitarAcceso importadorAcceso)
+        private bool MismoCorreo(string identificador, string Email, SolicitarAcceso importadorAcceso)
         {
             
             var usuario = usuarioRepository.Filter(new BuscarUsuarioPorIdentificador(identificador));
@@ -66,7 +66,7 @@ namespace Aplicacion.Validators.Importador
             else
             {
                 var impotador = importadorRepository.Filter(new Func<Dominio.Models.UsuarioExterno, bool>(c => c.Identificador == identificador)).FirstOrDefault();
-                if (impotador != null && Correo == impotador.Correo)
+                if (impotador != null && Email == impotador.Email)
                 { return true; }
                 else
                 { return false; }
@@ -77,7 +77,7 @@ namespace Aplicacion.Validators.Importador
 
         }
 
-        private bool UsuarioYaRegistrado(string identificador, string Correo, SolicitarAcceso importadorAcceso)
+        private bool UsuarioYaRegistrado(string identificador, string Email, SolicitarAcceso importadorAcceso)
         {
             
             var impotador = importadorRepository.Filter(new Func<Dominio.Models.UsuarioExterno, bool>(c => c.Identificador == identificador)).FirstOrDefault();
@@ -85,7 +85,7 @@ namespace Aplicacion.Validators.Importador
             {
                 return true;
             }
-            else if (!impotador.AccesoAprobado)
+            else if (!impotador.AccessApproved)
             {
 
                 return true;
@@ -97,10 +97,10 @@ namespace Aplicacion.Validators.Importador
             
 
         }
-        private bool UsuarioNoExiste(string identificador, string Correo, SolicitarAcceso importadorAcceso)
+        private bool UsuarioNoExiste(string identificador, string Email, SolicitarAcceso importadorAcceso)
         {
 
-            var impotador = importadorRepository.Filter(new Func<Dominio.Models.UsuarioExterno, bool>(c => c.Identificador == identificador && c.Correo == Correo)).FirstOrDefault();
+            var impotador = importadorRepository.Filter(new Func<Dominio.Models.UsuarioExterno, bool>(c => c.Identificador == identificador && c.Email == Email)).FirstOrDefault();
 
             if (importadorAcceso.Importador.UserExist)
             {

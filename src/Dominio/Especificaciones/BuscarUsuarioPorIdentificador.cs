@@ -16,10 +16,10 @@ namespace Dominio.Especificaciones
         {
             if (RegexUtilities.IsValidEmail(identificador))
             {
-                return new Func<Usuario, bool>(c => c.IdentificadorAcceso.ToLower().Trim() == identificador.ToLower().Trim());
+                return new Func<Usuario, bool>(c => c.AccessIdentifier.ToLower().Trim() == identificador.ToLower().Trim());
             }
             else {
-                return new Func<Usuario, bool>(c => c.IdentificadorAcceso.Replace("-","").Trim() == identificador.Replace("-","").Trim());
+                return new Func<Usuario, bool>(c => c.AccessIdentifier.Replace("-","").Trim() == identificador.Replace("-","").Trim());
             }
                 
         }

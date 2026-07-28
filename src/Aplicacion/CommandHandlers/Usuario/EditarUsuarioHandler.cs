@@ -55,11 +55,11 @@ namespace Aplicacion.CommandHandlers.Usuario
             }
 
             dbUser.AdministradorCambiaContrasena(
-                message.Usuario.Nombre,
+                message.Usuario.Name,
                 message.Usuario.DepartamentoId,
-                message.Usuario.Contrasena,
+                message.Usuario.Password,
                 message.Usuario.Roles.Select(c => c.Id).ToList(),
-                message.Usuario.Activo);
+                message.Usuario.IsActive);
             LimpiarUsuarioRegional(message.Usuario.Id);
             LimpiarUsuarioArea(message.Usuario.Id);
             dbUser.UsuarioRegional = usuario.UsuarioRegional;

@@ -9,7 +9,7 @@ namespace Dominio.Especificaciones
     {
         public Func<UsuarioExterno, bool> Traer()
         {
-            return new Func<UsuarioExterno, bool>(c => c.CorreoVerificado==true && c.FechaAprobacionAcceso==null );
+            return new Func<UsuarioExterno, bool>(c => c.EmailVerified==true && c.AccessApprovedAt==null );
         }
     }
 }

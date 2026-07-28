@@ -18,7 +18,7 @@ namespace Aplicacion.CommandHandlers.Usuario
         public override IResponse Handle(EditarContrasena message)
         {
             var dbUser = usuarioRepository.GetById(message.Id);
-            dbUser.PropietarioCambiaContrasena(message.Contrasena);
+            dbUser.PropietarioCambiaContrasena(message.Password);
             usuarioRepository.Update(dbUser.Id, dbUser);
             return new OkResponse();
         }

@@ -26,7 +26,7 @@ namespace Aplicacion.CommandHandlers.Importador
         {
             var importador = importadorRepository.GetById(message.ImportadorId);
             importador.DenegarAcceso(tokenService.GetIdUsuario(), message.Motivo);
-            correoHelper.EnviarCorreoDenegacionAcceso(importador.Correo, message.Motivo);
+            correoHelper.EnviarCorreoDenegacionAcceso(importador.Email, message.Motivo);
             importadorRepository.Update(importador.Id, importador);
             return new OkResponse();
         }

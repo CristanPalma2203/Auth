@@ -9,6 +9,6 @@ namespace Aplicacion.Commands.Importador
     public class RestablecerContrasenaImpotador: IAppMessage
     {
         public string Usuario { get; set; }
-        public string Correo { get; set; }
+        public string Email { get; set; }
     }
 }

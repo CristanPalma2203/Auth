@@ -17,7 +17,7 @@ namespace Dominio.Especificaciones
 
         public Func<UsuarioExterno, bool> Traer()
         {
-            return new Func<UsuarioExterno, bool>(c => c.TokenVerificacion == token);
+            return new Func<UsuarioExterno, bool>(c => c.VerificationToken == token);
 
         }
     }

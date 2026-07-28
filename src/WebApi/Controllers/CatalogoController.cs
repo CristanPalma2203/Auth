@@ -26,14 +26,14 @@ namespace WebApi.Controllers
         [HttpGet("{tipo}", Name = "ConsultaCatalogo")]
         public IResponse Get(string tipo)
         {
-            return CommandBus.execute(new ConsultarCatalogo { Tipo = tipo, IdPadre = 0 });
+            return CommandBus.execute(new ConsultarCatalogo { Type = tipo, ParentId = 0 });
         }
 
         // GET: api/Catalogo/5
         [HttpGet("{tipo}/id-padre/{idpadre}", Name = "ConsultaCatalogoPorPadre")]
         public IResponse Get(string tipo, int idpadre)
         {
-            return CommandBus.execute(new ConsultarCatalogo { Tipo = tipo, IdPadre = idpadre });
+            return CommandBus.execute(new ConsultarCatalogo { Type = tipo, ParentId = idpadre });
         }
     }
 }

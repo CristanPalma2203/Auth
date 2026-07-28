@@ -9,7 +9,7 @@ namespace Aplicacion.Commands.Usuario
     public class EditarContrasena : IAppMessage
     {
 
-        public string Contrasena { get; set; }
+        public string Password { get; set; }
         public int Id { get; set; }
 
     }

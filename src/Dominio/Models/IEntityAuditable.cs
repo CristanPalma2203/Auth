@@ -4,9 +4,9 @@ namespace Dominio.Models
 {
     public interface IEntityAuditable: IEntity
     { 
-         DateTime FechaCreacion { get; set; }
-        int UsuarioCreo { get; set; }
-        DateTime? FechaModificacion { get; set; }
-        int? UsuarioModifica { get; set; }
+         DateTime CreatedAt { get; set; }
+        int CreatedByUserId { get; set; }
+        DateTime? UpdatedAt { get; set; }
+        int? UpdatedByUserId { get; set; }
     }
 }

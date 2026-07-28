@@ -21,7 +21,7 @@ namespace Dominio.Especificaciones
         {
             if (this.identificador != null && this.nombre != null)
             {
-                return new Func<UsuarioExterno, bool>(c => c.Nombre.ToLower().Contains(nombre.ToLower()) && c.Identificador.Replace("-", "").Trim().Contains(identificador.Replace("-", "").Trim()));
+                return new Func<UsuarioExterno, bool>(c => c.Name.ToLower().Contains(nombre.ToLower()) && c.Identificador.Replace("-", "").Trim().Contains(identificador.Replace("-", "").Trim()));
             }
             else if (this.identificador != null)
             {
@@ -29,7 +29,7 @@ namespace Dominio.Especificaciones
             }
             else
             {
-                return new Func<UsuarioExterno, bool>(c => c.Nombre.ToLower().Contains(nombre.ToLower()));
+                return new Func<UsuarioExterno, bool>(c => c.Name.ToLower().Contains(nombre.ToLower()));
             }
 
         }

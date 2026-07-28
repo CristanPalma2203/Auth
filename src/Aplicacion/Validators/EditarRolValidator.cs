@@ -14,9 +14,9 @@ namespace Aplicacion.Validators
         public EditarRolValidator(IRolRepository rolRepository, IAutenticationHelper autenticationHelper):base(autenticationHelper)
         {
 
-            RuleFor(x => x.Rol).NotEmpty().Must(c => rolRepository.Filter(new Func<Dominio.Models.Rol, bool>(p => p.Nombre == c.Nombre && p.Id!=c.Id)).Count() == 0)
+            RuleFor(x => x.Rol).NotEmpty().Must(c => rolRepository.Filter(new Func<Dominio.Models.Rol, bool>(p => p.Name == c.Name && p.Id!=c.Id)).Count() == 0)
                .WithMessage("Ya existe un rol con el mismo nombre"); ;
-            RuleFor(x => x.Rol.Descripcion).NotEmpty();
+            RuleFor(x => x.Rol.Description).NotEmpty();
             RuleFor(x => x.Rol.Permisos).NotEmpty();
         }
         public override IList<string> Permisos => new List<string> { "rol-editar" };
