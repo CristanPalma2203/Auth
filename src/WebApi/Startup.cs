@@ -77,7 +77,7 @@ namespace WebApi
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/alpha/swagger.json", "Documentacion Sistema de Pagos");
+                c.SwaggerEndpoint("/swagger/alpha/swagger.json", "API de autenticación");
             });
             app.UseCors("ApiCorsPolicy");
             app.UseEndpoints(endpoints =>

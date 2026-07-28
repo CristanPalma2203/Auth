@@ -12,6 +12,7 @@ using Dominio.Repositories;
 using Dominio.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using WebApi.Contracts;
 
 namespace WebApi.Controllers
 {
@@ -243,8 +244,4 @@ namespace WebApi.Controllers
         }
     }
 
-    public class GoogleIdTokenRequest
-    {
-        public string IdToken { get; set; }
-    }
 }
