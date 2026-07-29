@@ -16,7 +16,7 @@ namespace Infrastructure.Configuration
             builder.Entity<UserRole>().ToTable("user_role");
             builder.Entity<UserRegional>().ToTable("user_regional");
             builder.Entity<UserArea>().ToTable("user_area");
-            builder.Entity<Tenant>().ToTable("Tenants");
+            builder.Entity<Tenant>().ToTable("tenant");
         }
     }
 }
