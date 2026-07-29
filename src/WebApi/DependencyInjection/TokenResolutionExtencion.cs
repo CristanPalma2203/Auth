@@ -1,6 +1,6 @@
-﻿using Aplicacion.Services.Validaciones;
-using Dominio.Service;
-using Infraestructura.Service;
+﻿using Application.Services.Validaciones;
+using Domain.Service;
+using Infrastructure.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

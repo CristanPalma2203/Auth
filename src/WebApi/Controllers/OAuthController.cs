@@ -4,12 +4,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Aplicacion.Dtos.Usuario;
-using Aplicacion.Mappers;
-using Dominio.Especificaciones;
-using Dominio.Models;
-using Dominio.Repositories;
-using Dominio.Service;
+using Application.Dtos.AppUser;
+using Application.Mappers;
+using Domain.Specifications;
+using Domain.Models;
+using Domain.Repositories;
+using Domain.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using WebApi.Contracts;
@@ -22,27 +22,27 @@ namespace WebApi.Controllers
     {
         private readonly IConfiguration configuration;
         private readonly IHttpClientFactory httpClientFactory;
-        private readonly IUsuarioRepository usuarioRepository;
-        private readonly IUsuarioExternoRepository usuarioExternoRepository;
+        private readonly IAppUserRepository appUserRepository;
+        private readonly IExternalUserRepository usuarioExternoRepository;
         private readonly ITokenService tokenService;
-        private readonly IPermisoRepository permisoRepository;
+        private readonly IPermissionRepository permissionRepository;
         private readonly IUnitOfWork unitOfWork;
 
         public OAuthController(
             IConfiguration configuration,
             IHttpClientFactory httpClientFactory,
-            IUsuarioRepository usuarioRepository,
-            IUsuarioExternoRepository usuarioExternoRepository,
+            IAppUserRepository appUserRepository,
+            IExternalUserRepository usuarioExternoRepository,
             ITokenService tokenService,
-            IPermisoRepository permisoRepository,
+            IPermissionRepository permissionRepository,
             IUnitOfWork unitOfWork)
         {
             this.configuration = configuration;
             this.httpClientFactory = httpClientFactory;
-            this.usuarioRepository = usuarioRepository;
+            this.appUserRepository = appUserRepository;
             this.usuarioExternoRepository = usuarioExternoRepository;
             this.tokenService = tokenService;
-            this.permisoRepository = permisoRepository;
+            this.permissionRepository = permissionRepository;
             this.unitOfWork = unitOfWork;
         }
 
@@ -84,7 +84,7 @@ namespace WebApi.Controllers
                 var login = UpsertGoogleUser(profile);
                 return Redirect(AppendQuery(returnUrl,
                     "token=" + Uri.EscapeDataString(login.Token) +
-                    "&tipoUsuario=" + Uri.EscapeDataString(login.UserType ?? "usuario-externo")));
+                    "&tipoUsuario=" + Uri.EscapeDataString(login.UserType ?? "external-user")));
             }
             catch (Exception ex)
             {
@@ -93,7 +93,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("google/token")]
-        public async Task<ActionResult<DtoUsuarioLogin>> GoogleToken([FromBody] GoogleIdTokenRequest body)
+        public async Task<ActionResult<UserLoginDto>> GoogleToken([FromBody] GoogleIdTokenRequest body)
         {
             if (body == null || string.IsNullOrWhiteSpace(body.IdToken))
                 return BadRequest(new { message = "idToken requerido" });
@@ -161,24 +161,24 @@ namespace WebApi.Controllers
             return new GoogleProfile { Email = email.Trim(), Name = name?.Trim() };
         }
 
-        private DtoUsuarioLogin UpsertGoogleUser(GoogleProfile profile)
+        private UserLoginDto UpsertGoogleUser(GoogleProfile profile)
         {
-            var existente = usuarioRepository.Filter(new BuscarUsuarioPorIdentificador(profile.Email)).FirstOrDefault();
+            var existente = appUserRepository.Filter(new FindUserByIdentifier(profile.Email)).FirstOrDefault();
 
             if (existente == null)
             {
                 var parts = (profile.Name ?? profile.Email).Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-                var usuarioNuevo = new Usuario
+                var usuarioNuevo = new AppUser
                 {
                     AccessIdentifier = profile.Email,
                     Name = profile.Name ?? profile.Email,
                     Password = Guid.NewGuid().ToString("N") + "Aa1!"
                 };
-                usuarioNuevo.InicializarExterno(new List<int>());
+                usuarioNuevo.InitializeExternal(new List<int>());
                 usuarioNuevo.Enable();
-                usuarioRepository.Create(usuarioNuevo);
+                appUserRepository.Create(usuarioNuevo);
 
-                var perfil = new UsuarioExterno
+                var perfil = new ExternalUser
                 {
                     Name = parts.Length > 0 ? parts[0] : profile.Name,
                     LastName = parts.Length > 1 ? parts[1] : "",
@@ -187,21 +187,21 @@ namespace WebApi.Controllers
                     Phone = "",
                     Mobile = ""
                 };
-                perfil.RegistrarCuenta();
-                perfil.VerificarCorreo();
+                perfil.RegisterAccount();
+                perfil.VerifyEmail();
                 usuarioExternoRepository.Create(perfil);
                 unitOfWork.Save();
             }
             else if (!existente.IsActive)
             {
-                var user = usuarioRepository.GetUsuarioConRolPermiso(new BuscarUsuarioPorIdentificador(profile.Email));
+                var user = appUserRepository.GetUserWithRolePermissions(new FindUserByIdentifier(profile.Email));
                 user.Enable();
                 unitOfWork.Save();
             }
 
-            var usuario = usuarioRepository.GetUsuarioConRolPermiso(new BuscarUsuarioPorIdentificador(profile.Email));
-            var respuesta = UsuarioMappingHelper.ToDtoLogin(usuario, permisoRepository);
-            respuesta.Token = tokenService.CrearOtraerToken(usuario);
+            var appUser = appUserRepository.GetUserWithRolePermissions(new FindUserByIdentifier(profile.Email));
+            var respuesta = UserMappingHelper.ToDtoLogin(appUser, permissionRepository);
+            respuesta.Token = tokenService.CreateOrGetToken(appUser);
             return respuesta;
         }
 

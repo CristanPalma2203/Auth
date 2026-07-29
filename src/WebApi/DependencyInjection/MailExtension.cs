@@ -1,4 +1,4 @@
-using Infraestructura.Service;
+using Infrastructure.Service;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace WebApi.DependencyInjection

@@ -1,0 +1,52 @@
+using System;
+using Domain.Service;
+
+namespace Infrastructure.Data
+{
+    public sealed class UnitOfWork : IUnitOfWork, IDisposable
+    {
+        private readonly AutenticationContext _context;
+        private bool _disposed = false;
+
+        public UnitOfWork(AutenticationContext context)
+        {
+            _context = context;
+        }
+
+        public void Save()
+        {
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch
+            {
+                var tx = _context.Database.CurrentTransaction;
+                if (tx != null)
+                {
+                    tx.Rollback();
+                }
+                throw;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+            }
+
+            _disposed = true;
+        }
+    }
+}

@@ -1,7 +1,7 @@
-﻿using Dominio.Repositories;
-using Dominio.Service;
-using Infraestructura.Data;
-using Infraestructura.Repositories;
+﻿using Domain.Repositories;
+using Domain.Service;
+using Infrastructure.Data;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,10 +25,10 @@ namespace WebApi.DependencyInjection
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
-            services.Scan(scan => scan.FromAssemblyOf<UsuarioRepository>().AddClasses(classes => classes.AssignableTo(typeof(IGenericRepository<>))).AsImplementedInterfaces().WithScopedLifetime());
+            services.Scan(scan => scan.FromAssemblyOf<AppUserRepository>().AddClasses(classes => classes.AssignableTo(typeof(IGenericRepository<>))).AsImplementedInterfaces().WithScopedLifetime());
 
 
-            // services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            // services.AddScoped<IAppUserRepository, AppUserRepository>();
 
 
         }

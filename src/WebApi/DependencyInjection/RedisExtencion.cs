@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using Infraestructura.Service;
+using Infrastructure.Service;
 
 namespace WebApi.DependencyInjection
 {

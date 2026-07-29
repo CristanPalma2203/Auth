@@ -1,9 +1,9 @@
-using Aplicacion.Exceptions;
-using Aplicacion.Mappers;
-using Dominio.Helpers;
-using Dominio.Models.Regla;
-using Infraestructura.Filters;
-using Infraestructura.Service;
+using Application.Exceptions;
+using Application.Mappers;
+using Domain.Helpers;
+using Domain.Models.Rules;
+using Infrastructure.Filters;
+using Infrastructure.Service;
 using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Builder;
@@ -34,7 +34,7 @@ namespace WebApi
             services.AddHandlers();
             services.AddContextConfiguration(Configuration);
             services.AddScoped<UnitOfWordFilter>();
-            services.AddAplicacionServices();
+            services.AddApplicationServices();
             services.AddTokenConfiguration(Configuration);
             services.AddHttpContextAccessor();
             services.AddRedis(Configuration);
@@ -43,11 +43,11 @@ namespace WebApi
 
             services.Scan(scan => scan
                 .FromAssemblyOf<CambioPassword>()
-                .AddClasses(classes => classes.AssignableTo(typeof(IRegla)))
+                .AddClasses(classes => classes.AssignableTo(typeof(IRule)))
                 .AsImplementedInterfaces()
                 .WithTransientLifetime());
 
-            services.AddTransient<ICorreoHelper, CorreoHelper>();
+            services.AddTransient<IEmailHelper, EmailHelper>();
             services.AddMail();
             services.AddHttpClient();
 
