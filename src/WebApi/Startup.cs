@@ -76,8 +76,8 @@ namespace WebApi
             app.UseRouting();
             app.UseSwagger(c =>
             {
-                // Pin Microsoft.OpenApi 1.6.22 — avoids openapi:3.0.4 that breaks some Swagger UI
-                c.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi3_0;
+                // Swagger 2.0 avoids openapi:3.0.4 UI parse issues with Microsoft.OpenApi 1.6.25+
+                c.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi2_0;
             });
             app.UseSwaggerUI(c =>
             {
