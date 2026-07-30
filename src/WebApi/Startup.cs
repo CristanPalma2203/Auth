@@ -74,10 +74,15 @@ namespace WebApi
 
             app.UseHttpException();
             app.UseRouting();
-            app.UseSwagger();
+            app.UseSwagger(c =>
+            {
+                // Pin Microsoft.OpenApi 1.6.22 — avoids openapi:3.0.4 that breaks some Swagger UI
+                c.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi3_0;
+            });
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/alpha/swagger.json", "Corelux Auth API");
+                c.DocumentTitle = "Corelux Auth API";
             });
             app.UseCors("ApiCorsPolicy");
             app.UseEndpoints(endpoints =>
