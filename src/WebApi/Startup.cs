@@ -77,7 +77,7 @@ namespace WebApi
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/alpha/swagger.json", "API de autenticación");
+                c.SwaggerEndpoint("/swagger/alpha/swagger.json", "Corelux Auth API");
             });
             app.UseCors("ApiCorsPolicy");
             app.UseEndpoints(endpoints =>

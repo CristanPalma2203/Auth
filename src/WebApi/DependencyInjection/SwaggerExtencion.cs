@@ -1,5 +1,4 @@
-﻿
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
@@ -16,22 +15,18 @@ namespace WebApi.DependencyInjection
                 c.SwaggerDoc("alpha", new OpenApiInfo
                 {
                     Version = "alpha",
-                    Title = "Documentacion Sistema de Pagos",
-                    Description = "",
-                   
+                    Title = "Corelux Auth API",
+                    Description = "Authentication, users, roles and permissions.",
                     Contact = new OpenApiContact
                     {
-                        Name = "Jonathan Palma",
+                        Name = "Corelux",
                         Email = "",
-                       
                     }
                 });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
-
-          
         }
     }
 }
