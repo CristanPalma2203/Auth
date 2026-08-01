@@ -38,7 +38,7 @@ namespace WebApi
             services.AddTokenConfiguration(Configuration);
             services.AddHttpContextAccessor();
             services.AddRedis(Configuration);
-            services.AddCorsConfig();
+            services.AddCorsConfig(Configuration);
             services.AddSwaggerConf();
             services.AddHealthChecks();
 
