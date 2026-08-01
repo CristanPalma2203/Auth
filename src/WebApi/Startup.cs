@@ -40,6 +40,7 @@ namespace WebApi
             services.AddRedis(Configuration);
             services.AddCorsConfig();
             services.AddSwaggerConf();
+            services.AddHealthChecks();
 
             services.Scan(scan => scan
                 .FromAssemblyOf<CambioPassword>()
@@ -87,6 +88,7 @@ namespace WebApi
             app.UseCors("ApiCorsPolicy");
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/health");
                 endpoints.MapControllers();
             });
         }
