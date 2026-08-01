@@ -9,10 +9,17 @@ namespace WebApi.DependencyInjection
         public static void AddRedis(this IServiceCollection services, IConfiguration configuration)
         {
             var appSettingsSection = configuration.GetSection("AppSettings").Get<AppSettings>();
+            var redis = appSettingsSection?.ConnectionStringsRedis?.Trim();
+
+            if (string.IsNullOrEmpty(redis))
+            {
+                services.AddDistributedMemoryCache();
+                return;
+            }
 
             services.AddStackExchangeRedisCache(options =>
             {
-                options.Configuration = appSettingsSection.ConnectionStringsRedis;
+                options.Configuration = redis;
                 options.InstanceName = "";
             });
         }
