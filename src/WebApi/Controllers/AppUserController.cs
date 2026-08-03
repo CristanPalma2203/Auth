@@ -65,6 +65,13 @@ namespace WebApi.Controllers
             return commandBus.execute(new GetCurrentUser());
         }
 
+        [HttpPut]
+        [Route("me/profile")]
+        public IResponse UpdateMyProfile([FromBody] UpdateCurrentUserProfile body)
+        {
+            return commandBus.execute(body);
+        }
+
         [HttpPost]
         [Route("close-session")]
         public IResponse SignOut([FromBody] SignOut cerrarSesion)

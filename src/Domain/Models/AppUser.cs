@@ -43,6 +43,9 @@ namespace Domain.Models
         public int? TenantId { get; set; }
         public Tenant Tenant { get; set; }
 
+        /// <summary>Stored file id for profile avatar (Files service).</summary>
+        public int? ProfileFileId { get; set; }
+
         public ICollection<UserRegional> UserRegional { get; set; }
         public ICollection<UserArea> UserArea { get; set; }
         public void ResetExternalUserPassword(string password) {

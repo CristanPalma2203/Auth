@@ -23,6 +23,7 @@ namespace Application.Dtos.AppUser
         public ICollection<UserAreaDto> UserArea { get; set; }
         public int? TenantId { get; set; }
         public string TenantCodigo { get; set; }
+        public int? ProfileFileId { get; set; }
 
     }
 

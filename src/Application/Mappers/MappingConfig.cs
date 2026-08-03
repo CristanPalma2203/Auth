@@ -148,6 +148,7 @@ namespace Application.Mappers
                 UserType = appUser.UserType,
                 TenantId = appUser.TenantId,
                 TenantCodigo = appUser.Tenant?.Code,
+                ProfileFileId = appUser.ProfileFileId,
                 Roles = MapLoginRoles(appUser, permissionRepository),
                 UserRegional = appUser.UserRegional != null
                     ? appUser.UserRegional.Select(r => r.Adapt<UserRegionalDto>()).ToList()
