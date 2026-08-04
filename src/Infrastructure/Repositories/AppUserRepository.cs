@@ -42,8 +42,6 @@ namespace Infrastructure.Repositories
         {
             return dbContext.Set<AppUser>().AsNoTracking()
                 .Include("Roles.Role")
-                .Include(c => c.UserRegional)
-                .Include(c => c.UserArea)
                 .Include(c => c.Tenant)
                 .FirstOrDefault(e => e.Id == id);
         }
@@ -54,8 +52,6 @@ namespace Infrastructure.Repositories
                 .Include("Roles.Role.Permissions.Permission")
                 .Include(c => c.Department)
                 .Include(c => c.Tenant)
-                .Include(c => c.UserArea)
-                .Include(c => c.UserRegional)
                 .FirstOrDefault(busqueda.Traer());
         }
     }

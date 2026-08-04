@@ -16,6 +16,11 @@ namespace Domain.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string AccessIdentifier { get; set; }
+        /// <summary>Documento Único de Identidad del representante (formato 00000000-0).</summary>
+        public string Dui { get; set; }
+        /// <summary>NIT del representante (formato 0000-000000-000-0).</summary>
+        public string Nit { get; set; }
+        public string Phone { get; set; }
         public bool IsActive { get; set; }
         public string Password { get; set; }
         public string TemporaryCode { get; set; }
@@ -46,8 +51,6 @@ namespace Domain.Models
         /// <summary>Stored file id for profile avatar (Files service).</summary>
         public int? ProfileFileId { get; set; }
 
-        public ICollection<UserRegional> UserRegional { get; set; }
-        public ICollection<UserArea> UserArea { get; set; }
         public void ResetExternalUserPassword(string password) {
             Password = getPassword(password);
             PasswordResetAt = DateTime.Now;

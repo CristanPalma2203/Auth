@@ -35,27 +35,46 @@ namespace Application.CommandHandlers.AppUser
 
         public override IResponse Handle(RegisterUser message)
         {
-            EnsureRolesDelTenant(message.AppUser.Roles?.Select(c => c.Id).ToList());
+            // TenantId nulo significa admin de plataforma, asi que solo el propio admin de
+            // plataforma puede decidirlo; cualquier otro usuario queda atado a su empresa.
+            var empresaDestino = tenantContext.IsPlatformAdmin
+                ? message.AppUser.TenantId
+                : tenantContext.TenantId;
 
-            var password = StringHelper.RandomString(7);
+            EnsureRolesDelTenant(message.AppUser.Roles?.Select(c => c.Id).ToList(), empresaDestino);
+
+            // Si el administrador define la contraseña, se respeta; si no, se genera y se envía por correo.
+            var passwordDefinida = !string.IsNullOrWhiteSpace(message.AppUser.Password);
+            var password = passwordDefinida ? message.AppUser.Password : StringHelper.RandomString(7);
+
             var appUser = mapper.Map<Domain.Models.AppUser>(message.AppUser);
             appUser.Password = password;
-            if (!tenantContext.IsPlatformAdmin)
-                appUser.TenantId = tenantContext.TenantId;
+            appUser.TenantId = empresaDestino;
             appUser.Initialize(Domain.Models.AppUser.internalUserType, message.AppUser.Roles.Select(c => c.Id).ToList());
+            if (passwordDefinida)
+                appUser.MustChangePassword = false;
+
             appUserRepository.Create(appUser);
-            correoHelper.SendUserCreatedEmail(message.AppUser.AccessIdentifier, password, message.AppUser.AccessIdentifier);
+
+            if (!passwordDefinida)
+                correoHelper.SendUserCreatedEmail(message.AppUser.AccessIdentifier, password, message.AppUser.AccessIdentifier);
+
             return new OkResponse();
         }
 
-        private void EnsureRolesDelTenant(System.Collections.Generic.IList<int> roleIds)
+        /// <summary>
+        /// Los roles asignados deben pertenecer a la empresa del usuario que se crea.
+        /// Si no hay empresa destino, el usuario es de plataforma y usa roles globales.
+        /// </summary>
+        private void EnsureRolesDelTenant(System.Collections.Generic.IList<int> roleIds, int? empresaDestino)
         {
-            if (tenantContext.IsPlatformAdmin || roleIds == null) return;
+            if (roleIds == null || !empresaDestino.HasValue) return;
+
             foreach (var roleId in roleIds)
             {
                 var Roles = roleRepository.GetById(roleId);
-                if (Roles == null || Roles.TenantId != tenantContext.TenantId)
-                    throw new HttpException(403, "Solo puede asignar roles de su empresa");
+                if (Roles == null || Roles.TenantId != empresaDestino)
+                    throw new HttpException(403, "Solo puede asignar roles de la empresa del usuario");
             }
         }
     }

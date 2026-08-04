@@ -8,6 +8,17 @@ namespace Domain.Models
         public int Id { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
+        /// <summary>Identidad fiscal del tenant (receptor DTE).</summary>
+        public string Nit { get; set; }
+        public string Nrc { get; set; }
+        public string RazonSocial { get; set; }
+        public string Phone { get; set; }
+        public string Website { get; set; }
+        /// <summary>Catálogo 'tipo-comercio'.</summary>
+        public int? BusinessTypeId { get; set; }
+
+        /// <summary>Mensaje que ve el cliente antes de pagar.</summary>
+        public string CheckoutMessage { get; set; }
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; }
     }

@@ -27,9 +27,16 @@ namespace Application.CommandHandlers.Role
         public override IResponse Handle(ListRolesUnpaged message)
         {
             var listaDto = new List<RoleDto>();
-            var lista = message.all == true && tenantContext.IsPlatformAdmin
+
+            // El admin de plataforma puede pedir los roles de una empresa concreta; el resto
+            // siempre queda acotado a la suya, sin importar lo que envie.
+            var filtrarPorTenant = tenantContext.IsPlatformAdmin && message.tenantId.HasValue;
+
+            var lista = message.all == true && tenantContext.IsPlatformAdmin && !filtrarPorTenant
                 ? roleRepository.GetAll()
-                : roleRepository.Filter(new FindRolesByTenant(tenantContext.TenantId, tenantContext.IsPlatformAdmin, soloAsignables: true));
+                : roleRepository.Filter(filtrarPorTenant
+                    ? new FindRolesByTenant(message.tenantId, isPlatformAdmin: false, soloAsignables: true)
+                    : new FindRolesByTenant(tenantContext.TenantId, tenantContext.IsPlatformAdmin, soloAsignables: true));
             foreach (var item in lista) listaDto.Add(mapper.Map<RoleDto>(item));
 
             return new DtoListaRolesSinPaginar { Lista = listaDto };

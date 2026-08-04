@@ -24,8 +24,6 @@ namespace Infrastructure.Data
         public DbSet<AppUser> Users { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
-        public DbSet<UserRegional> UserRegional { get; set; }
-        public DbSet<UserArea> UserAreas { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Catalog> Catalogs { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }

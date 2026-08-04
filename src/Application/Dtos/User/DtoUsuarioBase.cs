@@ -12,6 +12,9 @@ namespace Application.Dtos.AppUser
         public string Name { get; set; }
 
         public string AccessIdentifier { get; set; }
+        public string Dui { get; set; }
+        public string Nit { get; set; }
+        public string Phone { get; set; }
         public bool IsActive { get; set; }
         public bool MustChangePassword { get; set; }
 
@@ -19,8 +22,6 @@ namespace Application.Dtos.AppUser
         public string UserType { get; set; }
         public DateTime? RegisteredAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public ICollection<UserRegionalDto> UserRegional { get; set; }
-        public ICollection<UserAreaDto> UserArea { get; set; }
         public int? TenantId { get; set; }
         public string TenantCodigo { get; set; }
         public int? ProfileFileId { get; set; }

@@ -18,9 +18,6 @@ namespace Application.Mappers
             config.NewConfig<Permission, PermissionDto>().TwoWays();
             config.NewConfig<ExternalUser, ExternalUserDto>().TwoWays();
             config.NewConfig<ProductTypeDto, TipoProductoResponse>().TwoWays();
-            config.NewConfig<UserRegional, UserRegionalDto>().TwoWays();
-            config.NewConfig<UserArea, UserAreaDto>().TwoWays();
-
             config.NewConfig<Role, RoleDto>()
                 .Map(dest => dest.PermissionIds, src => MapPermissionIds(src.Permissions));
             config.NewConfig<RoleDto, Role>()
@@ -149,13 +146,7 @@ namespace Application.Mappers
                 TenantId = appUser.TenantId,
                 TenantCodigo = appUser.Tenant?.Code,
                 ProfileFileId = appUser.ProfileFileId,
-                Roles = MapLoginRoles(appUser, permissionRepository),
-                UserRegional = appUser.UserRegional != null
-                    ? appUser.UserRegional.Select(r => r.Adapt<UserRegionalDto>()).ToList()
-                    : new List<UserRegionalDto>(),
-                UserArea = appUser.UserArea != null
-                    ? appUser.UserArea.Select(a => a.Adapt<UserAreaDto>()).ToList()
-                    : new List<UserAreaDto>()
+                Roles = MapLoginRoles(appUser, permissionRepository)
             };
 
             return respuesta;
