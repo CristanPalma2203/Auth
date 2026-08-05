@@ -30,6 +30,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("lista", Name = "consultaUsuariosExternos")]
+        [HttpGet("list")]
         public IResponse GetLista([FromQuery] ListExternalUsers ownerParameter)
         {
             return CommandBus.execute(ownerParameter);

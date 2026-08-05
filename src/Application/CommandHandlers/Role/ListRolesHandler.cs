@@ -23,7 +23,12 @@ namespace Application.CommandHandlers.Role
 
         public override IResponse Handle(ListRoles message)
         {
-            var tenantSpec = new FindRolesByTenant(tenantContext.TenantId, tenantContext.IsPlatformAdmin, soloAsignables: true);
+            // Admin plataforma ve todos los roles (incl. Admin de plataforma).
+            // Tenant: solo roles asignables de su empresa.
+            var tenantSpec = new FindRolesByTenant(
+                tenantContext.TenantId,
+                tenantContext.IsPlatformAdmin,
+                soloAsignables: !tenantContext.IsPlatformAdmin);
 
             if (message.Name != null)
             {

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using System;
 using System.Collections.Generic;
@@ -27,6 +27,15 @@ namespace Application.Exceptions
                 context.Response.StatusCode = httpException.StatusCode;
                 var responseFeature = context.Features.Get<IHttpResponseFeature>();
                 responseFeature.ReasonPhrase = httpException.Message;
+
+                // El front necesita body JSON; ReasonPhrase solo no llega a fetch().
+                if (!context.Response.HasStarted)
+                {
+                    context.Response.ContentType = "application/json; charset=utf-8";
+                    var payload = Encoding.UTF8.GetBytes(
+                        $"{{\"message\":{System.Text.Json.JsonSerializer.Serialize(httpException.Message ?? "")}}}");
+                    await context.Response.Body.WriteAsync(payload);
+                }
             }
         }
     }

@@ -2,6 +2,7 @@ using Application.Exceptions;
 using Application.Mappers;
 using Domain.Helpers;
 using Domain.Models.Rules;
+using Domain.Service;
 using Infrastructure.Filters;
 using Infrastructure.Service;
 using Mapster;
@@ -49,6 +50,7 @@ namespace WebApi
                 .WithTransientLifetime());
 
             services.AddTransient<IEmailHelper, EmailHelper>();
+            services.AddScoped<ITenantLookup, TenantLookup>();
             services.AddMail();
             services.AddHttpClient();
 
@@ -73,8 +75,10 @@ namespace WebApi
                 app.UseHsts();
             }
 
-            app.UseHttpException();
             app.UseRouting();
+            // CORS antes de endpoints/exception body → browser ve 500 real, no TypeError falso
+            app.UseCors("ApiCorsPolicy");
+            app.UseHttpException();
             app.UseSwagger(c =>
             {
                 // Swagger 2.0 avoids openapi:3.0.4 UI parse issues with Microsoft.OpenApi 1.6.25+
@@ -85,7 +89,6 @@ namespace WebApi
                 c.SwaggerEndpoint("/swagger/alpha/swagger.json", "Corelux Auth API");
                 c.DocumentTitle = "Corelux Auth API";
             });
-            app.UseCors("ApiCorsPolicy");
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHealthChecks("/health");

@@ -10,6 +10,8 @@ namespace Domain.Models
         public static string ManualEntryType = "manual";
 
         public int Id { get; set; }
+        /// <summary>Empresa dueña del comprador (Tempora=1, Carbonera=2, …). ERP filtra por esto.</summary>
+        public int? TenantId { get; set; }
         public int IdentificationTypeId { get; set; }
         public Catalog IdentificationType { get; set; }
         public string Identifier { get; set; }
