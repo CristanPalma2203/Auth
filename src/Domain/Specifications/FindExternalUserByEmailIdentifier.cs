@@ -1,7 +1,5 @@
-﻿using Domain.Models;
+using Domain.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Specifications
 {
@@ -18,8 +16,17 @@ namespace Domain.Specifications
 
         public Func<ExternalUser, bool> Traer()
         {
-        return new Func<ExternalUser, bool>(c => c.Email.ToLower().Trim() == correo.ToLower().Trim() && c.Identifier.Replace("-", "").Trim() == identifier.Replace("-", "").Trim());
+            var mail = (correo ?? "").ToLower().Trim();
+            var id = (identifier ?? "").Replace("-", "").Trim().ToLower();
 
+            return c =>
+            {
+                if (c == null) return false;
+                var cMail = (c.Email ?? "").ToLower().Trim();
+                var cId = (c.Identifier ?? "").Replace("-", "").Trim().ToLower();
+                // Compradores web: Identifier suele ser el mismo correo
+                return cMail == mail && (cId == id || cMail == id);
+            };
         }
     }
 }

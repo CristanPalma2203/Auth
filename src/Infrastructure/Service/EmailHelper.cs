@@ -40,7 +40,7 @@ namespace Infrastructure.Service
             html = html.Replace("username", AppUser);
             html = html.Replace("password", password);
             html = html.Replace("URLPORTAL", configuration.GetValue<string>("AppSettings:DireccionPortal"));
-            SendMsj("New User - Payment System", correoDestino, html);
+            SendMsj("Nuevo usuario — ERP Base", correoDestino, html);
         }
         public void SendRoleCreatedEmail(string AppUser, string NombreRol)
         {
@@ -49,7 +49,7 @@ namespace Infrastructure.Service
             html = html.Replace("username", AppUser);
             html = html.Replace("roleName", NombreRol);
             html = html.Replace("URLPORTAL", configuration.GetValue<string>("AppSettings:DireccionPortal"));
-            SendMsj("New Role - Payment System", correoDestino, html);
+            SendMsj("Nuevo rol — ERP Base", correoDestino, html);
         }
         public void SendRoleEditedEmail(string AppUser, string NombreRol)
         {
@@ -58,7 +58,7 @@ namespace Infrastructure.Service
             html = html.Replace("username", AppUser);
             html = html.Replace("roleName", NombreRol);
             html = html.Replace("URLPORTAL", configuration.GetValue<string>("AppSettings:DireccionPortal"));
-            SendMsj("Role Updated - Payment System", correoDestino, html);
+            SendMsj("Rol actualizado — ERP Base", correoDestino, html);
         }
         void IEmailHelper.SendVerificationEmail(string correoDestino, string tokenVerificacion)
         {
@@ -114,7 +114,7 @@ namespace Infrastructure.Service
         {
             var html = ReadResource(rutaHtmlDenegacionAcceso);
             html = html.Replace("reason", motivo);
-            SendMsj("Access Notification", correoDestino, html);
+            SendMsj("Acceso denegado — ERP Base", correoDestino, html);
         }
 
         private void SendMsj(string subject, string correoDestino, string html)
@@ -127,7 +127,7 @@ namespace Infrastructure.Service
             var html = ReadResource(rutaAccesosImportador);
             var stubble = new StubbleBuilder().Build();
             html = stubble.Render(html,  new { ExternalUser = externalUser, Roles = "hoola test", Url = configuration.GetValue<string>("AppSettings:DireccionPortal") });
-            SendMsj("Access Notification", externalUser.Email, html);
+            SendMsj("Acceso — ERP Base", externalUser.Email, html);
         }
         public void SendRequestUpdateEmail(List<string> correoDestino, string motivo, string TemporaryCode)
         {
@@ -137,7 +137,7 @@ namespace Infrastructure.Service
             html = html.Replace("reason", motivo);
             foreach (var item in correoDestino)
             {
-                SendMsj("Access Request Update", item, html);
+                SendMsj("Código de acceso — ERP Base", item, html);
             }
 
         }

@@ -1,13 +1,10 @@
 using Application.Commands.ExternalUser;
 using Application.Services.Validaciones;
-using Domain.Specifications;
 using Domain.Repositories;
-using Domain.Utilities;
+using Domain.Specifications;
 using FluentValidation;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Application.Validators.ExternalUser
 {
@@ -15,29 +12,31 @@ namespace Application.Validators.ExternalUser
     {
         private readonly IExternalUserRepository externalUserRepository;
         private readonly IAppUserRepository appUserRepository;
-        
 
-        public ResetExternalUserPasswordValidator(IAutenticationHelper autenticationHelper,
-            IExternalUserRepository externalUserRepository, IAppUserRepository appUserRepository) : base(autenticationHelper)
+        public ResetExternalUserPasswordValidator(
+            IAutenticationHelper autenticationHelper,
+            IExternalUserRepository externalUserRepository,
+            IAppUserRepository appUserRepository) : base(autenticationHelper)
         {
-            RuleFor(x => x.Email).NotEmpty().EmailAddress();
-            RuleFor(x => x.AppUser).NotEmpty().Must(c=> RegexUtilities.IsValidEmail(c)==false).WithMessage("El usuario no puede ser un correo, para users internos contacta al departamento de IT");
-            RuleFor(x => x).Must(c => FindUser(c)).WithMessage("No se ha encontrado un importador con el appUser y correo especificado");
             this.externalUserRepository = externalUserRepository;
             this.appUserRepository = appUserRepository;
 
+            RuleFor(x => x.Email).NotEmpty().EmailAddress();
+            // Compradores Tempora: AccessIdentifier = correo. Antes se bloqueaba email.
+            RuleFor(x => x.AppUser).NotEmpty();
+            RuleFor(x => x)
+                .Must(FindUser)
+                .WithMessage("No se encontro un comprador con ese usuario y correo.");
         }
+
         private bool FindUser(ResetExternalUserPassword rc)
         {
-            var encuentraUsuario = false;
             var appUser = appUserRepository.Filter(new FindUserByIdentifier(rc.AppUser)).FirstOrDefault();
-            if (appUser != null)
-            {
-                var externalUser = externalUserRepository.Filter(new FindExternalUserByEmailIdentifier(rc.Email, rc.AppUser));
-                if (externalUser.Count() > 0)encuentraUsuario = true;
-            }
-            return encuentraUsuario;
+            if (appUser == null) return false;
 
+            return externalUserRepository
+                .Filter(new FindExternalUserByEmailIdentifier(rc.Email, rc.AppUser))
+                .Any();
         }
 
         public override IList<string> RequiredPermissions => new List<string>();

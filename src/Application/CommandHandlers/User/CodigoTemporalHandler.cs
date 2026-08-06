@@ -1,8 +1,8 @@
 using Application.Commands.AppUser;
 using Application.Dtos;
-using Domain.Specifications;
 using Domain.Helpers;
 using Domain.Repositories;
+using Domain.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,37 +27,50 @@ namespace Application.CommandHandlers.AppUser
 
         public override IResponse Handle(TemporaryCode message)
         {
+            var access = message.AccessIdentifier?.Trim();
+            if (string.IsNullOrWhiteSpace(access))
+                return new OkResponse();
+
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var random = new Random();
-            var result = new string(Enumerable.Repeat(chars, 4).Select(s => s[random.Next(s.Length)]).ToArray());
+            var code = new string(
+                Enumerable.Repeat(chars, 4).Select(s => s[random.Next(s.Length)]).ToArray());
 
-            var resp = result;
-            var solicitud = appUserRepository.GetAll().FirstOrDefault(x => x.AccessIdentifier == message.AccessIdentifier);
-            if (solicitud != null)
+            var solicitud = appUserRepository
+                .GetAll()
+                .FirstOrDefault(x =>
+                    x.AccessIdentifier != null
+                    && x.AccessIdentifier.ToLower().Trim() == access.ToLower());
+
+            if (solicitud == null)
+                return new OkResponse();
+
+            solicitud.TemporaryCode = code;
+            appUserRepository.Update(solicitud.Id, solicitud);
+
+            var destinos = new List<string>();
+            if (solicitud.UserType == "external-user")
             {
-                solicitud.TemporaryCode = resp;
-                appUserRepository.Update(solicitud.Id, solicitud);
-                var motivo = "Code de Verificaci?n: ".ToString();
-                var lista = new List<string>();
-                if (solicitud.UserType == "external-user")
-                {
-                    var externalUser = externalUserRepository.Filter(new FindExternalUserByIdentifier(message.AccessIdentifier)).FirstOrDefault();
-                    if (solicitud != null)
-                    {
-                        lista.Add(externalUser.Email);
-                    }
-                }
-                else
-                {
-                    if (solicitud != null)
-                    {
-                        lista.Add(solicitud.AccessIdentifier);
-                    }
-                }
+                var externalUser = externalUserRepository
+                    .Filter(new FindExternalUserByIdentifier(access))
+                    .FirstOrDefault()
+                    ?? externalUserRepository
+                        .Filter(c =>
+                            c.Email != null
+                            && c.Email.ToLower().Trim() == access.ToLower())
+                        .FirstOrDefault();
 
-                correoHelper.SendRequestUpdateEmail(lista, motivo, resp);
+                if (!string.IsNullOrWhiteSpace(externalUser?.Email))
+                    destinos.Add(externalUser.Email);
+                else
+                    destinos.Add(solicitud.AccessIdentifier);
+            }
+            else
+            {
+                destinos.Add(solicitud.AccessIdentifier);
             }
 
+            correoHelper.SendRequestUpdateEmail(destinos, "Codigo de verificacion: ", code);
             return new OkResponse();
         }
     }
