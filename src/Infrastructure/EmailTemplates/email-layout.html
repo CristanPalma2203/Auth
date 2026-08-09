@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="x-apple-disable-message-reformatting" />
+  <title>{{BrandName}}</title>
+</head>
+<body style="margin:0;padding:0;background-color:{{BrandBgColor}};-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:{{BrandBgColor}};border-collapse:collapse;">
+    <tr>
+      <td align="center" style="padding:36px 16px;">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="width:560px;max-width:560px;border-collapse:collapse;background-color:{{BrandBgColor}};">
+          <tr>
+            <td style="padding:0 8px 28px 8px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+                <tr>
+                  {{LogoCell}}
+                  <td style="padding-left:12px;font-family:Georgia,'Times New Roman',serif;font-size:15px;letter-spacing:0.18em;text-transform:uppercase;color:{{BrandInkColor}};">
+                    {{BrandName}}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:0 8px 0 8px;border-top:1px solid {{RuleColor}};">
+              <p style="margin:28px 0 8px 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:{{BrandPrimaryColor}};">
+                {{Kicker}}
+              </p>
+              <h1 style="margin:0 0 16px 0;font-family:Georgia,'Times New Roman',serif;font-size:28px;line-height:1.15;font-weight:500;letter-spacing:-0.03em;color:{{BrandInkColor}};">
+                {{Heading}}
+              </h1>
+              <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:{{MutedInk}};">
+                {{BodyHtml}}
+              </div>
+            </td>
+          </tr>
+
+          {{CtaBlock}}
+
+          <tr>
+            <td style="padding:32px 8px 0 8px;border-top:1px solid {{RuleColor}};">
+              <p style="margin:20px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.5;color:{{MutedInk}};">
+                {{FooterNote}}
+              </p>
+              <p style="margin:10px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:{{MutedInk}};">
+                {{BrandName}}
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

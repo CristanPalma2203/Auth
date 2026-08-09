@@ -19,6 +19,17 @@ namespace Domain.Models
 
         /// <summary>Mensaje que ve el cliente antes de pagar.</summary>
         public string CheckoutMessage { get; set; }
+
+        /// <summary>Nombre visible en correos (fallback: Name).</summary>
+        public string BrandName { get; set; }
+        public string BrandPrimaryColor { get; set; }
+        public string BrandBgColor { get; set; }
+        public string BrandInkColor { get; set; }
+        public string BrandLogoUrl { get; set; }
+        /// <summary>Base pública de la tienda (verify + links).</summary>
+        public string StorefrontPublicUrl { get; set; }
+        public string EmailFromDisplay { get; set; }
+
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; }
     }

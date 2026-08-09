@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Application.Exceptions;
 using Application.Services.Validaciones;
+using Domain.Helpers;
 using Domain.Models;
 using Domain.Service;
 using Infrastructure.Data;
@@ -22,15 +23,18 @@ namespace WebApi.Controllers
         private readonly AutenticationContext db;
         private readonly IAutenticationHelper autenticationHelper;
         private readonly ITenantContext tenantContext;
+        private readonly IEmailHelper emailHelper;
 
         public TenantController(
             AutenticationContext db,
             IAutenticationHelper autenticationHelper,
-            ITenantContext tenantContext)
+            ITenantContext tenantContext,
+            IEmailHelper emailHelper)
         {
             this.db = db;
             this.autenticationHelper = autenticationHelper;
             this.tenantContext = tenantContext;
+            this.emailHelper = emailHelper;
         }
 
         public class TenantBody
@@ -45,6 +49,13 @@ namespace WebApi.Controllers
             public int? BusinessTypeId { get; set; }
             /// <summary>Texto opcional que acompaña al cobro en la página pública.</summary>
             public string CheckoutMessage { get; set; }
+            public string BrandName { get; set; }
+            public string BrandPrimaryColor { get; set; }
+            public string BrandBgColor { get; set; }
+            public string BrandInkColor { get; set; }
+            public string BrandLogoUrl { get; set; }
+            public string StorefrontPublicUrl { get; set; }
+            public string EmailFromDisplay { get; set; }
             public bool? IsActive { get; set; }
         }
 
@@ -114,21 +125,25 @@ namespace WebApi.Controllers
             var tenant = db.Tenants.AsNoTracking().FirstOrDefault(t => t.Id == id)
                 ?? throw new HttpException(404, "Empresa no encontrada");
 
-            return new
-            {
-                tenant.Id,
-                tenant.Code,
-                tenant.Name,
-                tenant.Nit,
-                tenant.Nrc,
-                tenant.RazonSocial,
-                tenant.Phone,
-                tenant.Website,
-                tenant.BusinessTypeId,
-                tenant.CheckoutMessage,
-                tenant.IsActive,
-                tenant.CreatedAt
-            };
+            return MapTenant(tenant);
+        }
+
+        /// <summary>HTML de vista previa del correo de verificación (marca del tenant).</summary>
+        [HttpGet("{id:int}/email-preview")]
+        public IActionResult EmailPreview(int id, [FromQuery] string kind = "verify")
+        {
+            Authorize("tenant-view", "tenant-edit", "tenants");
+            tenantContext.EnsureSameTenantOrPlatform(id);
+
+            if (!db.Tenants.AsNoTracking().Any(t => t.Id == id))
+                throw new HttpException(404, "Empresa no encontrada");
+
+            var k = (kind ?? "verify").Trim().ToLowerInvariant();
+            if (k != "verify")
+                throw new HttpException(422, "kind soportado en Auth: verify");
+
+            var html = emailHelper.RenderVerificationPreview(id);
+            return Content(html, "text/html; charset=utf-8");
         }
 
         [HttpPost]
@@ -156,6 +171,13 @@ namespace WebApi.Controllers
                 Website = Trim(body.Website),
                 BusinessTypeId = body.BusinessTypeId,
                 CheckoutMessage = Trim(body.CheckoutMessage),
+                BrandName = Trim(body.BrandName),
+                BrandPrimaryColor = Trim(body.BrandPrimaryColor),
+                BrandBgColor = Trim(body.BrandBgColor),
+                BrandInkColor = Trim(body.BrandInkColor),
+                BrandLogoUrl = Trim(body.BrandLogoUrl),
+                StorefrontPublicUrl = TrimUrl(body.StorefrontPublicUrl),
+                EmailFromDisplay = Trim(body.EmailFromDisplay),
                 IsActive = body.IsActive ?? true,
                 CreatedAt = DateTime.UtcNow
             };
@@ -163,7 +185,7 @@ namespace WebApi.Controllers
             db.Tenants.Add(tenant);
             db.SaveChanges();
 
-            return new { tenant.Id, tenant.Code, tenant.Name, tenant.IsActive };
+            return MapTenant(tenant);
         }
 
         [HttpPut("{id:int}")]
@@ -184,6 +206,13 @@ namespace WebApi.Controllers
             if (body.Website != null) tenant.Website = Trim(body.Website);
             if (body.BusinessTypeId.HasValue) tenant.BusinessTypeId = body.BusinessTypeId;
             if (body.CheckoutMessage != null) tenant.CheckoutMessage = Trim(body.CheckoutMessage);
+            if (body.BrandName != null) tenant.BrandName = Trim(body.BrandName);
+            if (body.BrandPrimaryColor != null) tenant.BrandPrimaryColor = Trim(body.BrandPrimaryColor);
+            if (body.BrandBgColor != null) tenant.BrandBgColor = Trim(body.BrandBgColor);
+            if (body.BrandInkColor != null) tenant.BrandInkColor = Trim(body.BrandInkColor);
+            if (body.BrandLogoUrl != null) tenant.BrandLogoUrl = Trim(body.BrandLogoUrl);
+            if (body.StorefrontPublicUrl != null) tenant.StorefrontPublicUrl = TrimUrl(body.StorefrontPublicUrl);
+            if (body.EmailFromDisplay != null) tenant.EmailFromDisplay = Trim(body.EmailFromDisplay);
 
             // El código identifica al tenant en storefronts/config: solo plataforma puede cambiarlo.
             if (tenantContext.IsPlatformAdmin)
@@ -199,14 +228,43 @@ namespace WebApi.Controllers
             }
 
             db.SaveChanges();
-            return new { tenant.Id, tenant.Code, tenant.Name, tenant.IsActive };
+            return MapTenant(tenant);
         }
+
+        private static object MapTenant(Tenant tenant) => new
+        {
+            tenant.Id,
+            tenant.Code,
+            tenant.Name,
+            tenant.Nit,
+            tenant.Nrc,
+            tenant.RazonSocial,
+            tenant.Phone,
+            tenant.Website,
+            tenant.BusinessTypeId,
+            tenant.CheckoutMessage,
+            tenant.BrandName,
+            tenant.BrandPrimaryColor,
+            tenant.BrandBgColor,
+            tenant.BrandInkColor,
+            tenant.BrandLogoUrl,
+            tenant.StorefrontPublicUrl,
+            tenant.EmailFromDisplay,
+            tenant.IsActive,
+            tenant.CreatedAt
+        };
 
         private void Authorize(params string[] permissions) =>
             autenticationHelper.Autenticado(new List<string>(permissions));
 
         private static string Trim(string value) =>
             string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+        private static string TrimUrl(string value)
+        {
+            var t = Trim(value);
+            return t?.TrimEnd('/');
+        }
 
         private static string Normalize(string code) =>
             string.IsNullOrWhiteSpace(code) ? null : code.Trim().ToLowerInvariant();

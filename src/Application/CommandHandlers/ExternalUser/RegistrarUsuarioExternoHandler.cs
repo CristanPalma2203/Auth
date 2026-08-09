@@ -3,7 +3,6 @@ using Application.Dtos;
 using Domain.Helpers;
 using Domain.Repositories;
 using Domain.Service;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,6 @@ namespace Application.CommandHandlers.ExternalUser
         private readonly IExternalUserRepository usuarioExternoRepository;
         private readonly IEmailHelper correoHelper;
         private readonly IUnitOfWork unitOfWork;
-        private readonly IConfiguration configuration;
         private readonly ITenantLookup tenantLookup;
         private readonly ILogger<RegisterExternalUserHandler> logger;
 
@@ -25,7 +23,6 @@ namespace Application.CommandHandlers.ExternalUser
             IExternalUserRepository usuarioExternoRepository,
             IEmailHelper correoHelper,
             IUnitOfWork unitOfWork,
-            IConfiguration configuration,
             ITenantLookup tenantLookup,
             ILogger<RegisterExternalUserHandler> logger)
         {
@@ -33,7 +30,6 @@ namespace Application.CommandHandlers.ExternalUser
             this.usuarioExternoRepository = usuarioExternoRepository;
             this.correoHelper = correoHelper;
             this.unitOfWork = unitOfWork;
-            this.configuration = configuration;
             this.tenantLookup = tenantLookup;
             this.logger = logger;
         }
@@ -82,18 +78,12 @@ namespace Application.CommandHandlers.ExternalUser
 
             try
             {
-                if (origen == "storefront" || origen == "tempora"
-                    || origen == "carbonera-cacao" || origen == "carbonera")
-                {
-                    var baseUrl = configuration["AppSettings:VerifyEmailStorefront"]
-                                  ?? configuration["AppSettings:VerifyEmail"]
-                                  ?? "http://localhost:3001/verificar-correo";
-                    correoHelper.SendVerificationEmail(perfil.Email, perfil.VerificationToken, baseUrl);
-                }
-                else
-                {
-                    correoHelper.SendVerificationEmail(perfil.Email, perfil.VerificationToken);
-                }
+                // URL/marca salen de dbo.tenant (StorefrontPublicUrl + brand); ERP usa VerifyEmail fallback.
+                correoHelper.SendVerificationEmail(
+                    perfil.Email,
+                    perfil.VerificationToken,
+                    verificarBaseUrl: null,
+                    tenantId: tenantId);
 
                 perfil.EmailSent = true;
                 perfil.EmailSentAt = DateTime.Now;

@@ -41,12 +41,17 @@ namespace Application.CommandHandlers.Role
         public override IResponse Handle(EditRole message)
         {
             var idUsuario = tokenService.GetUserId();
-            var appUser = appUserRepository.GetById(idUsuario);
+            var appUser = appUserRepository.GetByIdConRoles(idUsuario);
             var dbrol = roleRepository.GetByIdWithPermissions(message.Id);
             if (dbrol == null)
                 throw new HttpException(404, "Role no encontrado");
 
             tenantContext.EnsureSameTenantOrPlatform(dbrol.TenantId);
+
+            // No editar el rol con el que el usuario está autenticado
+            if (appUser?.Roles != null && appUser.Roles.Any(r => r.RoleId == message.Id))
+                throw new HttpException(403, "No puede editar el rol que tiene asignado. Solo puede verlo.");
+
             EnsureInheritablePermissions(message.Role.PermissionIds);
 
             foreach (var item in dbrol.Permissions) rolePermissionRepository.Delete(item.Id);

@@ -30,6 +30,7 @@
     <None Remove="EmailTemplates\temporary-code.html" />
     <None Remove="EmailTemplates\access-denied.html" />
     <None Remove="EmailTemplates\verify-email.html" />
+    <None Remove="EmailTemplates\email-layout.html" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +41,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="EmailTemplates\access-denied.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmailTemplates\email-layout.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="EmailTemplates\verify-email.html">
