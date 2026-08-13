@@ -33,8 +33,8 @@ namespace Domain.Services
             new ModuleDef
             {
                 Code = "payments",
-                Name = "Pasarela de pagos (Wompi)",
-                Description = "Enlaces, suscripciones, productos, clientes y cobros Wompi.",
+                Name = "Pagos (Wompi)",
+                Description = "Enlaces, suscripciones y cobros en línea.",
                 Group = "Cobros",
                 Recommended = true,
                 PermissionCodes = new[]
@@ -50,8 +50,8 @@ namespace Domain.Services
             new ModuleDef
             {
                 Code = "dte",
-                Name = "Facturación electrónica (DTE)",
-                Description = "Emisión, config y dashboard de DTE.",
+                Name = "Facturación electrónica",
+                Description = "Emisión y configuración de DTE.",
                 Group = "Cobros",
                 Recommended = false,
                 PermissionCodes = new[]
@@ -63,8 +63,8 @@ namespace Domain.Services
             new ModuleDef
             {
                 Code = "email",
-                Name = "Correos de marca",
-                Description = "Plantillas (bienvenida, bolsa, pedidos) y marca del remitente.",
+                Name = "Correos",
+                Description = "Plantillas y marca del remitente.",
                 Group = "Comunicación",
                 Recommended = true,
                 PermissionCodes = new[] { "email-brand" },
@@ -73,7 +73,7 @@ namespace Domain.Services
             {
                 Code = "carts",
                 Name = "Carritos abandonados",
-                Description = "Listado ERP de carritos y recordatorios por correo.",
+                Description = "Carritos y recordatorios por correo.",
                 Group = "Comunicación",
                 Recommended = true,
                 PermissionCodes = new[] { "carts" },
@@ -81,8 +81,8 @@ namespace Domain.Services
             new ModuleDef
             {
                 Code = "cms",
-                Name = "CMS tienda",
-                Description = "Edición de páginas / contenido de la tienda.",
+                Name = "Contenido de tienda",
+                Description = "Páginas y contenido de la tienda.",
                 Group = "Tienda",
                 Recommended = true,
                 PermissionCodes = new[]
@@ -94,7 +94,7 @@ namespace Domain.Services
             {
                 Code = "cms-products",
                 Name = "Catálogo de productos",
-                Description = "Productos de tienda (vitrina + catálogo unificado).",
+                Description = "Productos para tienda y cobro.",
                 Group = "Tienda",
                 Recommended = false,
                 PermissionCodes = new[]
@@ -107,8 +107,8 @@ namespace Domain.Services
             new ModuleDef
             {
                 Code = "cms-publications",
-                Name = "Publicaciones / blog",
-                Description = "Artículos y publicaciones de la tienda.",
+                Name = "Publicaciones",
+                Description = "Artículos y blog de la tienda.",
                 Group = "Tienda",
                 Recommended = false,
                 PermissionCodes = new[]
@@ -121,7 +121,7 @@ namespace Domain.Services
             {
                 Code = "sales-orders",
                 Name = "Pedidos",
-                Description = "Pedidos, confirmación y generación de venta/compra.",
+                Description = "Pedidos y conversión a venta o compra.",
                 Group = "Operaciones",
                 Recommended = true,
                 PermissionCodes = new[]
@@ -135,7 +135,7 @@ namespace Domain.Services
             {
                 Code = "sales",
                 Name = "Ventas",
-                Description = "Documentos de venta generados.",
+                Description = "Documentos de venta.",
                 Group = "Operaciones",
                 Recommended = false,
                 PermissionCodes = new[]
@@ -148,7 +148,7 @@ namespace Domain.Services
             {
                 Code = "meta-crm",
                 Name = "Meta CRM",
-                Description = "Inbox Instagram / Messenger / WhatsApp.",
+                Description = "Inbox de Instagram, Messenger y WhatsApp.",
                 Group = "Marketing",
                 Recommended = false,
                 PermissionCodes = new[]
