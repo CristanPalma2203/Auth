@@ -22,9 +22,10 @@ namespace Application.Validators
             IAutenticationHelper autenticationHelper,
             ITenantContext tenantContext) : base(autenticationHelper) {
             RuleFor(x => x.AppUser.Name).NotEmpty();
-            RuleFor(x => x.AppUser.AccessIdentifier).NotEmpty().EmailAddress()
+            RuleFor(x => x.AppUser.AccessIdentifier).NotEmpty()
+                .MinimumLength(3).WithMessage("El identificador debe tener al menos 3 caracteres")
                 .Must(c => appUserRepository.Filter(new FindInternalUserByIdentifier(c)).Count() == 0)
-                .WithMessage("Ya existe un usuario con el mismo Email");
+                .WithMessage("Ya existe un usuario con el mismo identificador");
             RuleFor(x => x.AppUser.Roles).NotEmpty();
 
             // Un usuario sin empresa es admin de plataforma, asi que crear uno debe ser
@@ -36,10 +37,16 @@ namespace Application.Validators
                     .GreaterThan(0).WithMessage("Empresa inválida");
             });
 
-            RuleFor(x => x.AppUser.Dui).NotEmpty().WithMessage("El DUI es obligatorio")
-                .Matches(DuiPattern).WithMessage("El DUI debe tener el formato 00000000-0");
-            RuleFor(x => x.AppUser.Nit).NotEmpty().WithMessage("El NIT es obligatorio")
-                .Matches(NitPattern).WithMessage("El NIT debe tener el formato 0000-000000-000-0");
+            When(x => !string.IsNullOrWhiteSpace(x.AppUser.Dui), () =>
+            {
+                RuleFor(x => x.AppUser.Dui)
+                    .Matches(DuiPattern).WithMessage("El DUI debe tener el formato 00000000-0");
+            });
+            When(x => !string.IsNullOrWhiteSpace(x.AppUser.Nit), () =>
+            {
+                RuleFor(x => x.AppUser.Nit)
+                    .Matches(NitPattern).WithMessage("El NIT debe tener el formato 0000-000000-000-0");
+            });
 
             // La contraseña es opcional: si se omite se genera una y se envía por correo.
             When(x => !string.IsNullOrWhiteSpace(x.AppUser.Password), () =>

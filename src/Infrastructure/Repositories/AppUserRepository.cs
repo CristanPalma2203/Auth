@@ -22,9 +22,15 @@ namespace Infrastructure.Repositories
 
         public IPagina<AppUser> GetPagedWithRole(IConsulta ownerParameters, ISpecification<AppUser> busqueda)
         {
-            return PagedList<AppUser>.ToPagedList(dbContext.Set<AppUser>().OrderBy(on => on.Id).Include("Roles.Role").Include(c => c.Department).Where(busqueda.Traer()).AsQueryable(),
-                    ownerParameters.PageNumber,
-                    ownerParameters.PageSize);
+            return PagedList<AppUser>.ToPagedList(
+                dbContext.Set<AppUser>().OrderBy(on => on.Id)
+                    .Include("Roles.Role")
+                    .Include(c => c.Department)
+                    .Include(c => c.Tenant)
+                    .Where(busqueda.Traer())
+                    .AsQueryable(),
+                ownerParameters.PageNumber,
+                ownerParameters.PageSize);
         }
 
         public IPagina<AppUser> GetPagedWithRole(IConsulta ownerParameters)
@@ -32,6 +38,7 @@ namespace Infrastructure.Repositories
             var q = dbContext.Set<AppUser>().OrderBy(on => on.Id)
                 .Include("Roles.Role")
                 .Include(c => c.Department)
+                .Include(c => c.Tenant)
                 .Where(c => c.UserType == AppUser.internalUserType);
             return PagedList<AppUser>.ToPagedList(q,
                         ownerParameters.PageNumber,

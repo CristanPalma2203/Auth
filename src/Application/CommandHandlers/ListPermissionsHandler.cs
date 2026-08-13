@@ -1,6 +1,5 @@
 using Application.Commands;
 using Application.Dtos;
-using Application.Exceptions;
 using Application.Services.PermissionQuery;
 using Domain.Specifications;
 using Domain.Models;
@@ -19,26 +18,28 @@ namespace Application.CommandHandlers
         private readonly IPermissionQueryService consultarPermisoService;
         private readonly ITokenService tokenService;
         private readonly ITenantContext tenantContext;
+        private readonly ITenantContractPermissionService contractPermissions;
 
         public ListPermissionsHandler(
             IMapper mapper,
             IPermissionRepository permisorepo,
             IPermissionQueryService consultarPermisoService,
             ITokenService tokenService,
-            ITenantContext tenantContext)
+            ITenantContext tenantContext,
+            ITenantContractPermissionService contractPermissions)
         {
             this.mapper = mapper;
             this.permissionsRepo = permisorepo;
             this.consultarPermisoService = consultarPermisoService;
             this.tokenService = tokenService;
             this.tenantContext = tenantContext;
+            this.contractPermissions = contractPermissions;
         }
 
         public override IResponse Handle(ListPermissions message)
         {
             var permisos = permissionsRepo.Filter(new FindAssignablePermissions()).ToList();
 
-            // Herencia: Tenants admin solo ve/asigna los permisos que él tiene.
             if (!tenantContext.IsPlatformAdmin)
             {
                 var allowedIds = new HashSet<int>(
@@ -46,6 +47,12 @@ namespace Application.CommandHandlers
                         .Where(p => p != null)
                         .Select(p => p.Id));
                 permisos = permisos.Where(p => allowedIds.Contains(p.Id)).ToList();
+            }
+            else if (message.TenantId.HasValue && message.TenantId.Value > 0)
+            {
+                var allowed = contractPermissions.AllowedPermissionIds(message.TenantId);
+                if (allowed != null)
+                    permisos = permisos.Where(p => allowed.Contains(p.Id)).ToList();
             }
 
             IList<PermissionDto> permissionDtos = new List<PermissionDto>();

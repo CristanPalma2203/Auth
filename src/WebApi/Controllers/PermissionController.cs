@@ -23,9 +23,9 @@ namespace WebApi.Controllers
 
         // GET: api/Permission
         [HttpGet]
-        public IResponse Get()
+        public IResponse Get([FromQuery] int? tenantId = null)
         {
-            return CommandBus.execute(new ListPermissions());
+            return CommandBus.execute(new ListPermissions { TenantId = tenantId });
         }
     }
 }

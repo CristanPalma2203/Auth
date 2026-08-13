@@ -19,6 +19,7 @@ namespace Application.CommandHandlers.Role
         private readonly ITokenService tokenService;
         private readonly IAppUserRepository appUserRepository;
         private readonly ITenantContext tenantContext;
+        private readonly ITenantContractPermissionService contractPermissions;
 
         public EditRoleHandler(
             IRoleRepository roleRepository,
@@ -27,7 +28,8 @@ namespace Application.CommandHandlers.Role
             IEmailHelper correoHelper,
             IMapper mapper,
             IRolePermissionRepository rolePermissionRepository,
-            ITenantContext tenantContext)
+            ITenantContext tenantContext,
+            ITenantContractPermissionService contractPermissions)
         {
             this.roleRepository = roleRepository;
             this.mapper = mapper;
@@ -36,6 +38,7 @@ namespace Application.CommandHandlers.Role
             this.tokenService = tokenService;
             this.appUserRepository = appUserRepository;
             this.tenantContext = tenantContext;
+            this.contractPermissions = contractPermissions;
         }
 
         public override IResponse Handle(EditRole message)
@@ -48,11 +51,10 @@ namespace Application.CommandHandlers.Role
 
             tenantContext.EnsureSameTenantOrPlatform(dbrol.TenantId);
 
-            // No editar el rol con el que el usuario está autenticado
             if (appUser?.Roles != null && appUser.Roles.Any(r => r.RoleId == message.Id))
                 throw new HttpException(403, "No puede editar el rol que tiene asignado. Solo puede verlo.");
 
-            EnsureInheritablePermissions(message.Role.PermissionIds);
+            EnsureInheritablePermissions(message.Role.PermissionIds, dbrol.TenantId);
 
             foreach (var item in dbrol.Permissions) rolePermissionRepository.Delete(item.Id);
             dbrol.Update(message.Role.Name, message.Role.Description, message.Role.PermissionIds);
@@ -61,13 +63,26 @@ namespace Application.CommandHandlers.Role
             return mapper.Map<RoleDto>(rolCreado);
         }
 
-        private void EnsureInheritablePermissions(IList<int> permisoIds)
+        private void EnsureInheritablePermissions(IList<int> permisoIds, int? roleTenantId)
         {
-            if (tenantContext.IsPlatformAdmin) return;
             if (permisoIds == null || permisoIds.Count == 0) return;
-            var allowed = new HashSet<int>(tokenService.GetPermissions().Where(p => p != null).Select(p => p.Id));
+
+            HashSet<int> allowed = null;
+
+            if (!tenantContext.IsPlatformAdmin)
+            {
+                allowed = new HashSet<int>(
+                    tokenService.GetPermissions().Where(p => p != null).Select(p => p.Id));
+            }
+            else if (roleTenantId.HasValue)
+            {
+                // Platform admin editando rol de empresa: solo módulos contratados.
+                allowed = contractPermissions.AllowedPermissionIds(roleTenantId);
+            }
+
+            if (allowed == null) return; // rol plataforma
             if (permisoIds.Any(id => !allowed.Contains(id)))
-                throw new HttpException(403, "Solo puede asignar permisos que usted tiene");
+                throw new HttpException(403, "Solo puede asignar permisos de los módulos contratados / que usted tiene");
         }
     }
 }

@@ -99,6 +99,7 @@ namespace WebApi.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] UserDto value)
         {
+            if (value != null) value.Id = id;
             commandBus.execute(new EditUser { AppUser = value });
         }
 

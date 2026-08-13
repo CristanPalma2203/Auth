@@ -11,6 +11,7 @@ namespace Application.Dtos
         public string Description { get; set; }
 
         public DateTime CreatedAt { get; set; }
+        public int? TenantId { get; set; }
         public IList<int> PermissionIds { get; set; }
         public IList<PermissionDto> PermissionsWithMetadata { get; set; }
     }

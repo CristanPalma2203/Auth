@@ -30,13 +30,17 @@ namespace Application.CommandHandlers.Role
 
             // El admin de plataforma puede pedir los roles de una empresa concreta; el resto
             // siempre queda acotado a la suya, sin importar lo que envie.
+            // Sin tenantId: solo roles globales (TenantId null) — no mezclar roles de tienda.
             var filtrarPorTenant = tenantContext.IsPlatformAdmin && message.tenantId.HasValue;
 
             var lista = message.all == true && tenantContext.IsPlatformAdmin && !filtrarPorTenant
                 ? roleRepository.GetAll()
                 : roleRepository.Filter(filtrarPorTenant
                     ? new FindRolesByTenant(message.tenantId, isPlatformAdmin: false, soloAsignables: true)
-                    : new FindRolesByTenant(tenantContext.TenantId, tenantContext.IsPlatformAdmin, soloAsignables: true));
+                    : new FindRolesByTenant(
+                        tenantContext.IsPlatformAdmin ? null : tenantContext.TenantId,
+                        isPlatformAdmin: false,
+                        soloAsignables: true));
             foreach (var item in lista) listaDto.Add(mapper.Map<RoleDto>(item));
 
             return new DtoListaRolesSinPaginar { Lista = listaDto };

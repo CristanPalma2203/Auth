@@ -18,6 +18,7 @@ namespace Application.CommandHandlers.Role
         private readonly ITokenService tokenService;
         private readonly IAppUserRepository appUserRepository;
         private readonly ITenantContext tenantContext;
+        private readonly ITenantContractPermissionService contractPermissions;
 
         public CreateRoleHandler(
             IRoleRepository roleRepository,
@@ -25,7 +26,8 @@ namespace Application.CommandHandlers.Role
             IEmailHelper correoHelper,
             ITokenService tokenService,
             IAppUserRepository appUserRepository,
-            ITenantContext tenantContext)
+            ITenantContext tenantContext,
+            ITenantContractPermissionService contractPermissions)
         {
             this.roleRepository = roleRepository;
             this.mapper = mapper;
@@ -33,6 +35,7 @@ namespace Application.CommandHandlers.Role
             this.tokenService = tokenService;
             this.appUserRepository = appUserRepository;
             this.tenantContext = tenantContext;
+            this.contractPermissions = contractPermissions;
         }
 
         public override IResponse Handle(CreateRole message)
@@ -40,7 +43,11 @@ namespace Application.CommandHandlers.Role
             var idUsuario = tokenService.GetUserId();
             var appUser = appUserRepository.GetById(idUsuario);
 
-            EnsureInheritablePermissions(message.Role.PermissionIds);
+            var targetTenantId = tenantContext.IsPlatformAdmin
+                ? (int?)null
+                : tenantContext.TenantId;
+
+            EnsureInheritablePermissions(message.Role.PermissionIds, targetTenantId);
 
             var Roles = mapper.Map<Domain.Models.Role>(message.Role);
             Roles.SetCreatedAt();
@@ -49,17 +56,28 @@ namespace Application.CommandHandlers.Role
             if (!tenantContext.IsPlatformAdmin)
                 Roles.TenantId = tenantContext.TenantId;
             var rolCreado = roleRepository.Create(Roles);
-            correoHelper.SendRoleCreatedEmail(appUser.Name, message.Role.Name);
+            correoHelper.SendRoleCreatedEmail(appUser.Name, Roles.Name);
             return mapper.Map<RoleDto>(rolCreado);
         }
 
-        private void EnsureInheritablePermissions(IList<int> permisoIds)
+        private void EnsureInheritablePermissions(IList<int> permisoIds, int? roleTenantId)
         {
-            if (tenantContext.IsPlatformAdmin) return;
             if (permisoIds == null || permisoIds.Count == 0) return;
-            var allowed = new HashSet<int>(tokenService.GetPermissions().Where(p => p != null).Select(p => p.Id));
+
+            HashSet<int> allowed = null;
+            if (!tenantContext.IsPlatformAdmin)
+            {
+                allowed = new HashSet<int>(
+                    tokenService.GetPermissions().Where(p => p != null).Select(p => p.Id));
+            }
+            else if (roleTenantId.HasValue)
+            {
+                allowed = contractPermissions.AllowedPermissionIds(roleTenantId);
+            }
+
+            if (allowed == null) return;
             if (permisoIds.Any(id => !allowed.Contains(id)))
-                throw new HttpException(403, "Solo puede asignar permisos que usted tiene");
+                throw new HttpException(403, "Solo puede asignar permisos de los módulos contratados / que usted tiene");
         }
     }
 }

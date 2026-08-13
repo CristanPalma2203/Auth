@@ -29,6 +29,7 @@ namespace Infrastructure.Data
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<ExternalUser> ExternalUsers { get; set; }
         public DbSet<Tenant> Tenants { get; set; }
+        public DbSet<TenantModule> TenantModules { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             PermissionSeeder.Seed(builder);

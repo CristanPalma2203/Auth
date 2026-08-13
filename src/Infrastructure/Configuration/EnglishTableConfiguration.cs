@@ -15,6 +15,7 @@ namespace Infrastructure.Configuration
             builder.Entity<RolePermission>().ToTable("role_permission");
             builder.Entity<UserRole>().ToTable("user_role");
             builder.Entity<Tenant>().ToTable("tenant");
+            builder.Entity<TenantModule>().ToTable("tenant_module");
         }
     }
 }

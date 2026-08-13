@@ -12,7 +12,8 @@ namespace Domain.Models
 
 
         public static string codigoPermisoAdministracion = "administration";
-        public static List<int> accesosParaAdmin= new List<int> { idPermisoAdministracion,1, 2,3,4,5,6,7,8,9,10,12,11,12,13,14,15,16,17,18,19,20 };
+        /* Legacy: ya no filtrar por IDs fijos — platform admin recibe todos vía GetAllPermissionDtos */
+        public static List<int> accesosParaAdmin = new List<int>();
 
         public int Id { get; set; }
 

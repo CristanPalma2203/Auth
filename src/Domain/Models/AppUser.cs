@@ -11,7 +11,8 @@ namespace Domain.Models
         public static string internalUserType = "internal-user";
         public static string externalUserType = "external-user";
         public static int AdminUserId = 1;
-        public static string adminUserEmail = "admin@gmail.com";
+        /* Seed corelux: AccessIdentifier = admin (no email) */
+        public static string adminUserEmail = "admin";
         public static List<int> ExternalUserPermissionIds = new List<int>() {25};
         public int Id { get; set; }
         public string Name { get; set; }

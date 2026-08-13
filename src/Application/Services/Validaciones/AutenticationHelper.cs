@@ -14,30 +14,35 @@ namespace Application.Services.Validaciones
         {
             this.tokeService = tokeService;
         }
+
         public void Autenticado(IList<string> permisos)
         {
-            if (permisos.Count == 0) return;
-     
-            if (string.IsNullOrWhiteSpace(tokeService.GetTokenFromRequest())) {
-                throw new HttpException(401, "Unauthorized");
-            }
-            var respuesta = tokeService.VerifyToken();
-            if (respuesta)
-            {
-                if (tokeService.GetUserIdentifier()==AppUser.adminUserEmail) return;
-                if(!SearchInCollections(permisos, tokeService.GetPermissions())) throw new HttpException(403, "Forbidden");
-            }
-            else {
-                throw new HttpException(401, "Unauthorized");
-            }
-        }
-        private bool SearchInCollections(IList<string>  ListaPermisos, List<Permission> permisosToken) {
+            // Lista vacía = endpoint público (login, registro, recover, etc.)
+            if (permisos == null || permisos.Count == 0) return;
 
+            RequireAuthenticated();
+
+            if (tokeService.GetUserIdentifier() == AppUser.adminUserEmail) return;
+            if (!SearchInCollections(permisos, tokeService.GetPermissions()))
+                throw new HttpException(403, "Forbidden");
+        }
+
+        public void RequireAuthenticated()
+        {
+            if (string.IsNullOrWhiteSpace(tokeService.GetTokenFromRequest()))
+                throw new HttpException(401, "Unauthorized");
+            if (!tokeService.VerifyToken())
+                throw new HttpException(401, "Unauthorized");
+        }
+
+        private bool SearchInCollections(IList<string> ListaPermisos, List<Permission> permisosToken)
+        {
             var encuentra = false;
             foreach (var item in ListaPermisos)
             {
                 var resultado = permisosToken.Where(c => c.Code == item).FirstOrDefault();
-                if (resultado != null) {
+                if (resultado != null)
+                {
                     encuentra = true;
                 }
             }

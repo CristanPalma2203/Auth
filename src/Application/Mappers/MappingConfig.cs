@@ -63,9 +63,14 @@ namespace Application.Mappers
                 var roles = new List<RoleDto>();
                 if (item.Roles != null)
                 {
-                    foreach (var Roles in item.Roles)
+                    foreach (var userRole in item.Roles)
                     {
-                        roles.Add(new RoleDto { Id = Roles.Id, Name = Roles.Role.Name });
+                        roles.Add(new RoleDto
+                        {
+                            Id = userRole.RoleId,
+                            Name = userRole.Role?.Name,
+                            Description = userRole.Role?.Name,
+                        });
                     }
                 }
 
@@ -76,11 +81,16 @@ namespace Application.Mappers
                     AccessIdentifier = item.AccessIdentifier,
                     Id = item.Id,
                     Name = item.Name,
+                    Dui = item.Dui,
+                    Nit = item.Nit,
+                    Phone = item.Phone,
                     DepartmentId = item.DepartmentId,
                     DepartamentoDescripcion = item.Department != null ? item.Department.Name : "",
                     Roles = roles,
                     RegisteredAt = item.RegisteredAt,
-                    UserType = item.UserType
+                    UserType = item.UserType,
+                    TenantId = item.TenantId,
+                    TenantCodigo = item.Tenant?.Code,
                 });
             }
 
@@ -122,11 +132,16 @@ namespace Application.Mappers
                 AccessIdentifier = appUser.AccessIdentifier,
                 Id = appUser.Id,
                 Name = appUser.Name,
+                Dui = appUser.Dui,
+                Nit = appUser.Nit,
+                Phone = appUser.Phone,
                 DepartmentId = appUser.DepartmentId,
                 DepartamentoDescripcion = appUser.Department != null ? appUser.Department.Name : "",
                 Roles = roles,
                 RegisteredAt = appUser.RegisteredAt,
-                UserType = appUser.UserType
+                UserType = appUser.UserType,
+                TenantId = appUser.TenantId,
+                TenantCodigo = appUser.Tenant?.Code,
             };
         }
 
@@ -198,7 +213,10 @@ namespace Application.Mappers
         private static List<PermissionDto> GetAllPermissionDtos(IPermissionRepository permissionRepository)
         {
             var respuesta = new List<PermissionDto>();
-            var lista = permissionRepository.GetAll().Where(c => Permission.accesosParaAdmin.Contains(c.Id));
+            // Platform admin: catálogo completo (antes filtraba IDs 1–20 y cortaba ERP/pagos/DTE).
+            IEnumerable<Permission> lista = permissionRepository.GetAll();
+            if (Permission.accesosParaAdmin != null && Permission.accesosParaAdmin.Count > 0)
+                lista = lista.Where(c => Permission.accesosParaAdmin.Contains(c.Id));
             foreach (var Permissions in lista)
             {
                 respuesta.Add(Permissions.Adapt<PermissionDto>());

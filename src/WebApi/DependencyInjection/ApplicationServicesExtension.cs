@@ -12,6 +12,7 @@ namespace WebApi.DependencyInjection
         public static void AddApplicationServices(this IServiceCollection services)
         {
             services.AddTransient<IPermissionQueryService, PermissionQueryService>();
+            services.AddScoped<Domain.Service.ITenantContractPermissionService, Infrastructure.Service.TenantContractPermissionService>();
 
         }
     }
