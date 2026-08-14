@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -20,10 +21,12 @@ namespace Infrastructure.Service
         };
 
         private readonly IConfiguration configuration;
+        private readonly IHostEnvironment environment;
 
-        public ResendEmailClient(IConfiguration configuration)
+        public ResendEmailClient(IConfiguration configuration, IHostEnvironment environment)
         {
             this.configuration = configuration;
+            this.environment = environment;
         }
 
         public void Send(string to, string subject, string html)
@@ -37,6 +40,8 @@ namespace Infrastructure.Service
                 ?? Environment.GetEnvironmentVariable("Email__Resend__ApiKey");
             if (string.IsNullOrWhiteSpace(apiKey))
             {
+                if (environment.IsDevelopment())
+                    return;
                 throw new InvalidOperationException(
                     "Falta Email:Resend:ApiKey. Configúrala con user-secrets o la variable Email__Resend__ApiKey.");
             }

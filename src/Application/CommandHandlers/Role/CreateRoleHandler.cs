@@ -13,6 +13,7 @@ namespace Application.CommandHandlers.Role
     public class CreateRoleHandler : AbstractHandler<CreateRole>
     {
         private readonly IRoleRepository roleRepository;
+        private readonly ITenantRepository tenantRepository;
         private readonly IMapper mapper;
         private readonly IEmailHelper correoHelper;
         private readonly ITokenService tokenService;
@@ -22,6 +23,7 @@ namespace Application.CommandHandlers.Role
 
         public CreateRoleHandler(
             IRoleRepository roleRepository,
+            ITenantRepository tenantRepository,
             IMapper mapper,
             IEmailHelper correoHelper,
             ITokenService tokenService,
@@ -30,6 +32,7 @@ namespace Application.CommandHandlers.Role
             ITenantContractPermissionService contractPermissions)
         {
             this.roleRepository = roleRepository;
+            this.tenantRepository = tenantRepository;
             this.mapper = mapper;
             this.correoHelper = correoHelper;
             this.tokenService = tokenService;
@@ -49,12 +52,18 @@ namespace Application.CommandHandlers.Role
 
             EnsureInheritablePermissions(message.Role.PermissionIds, targetTenantId);
 
+            var tenantId = tenantContext.IsPlatformAdmin ? message.Role.TenantId : tenantContext.TenantId;
+            if (!tenantId.HasValue)
+                throw new HttpException(422, "Debe seleccionar la empresa del rol");
+            var tenant = tenantRepository.GetById(tenantId.Value);
+            if (tenant == null || !tenant.IsActive)
+                throw new HttpException(422, "La empresa seleccionada no existe o está inactiva");
+
             var Roles = mapper.Map<Domain.Models.Role>(message.Role);
             Roles.SetCreatedAt();
             Roles.CreateRolePermissions(message.Role.PermissionIds);
             Roles.IsAssignable = true;
-            if (!tenantContext.IsPlatformAdmin)
-                Roles.TenantId = tenantContext.TenantId;
+            Roles.TenantId = tenantId.Value;
             var rolCreado = roleRepository.Create(Roles);
             correoHelper.SendRoleCreatedEmail(appUser.Name, Roles.Name);
             return mapper.Map<RoleDto>(rolCreado);

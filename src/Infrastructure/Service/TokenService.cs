@@ -74,6 +74,18 @@ namespace Infrastructure.Service
                 var tidClaim = jwt.Claims.FirstOrDefault(c => c.Type == TenantContext.ClaimTenantId)?.Value;
                 var codeClaim = jwt.Claims.FirstOrDefault(c => c.Type == TenantContext.ClaimTenantCodigo)?.Value;
 
+                var expectedPermissions = appUser.Roles
+                    .SelectMany(role => role.Role.Permissions)
+                    .Select(rolePermission => rolePermission.Permission?.Code)
+                    .Where(code => !string.IsNullOrWhiteSpace(code))
+                    .ToHashSet(StringComparer.OrdinalIgnoreCase);
+                var tokenPermissions = jwt.Claims
+                    .Where(c => c.Type == "permisos")
+                    .Select(c => c.Value)
+                    .ToHashSet(StringComparer.OrdinalIgnoreCase);
+                if (!expectedPermissions.SetEquals(tokenPermissions))
+                    return false;
+
                 if (!appUser.TenantId.HasValue)
                     return string.IsNullOrEmpty(tidClaim);
 
@@ -177,6 +189,14 @@ namespace Infrastructure.Service
                 if (appUser.Tenant != null && !string.IsNullOrWhiteSpace(appUser.Tenant.Code))
                     claims.Add(new Claim(TenantContext.ClaimTenantCodigo, appUser.Tenant.Code));
             }
+
+            var permissionCodes = appUser.Roles
+                .SelectMany(role => role.Role.Permissions)
+                .Select(rolePermission => rolePermission.Permission?.Code)
+                .Where(code => !string.IsNullOrWhiteSpace(code))
+                .Distinct(StringComparer.OrdinalIgnoreCase);
+            claims.AddRange(permissionCodes.Select(code => new Claim("permisos", code)));
+
             return claims.ToArray();
         }
 
