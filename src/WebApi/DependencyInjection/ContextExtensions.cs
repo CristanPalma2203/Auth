@@ -1,4 +1,5 @@
-﻿using Domain.Repositories;
+﻿using System;
+using Domain.Repositories;
 using Domain.Service;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
@@ -17,7 +18,12 @@ namespace WebApi.DependencyInjection
             services.AddDbContext<AutenticationContext>(
          options =>
          {
-             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+             options.UseSqlServer(
+                 configuration.GetConnectionString("DefaultConnection"),
+                 sql => sql.EnableRetryOnFailure(
+                     maxRetryCount: 5,
+                     maxRetryDelay: TimeSpan.FromSeconds(30),
+                     errorNumbersToAdd: null));
 
             // options.EnableSensitiveDataLogging();
          });
