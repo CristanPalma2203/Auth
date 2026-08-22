@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -27,16 +28,16 @@ namespace WebApi.DependencyInjection
         {
             services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
             {
-                var allowedOrigins = configuration
+                var configured = configuration
                     .GetSection("Cors:AllowedOrigins")
                     .Get<string[]>()?
                     .Where(origin => !string.IsNullOrWhiteSpace(origin))
-                    .ToArray();
+                    ?? Array.Empty<string>();
 
-                if (allowedOrigins == null || allowedOrigins.Length == 0)
-                {
-                    allowedOrigins = DefaultLocalOrigins;
-                }
+                var allowedOrigins = configured
+                    .Concat(DefaultLocalOrigins)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToArray();
 
                 builder.WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader();
             }));
