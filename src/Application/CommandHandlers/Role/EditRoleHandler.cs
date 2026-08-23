@@ -54,13 +54,38 @@ namespace Application.CommandHandlers.Role
             if (appUser?.Roles != null && appUser.Roles.Any(r => r.RoleId == message.Id))
                 throw new HttpException(403, "No puede editar el rol que tiene asignado. Solo puede verlo.");
 
-            EnsureInheritablePermissions(message.Role.PermissionIds, dbrol.TenantId);
+            var permissionIds = DistinctPermissionIds(message.Role?.PermissionIds);
+            EnsureInheritablePermissions(permissionIds, dbrol.TenantId);
 
-            foreach (var item in dbrol.Permissions) rolePermissionRepository.Delete(item.Id);
-            dbrol.Update(message.Role.Name, message.Role.Description, message.Role.PermissionIds);
-            var rolCreado = roleRepository.Update(message.Id, dbrol);
-            correoHelper.SendRoleCreatedEmail(appUser.Name, message.Role.Name);
-            return mapper.Map<RoleDto>(rolCreado);
+            if (dbrol.Permissions != null)
+            {
+                foreach (var item in dbrol.Permissions.ToList())
+                    rolePermissionRepository.Delete(item);
+            }
+
+            dbrol.Name = message.Role.Name;
+            dbrol.Description = message.Role.Description;
+            dbrol.UpdatedAt = System.DateTime.Now;
+            dbrol.CreateRolePermissions(permissionIds);
+
+            // Ya está tracked: no llamar Update() (adjuntaría una segunda instancia).
+            TryNotifyRoleEmail(() => correoHelper.SendRoleEditedEmail(appUser?.Name, dbrol.Name));
+            return mapper.Map<RoleDto>(dbrol);
+        }
+
+        private static IList<int> DistinctPermissionIds(IList<int> permisoIds)
+        {
+            if (permisoIds == null) return new List<int>();
+            return permisoIds.Where(id => id > 0).Distinct().ToList();
+        }
+
+        private static void TryNotifyRoleEmail(System.Action send)
+        {
+            try { send(); }
+            catch (System.Exception)
+            {
+                // El correo no debe impedir guardar el rol.
+            }
         }
 
         private void EnsureInheritablePermissions(IList<int> permisoIds, int? roleTenantId)

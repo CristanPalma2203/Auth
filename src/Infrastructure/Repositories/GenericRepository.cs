@@ -45,7 +45,8 @@ namespace Infrastructure.Repositories
 
         public TEntity Delete(int id)
         {
-            var entity =  GetById(id);
+            var entity = GetById(id);
+            if (entity == null) return null;
             _dbContext.Set<TEntity>().Remove(entity);
             return entity;
         }

@@ -17,18 +17,22 @@ namespace Application.Validators
             IAutenticationHelper autenticationHelper,
             ITenantContext tenantContext) : base(autenticationHelper)
         {
-            RuleFor(x => x.Role.Name).NotEmpty();
+            RuleFor(x => x.Role).NotNull();
+            When(x => x.Role != null, () =>
+            {
+                RuleFor(x => x.Role.Name).NotEmpty();
+                RuleFor(x => x.Role.Description).NotEmpty();
+                RuleFor(x => x.Role.PermissionIds).NotEmpty();
+                When(_ => tenantContext.IsPlatformAdmin, () =>
+                    RuleFor(x => x.Role.TenantId).NotNull()
+                        .WithMessage("Debe seleccionar la empresa del rol"));
+            });
             RuleFor(x => x)
                 .Must(cmd => cmd.Role == null || string.IsNullOrWhiteSpace(cmd.Role.Name)
                     || roleRepository.Filter(p =>
                         p.Name == cmd.Role.Name
                         && p.TenantId == cmd.Role.TenantId).Count() == 0)
-                .WithMessage("Ya existe un rol con el mismo nombre en esta empresa"); 
-            RuleFor(x => x.Role.Description).NotEmpty();
-            RuleFor(x => x.Role.PermissionIds).NotEmpty();
-            When(_ => tenantContext.IsPlatformAdmin, () =>
-                RuleFor(x => x.Role.TenantId).NotNull()
-                    .WithMessage("Debe seleccionar la empresa del rol"));
+                .WithMessage("Ya existe un rol con el mismo nombre en esta empresa");
         }
         public override IList<string> RequiredPermissions => new List<string> { "role-create" };
     }

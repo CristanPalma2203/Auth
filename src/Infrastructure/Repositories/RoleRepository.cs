@@ -26,7 +26,9 @@ namespace Infrastructure.Repositories
 
         public Role GetByIdWithPermissions(int id)
         {
-            return dbContext.Set<Role>().AsNoTracking().Include(c => c.Permissions).FirstOrDefault(e => e.Id == id); ;
+            // Tracked: el update del rol muta esta instancia. AsNoTracking + Update()
+            // chocaba con Delete de RolePermission (misma key, dos instancias) → 500.
+            return dbContext.Set<Role>().Include(c => c.Permissions).FirstOrDefault(e => e.Id == id);
         }
     }
 }

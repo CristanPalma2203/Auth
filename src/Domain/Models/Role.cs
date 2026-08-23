@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Domain.Models
@@ -26,11 +27,12 @@ namespace Domain.Models
 
         public void CreateRolePermissions(IList<int> permisosLista) {
             this.Permissions = new List<RolePermission>();
-            foreach (var item in permisosLista)
+            if (permisosLista == null) return;
+            foreach (var item in permisosLista.Distinct())
             {
-                Permissions.Add(new RolePermission { PermissionId=item,Role=this});
+                if (item <= 0) continue;
+                Permissions.Add(new RolePermission { PermissionId = item, RoleId = this.Id, Role = this });
             }
-           
         }
         public void SetCreatedAt() {
             this.CreatedAt = DateTime.Now;

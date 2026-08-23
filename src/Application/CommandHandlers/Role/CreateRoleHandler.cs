@@ -46,12 +46,6 @@ namespace Application.CommandHandlers.Role
             var idUsuario = tokenService.GetUserId();
             var appUser = appUserRepository.GetById(idUsuario);
 
-            var targetTenantId = tenantContext.IsPlatformAdmin
-                ? (int?)null
-                : tenantContext.TenantId;
-
-            EnsureInheritablePermissions(message.Role.PermissionIds, targetTenantId);
-
             var tenantId = tenantContext.IsPlatformAdmin ? message.Role.TenantId : tenantContext.TenantId;
             if (!tenantId.HasValue)
                 throw new HttpException(422, "Debe seleccionar la empresa del rol");
@@ -59,14 +53,30 @@ namespace Application.CommandHandlers.Role
             if (tenant == null || !tenant.IsActive)
                 throw new HttpException(422, "La empresa seleccionada no existe o está inactiva");
 
+            var permissionIds = DistinctPermissionIds(message.Role?.PermissionIds);
+            EnsureInheritablePermissions(permissionIds, tenantId);
+
             var Roles = mapper.Map<Domain.Models.Role>(message.Role);
             Roles.SetCreatedAt();
-            Roles.CreateRolePermissions(message.Role.PermissionIds);
+            Roles.CreateRolePermissions(permissionIds);
             Roles.IsAssignable = true;
             Roles.TenantId = tenantId.Value;
             var rolCreado = roleRepository.Create(Roles);
-            correoHelper.SendRoleCreatedEmail(appUser.Name, Roles.Name);
+            try
+            {
+                correoHelper.SendRoleCreatedEmail(appUser?.Name, Roles.Name);
+            }
+            catch (System.Exception)
+            {
+                // El correo no debe impedir crear el rol.
+            }
             return mapper.Map<RoleDto>(rolCreado);
+        }
+
+        private static IList<int> DistinctPermissionIds(IList<int> permisoIds)
+        {
+            if (permisoIds == null) return new List<int>();
+            return permisoIds.Where(id => id > 0).Distinct().ToList();
         }
 
         private void EnsureInheritablePermissions(IList<int> permisoIds, int? roleTenantId)
