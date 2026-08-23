@@ -14,8 +14,12 @@ namespace Application.Validators
         public EditRoleValidator(IRoleRepository roleRepository, IAutenticationHelper autenticationHelper):base(autenticationHelper)
         {
 
-            RuleFor(x => x.Role).NotEmpty().Must(c => roleRepository.Filter(new Func<Domain.Models.Role, bool>(p => p.Name == c.Name && p.Id!=c.Id)).Count() == 0)
-               .WithMessage("Ya existe un Roles con el mismo nombre"); ;
+            RuleFor(x => x)
+                .Must(cmd => cmd.Role != null && roleRepository.Filter(p =>
+                    p.Name == cmd.Role.Name
+                    && p.Id != cmd.Id
+                    && p.TenantId == cmd.Role.TenantId).Count() == 0)
+                .WithMessage("Ya existe un rol con el mismo nombre en esta empresa");
             RuleFor(x => x.Role.Description).NotEmpty();
             RuleFor(x => x.Role.PermissionIds).NotEmpty();
         }

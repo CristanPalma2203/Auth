@@ -28,12 +28,25 @@ namespace Infrastructure.Service
                 .ToList();
 
             var wantedCodes = TenantModuleCatalog.PermissionCodesForModules(moduleCodes).ToList();
-            var ids = db.Permissions.AsNoTracking()
+            var allowed = db.Permissions.AsNoTracking()
                 .Where(p => wantedCodes.Contains(p.Code))
                 .Select(p => p.Id)
                 .ToList();
 
-            return new HashSet<int>(ids);
+            var links = db.Permissions.AsNoTracking()
+                .Select(p => new { p.Id, p.ParentPermissionId })
+                .ToList()
+                .ToDictionary(p => p.Id, p => p.ParentPermissionId);
+
+            var ids = new HashSet<int>(allowed);
+            foreach (var id in allowed)
+            {
+                var parentId = links.TryGetValue(id, out var pid) ? pid : null;
+                while (parentId.HasValue && ids.Add(parentId.Value))
+                    parentId = links.TryGetValue(parentId.Value, out pid) ? pid : null;
+            }
+
+            return ids;
         }
     }
 }

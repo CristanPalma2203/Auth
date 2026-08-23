@@ -17,8 +17,13 @@ namespace Application.Validators
             IAutenticationHelper autenticationHelper,
             ITenantContext tenantContext) : base(autenticationHelper)
         {
-            RuleFor(x => x.Role.Name).NotEmpty().Must(c => roleRepository.Filter(new Func<Domain.Models.Role, bool>(p => p.Name == c)).Count() == 0)
-                .WithMessage("Ya existe un Roles con el mismo nombre"); 
+            RuleFor(x => x.Role.Name).NotEmpty();
+            RuleFor(x => x)
+                .Must(cmd => cmd.Role == null || string.IsNullOrWhiteSpace(cmd.Role.Name)
+                    || roleRepository.Filter(p =>
+                        p.Name == cmd.Role.Name
+                        && p.TenantId == cmd.Role.TenantId).Count() == 0)
+                .WithMessage("Ya existe un rol con el mismo nombre en esta empresa"); 
             RuleFor(x => x.Role.Description).NotEmpty();
             RuleFor(x => x.Role.PermissionIds).NotEmpty();
             When(_ => tenantContext.IsPlatformAdmin, () =>
