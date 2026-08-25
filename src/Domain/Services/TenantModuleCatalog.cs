@@ -39,7 +39,7 @@ namespace Domain.Services
                 Recommended = true,
                 PermissionCodes = new[]
                 {
-                    "payments", "payment-links", "payment-link-create", "payment-dashboard",
+                    "payments", "payment-links", "payment-link-create", "payment-dashboard", "payment-config",
                     "payment-subscriptions", "payment-subscription-create",
                     "payment-customers", "payment-customer-create", "payment-customer-view",
                     "payment-products", "payment-product-create",
