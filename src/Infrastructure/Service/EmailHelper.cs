@@ -128,6 +128,10 @@ namespace Infrastructure.Service
             if (!string.IsNullOrWhiteSpace(brand?.StorefrontPublicUrl))
                 return brand.StorefrontPublicUrl.TrimEnd('/') + "/verificar-correo";
 
+            var storefrontVerify = configuration.GetValue<string>("AppSettings:VerifyEmailStorefront");
+            if (!string.IsNullOrWhiteSpace(storefrontVerify))
+                return storefrontVerify.TrimEnd('/');
+
             return (configuration.GetValue<string>("AppSettings:VerifyEmail")
                     ?? "http://localhost:3000/#/verificar-correo").TrimEnd('/');
         }
