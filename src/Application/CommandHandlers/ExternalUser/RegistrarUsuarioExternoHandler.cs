@@ -91,7 +91,7 @@ namespace Application.CommandHandlers.ExternalUser
             }
             catch (Exception ex)
             {
-                // Cuenta ya creada; no tumbar registro por fallo Resend/SMTP
+                // Cuenta ya creada; no tumbar registro por fallo Resend
                 logger.LogWarning(ex, "Registro ok pero fallo envio verificacion a {Email}", correo);
             }
 

@@ -153,7 +153,7 @@ namespace Domain.Services
                 Recommended = false,
                 PermissionCodes = new[]
                 {
-                    "marketing", "meta-crm",
+                    "marketing", "meta-crm", "meta-crm-config",
                 },
             },
             new ModuleDef
