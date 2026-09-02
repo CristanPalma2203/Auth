@@ -28,6 +28,8 @@ namespace WebApi.DependencyInjection
         {
             "https://corelux-erp-stg.pages.dev",
             "https://corelux-erp.pages.dev",
+            "https://corelux-tempora-stg.pages.dev",
+            "https://corelux-tempora.pages.dev",
         };
 
         public static void AddCorsConfig(this IServiceCollection services, IConfiguration configuration)
@@ -47,12 +49,23 @@ namespace WebApi.DependencyInjection
                     .ToArray();
 
                 builder
-                    .SetIsOriginAllowed(origin =>
-                        !string.IsNullOrWhiteSpace(origin)
-                        && allowedOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase))
+                    .SetIsOriginAllowed(origin => IsAllowedOrigin(origin, allowedOrigins))
                     .AllowAnyMethod()
                     .AllowAnyHeader();
             }));
+        }
+
+        /// <summary>Lista fija + cualquier https://corelux-*.pages.dev (ERP y tiendas).</summary>
+        private static bool IsAllowedOrigin(string origin, string[] allowedOrigins)
+        {
+            if (string.IsNullOrWhiteSpace(origin)) return false;
+            if (allowedOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase))
+                return true;
+            if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+                return false;
+            return uri.Scheme == Uri.UriSchemeHttps
+                && uri.Host.StartsWith("corelux-", StringComparison.OrdinalIgnoreCase)
+                && uri.Host.EndsWith(".pages.dev", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

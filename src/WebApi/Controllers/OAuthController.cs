@@ -328,7 +328,7 @@ namespace WebApi.Controllers
         private string GetDefaultReturnUrl()
         {
             return configuration["OAuth:Google:DefaultReturnUrl"]
-                   ?? "http://localhost:3001/auth/callback";
+                   ?? "https://corelux-tempora-stg.pages.dev/auth/callback";
         }
 
         private static string TryReadGoogleOAuthError(string raw)
@@ -343,8 +343,7 @@ namespace WebApi.Controllers
                 if (string.Equals(error, "invalid_client", StringComparison.OrdinalIgnoreCase))
                     return "invalid_client (ClientSecret no coincide con Google Cloud)";
                 if (string.Equals(error, "redirect_uri_mismatch", StringComparison.OrdinalIgnoreCase))
-                    return "redirect_uri_mismatch (en Google Cloud debe estar exacto: "
-                           + "http://localhost:8081/api/OAuth/google/callback)";
+                    return "redirect_uri_mismatch (en Google Cloud debe estar exacto OAuth:Google:CallbackUrl)";
                 if (string.Equals(error, "invalid_grant", StringComparison.OrdinalIgnoreCase))
                     return "invalid_grant (codigo usado o expirado; vuelve a Iniciar sesion)";
                 if (!string.IsNullOrWhiteSpace(description))
