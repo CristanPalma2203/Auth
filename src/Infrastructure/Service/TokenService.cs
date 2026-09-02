@@ -183,6 +183,8 @@ namespace Infrastructure.Service
                 new Claim(ClaimTypes.NameIdentifier, appUser.Id.ToString()),
                 new Claim(ClaimTypes.Surname, ""),
             };
+            if (!string.IsNullOrWhiteSpace(appUser.Name))
+                claims.Add(new Claim(ClaimTypes.Name, appUser.Name.Trim()));
             if (appUser.TenantId.HasValue)
             {
                 claims.Add(new Claim(TenantContext.ClaimTenantId, appUser.TenantId.Value.ToString()));

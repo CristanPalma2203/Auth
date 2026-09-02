@@ -2,7 +2,14 @@
   "OAuth": {
     "Google": {
       "ClientId": "",
-      "ClientSecret": ""
+      "ClientSecret": "",
+      "CallbackUrl": "http://localhost:8081/api/OAuth/google/callback",
+      "DefaultReturnUrl": "http://localhost:5173/auth/callback"
+    }
+  },
+  "Email": {
+    "Resend": {
+      "ApiKey": ""
     }
   }
 }
