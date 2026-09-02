@@ -26,4 +26,9 @@ jobs:
           context: .
           file: src/WebApi/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ghcr.io/cristanpalma2203/corelux-auth:latest
+          tags: |
+            ghcr.io/cristanpalma2203/corelux-auth:latest
+            ghcr.io/cristanpalma2203/corelux-auth:${{ github.sha }}
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
