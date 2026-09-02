@@ -24,6 +24,12 @@ namespace WebApi.DependencyInjection
             "http://127.0.0.1:5175",
         };
 
+        public static readonly string[] DefaultRemoteOrigins =
+        {
+            "https://corelux-erp-stg.pages.dev",
+            "https://corelux-erp.pages.dev",
+        };
+
         public static void AddCorsConfig(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
@@ -36,10 +42,16 @@ namespace WebApi.DependencyInjection
 
                 var allowedOrigins = configured
                     .Concat(DefaultLocalOrigins)
+                    .Concat(DefaultRemoteOrigins)
                     .Distinct(StringComparer.OrdinalIgnoreCase)
                     .ToArray();
 
-                builder.WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader();
+                builder
+                    .SetIsOriginAllowed(origin =>
+                        !string.IsNullOrWhiteSpace(origin)
+                        && allowedOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase))
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
             }));
         }
     }
