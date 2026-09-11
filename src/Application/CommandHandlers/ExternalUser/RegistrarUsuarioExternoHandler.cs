@@ -78,21 +78,17 @@ namespace Application.CommandHandlers.ExternalUser
 
             try
             {
-                // URL/marca salen de dbo.tenant (StorefrontPublicUrl + brand); ERP usa VerifyEmail fallback.
-                correoHelper.SendVerificationEmail(
+                // Render en este request (usa DbContext). HTTP a Resend va en background:
+                // si api.resend.com cuelga, el browser no espera 20s.
+                correoHelper.QueueVerificationEmail(
                     perfil.Email,
                     perfil.VerificationToken,
                     verificarBaseUrl: null,
                     tenantId: tenantId);
-
-                perfil.EmailSent = true;
-                perfil.EmailSentAt = DateTime.Now;
-                unitOfWork.Save();
             }
             catch (Exception ex)
             {
-                // Cuenta ya creada; no tumbar registro por fallo Resend
-                logger.LogWarning(ex, "Registro ok pero fallo envio verificacion a {Email}", correo);
+                logger.LogWarning(ex, "Registro ok pero fallo cola de verificacion a {Email}", correo);
             }
 
             return new OkResponse();

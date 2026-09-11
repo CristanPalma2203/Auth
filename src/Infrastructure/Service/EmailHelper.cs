@@ -82,6 +82,37 @@ namespace Infrastructure.Service
             string verificarBaseUrl,
             int? tenantId)
         {
+            var mail = BuildVerificationEmail(correoDestino, tokenVerificacion, verificarBaseUrl, tenantId);
+            SendMsj(mail.Subject, mail.To, mail.Html);
+        }
+
+        void IEmailHelper.QueueVerificationEmail(
+            string correoDestino,
+            string tokenVerificacion,
+            string verificarBaseUrl,
+            int? tenantId)
+        {
+            var mail = BuildVerificationEmail(correoDestino, tokenVerificacion, verificarBaseUrl, tenantId);
+            var client = resendClient;
+            _ = System.Threading.Tasks.Task.Run(async () =>
+            {
+                try
+                {
+                    await client.SendAsync(mail.To, mail.Subject, mail.Html).ConfigureAwait(false);
+                }
+                catch
+                {
+                    // Cuenta ya existe; Resend lento/caido no debe tumbar el request.
+                }
+            });
+        }
+
+        private (string To, string Subject, string Html) BuildVerificationEmail(
+            string correoDestino,
+            string tokenVerificacion,
+            string verificarBaseUrl,
+            int? tenantId)
+        {
             var brand = ResolveBrand(tenantId);
             var baseUrl = ResolveVerifyBaseUrl(verificarBaseUrl, brand);
             var url = baseUrl.TrimEnd('/') + "/" + tokenVerificacion;
@@ -93,7 +124,7 @@ namespace Infrastructure.Service
                 ctaUrl: url,
                 ctaLabel: "Verificar correo",
                 footerNote: "Si no creaste esta cuenta, puedes ignorar este mensaje.");
-            SendMsj($"Verifica tu correo — {brand.BrandName}", correoDestino, html);
+            return (correoDestino, $"Verifica tu correo — {brand.BrandName}", html);
         }
 
         public string RenderVerificationPreview(int? tenantId)

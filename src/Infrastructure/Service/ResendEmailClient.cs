@@ -17,7 +17,8 @@ namespace Infrastructure.Service
     {
         private static readonly HttpClient Http = new HttpClient
         {
-            BaseAddress = new Uri("https://api.resend.com/")
+            BaseAddress = new Uri("https://api.resend.com/"),
+            Timeout = TimeSpan.FromSeconds(8)
         };
 
         private readonly IConfiguration configuration;

@@ -12,6 +12,7 @@ namespace Domain.Helpers
         void SendVerificationEmail(string correoDestino, string tokenVerificacion);
         void SendVerificationEmail(string correoDestino, string tokenVerificacion, string verificarBaseUrl);
         void SendVerificationEmail(string correoDestino, string tokenVerificacion, string verificarBaseUrl, int? tenantId);
+        void QueueVerificationEmail(string correoDestino, string tokenVerificacion, string verificarBaseUrl, int? tenantId);
         string RenderVerificationPreview(int? tenantId);
         void SendEmailUpdateNotification(string correoDestino, string tokenVerificacion,DateTime fechaActulizacion, string correoNuevo);
         void SendAccessDeniedEmail(string correoDestino, string motivo);
