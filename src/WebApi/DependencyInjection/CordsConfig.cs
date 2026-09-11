@@ -55,7 +55,10 @@ namespace WebApi.DependencyInjection
             }));
         }
 
-        /// <summary>Lista fija + cualquier https://corelux-*.pages.dev (ERP y tiendas).</summary>
+        /// <summary>
+        /// Lista fija + https://corelux-*.pages.dev (alias prod)
+        /// y previews/branch https://&lt;hash&gt;.corelux-*.pages.dev
+        /// </summary>
         private static bool IsAllowedOrigin(string origin, string[] allowedOrigins)
         {
             if (string.IsNullOrWhiteSpace(origin)) return false;
@@ -63,9 +66,12 @@ namespace WebApi.DependencyInjection
                 return true;
             if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
                 return false;
-            return uri.Scheme == Uri.UriSchemeHttps
-                && uri.Host.StartsWith("corelux-", StringComparison.OrdinalIgnoreCase)
-                && uri.Host.EndsWith(".pages.dev", StringComparison.OrdinalIgnoreCase);
+            if (uri.Scheme != Uri.UriSchemeHttps) return false;
+            var host = uri.Host;
+            if (!host.EndsWith(".pages.dev", StringComparison.OrdinalIgnoreCase))
+                return false;
+            return host.StartsWith("corelux-", StringComparison.OrdinalIgnoreCase)
+                || host.Contains(".corelux-", StringComparison.OrdinalIgnoreCase);
         }
     }
 }
