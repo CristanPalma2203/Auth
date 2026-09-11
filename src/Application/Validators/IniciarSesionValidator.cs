@@ -19,7 +19,7 @@ namespace Application.Validators
         public SignInValidator(IAppUserRepository appUserRepository, IAutenticationHelper autenticationHelper) : base(autenticationHelper)
         {
             RuleFor(x => x.AppUser).NotEmpty().WithMessage("Ingrese el identifier")
-                .Must(c => appUserRepository.Filter(new Func<AppUser, bool>(p => p.AccessIdentifier == c && p.IsActive == false)).Count() == 0)
+                .Must(c => !HasInactiveUser(c))
                 .WithMessage("AppUser Inactivo");
 
             RuleFor(x => x.Password).NotEmpty().WithMessage("Ingrese la Contraseña");
@@ -31,6 +31,17 @@ namespace Application.Validators
             this.appUserRepository = appUserRepository;
             
         }
+        private bool HasInactiveUser(string username)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return false;
+            }
+
+            return appUserRepository.Filter(new FindUserByIdentifier(username))
+                .Any(p => p.IsActive == false);
+        }
+
         private bool ValidarCredencialesUsuario(string username, string password)
         {
                 if (string.IsNullOrWhiteSpace(username) || string.IsNullOrEmpty(password))

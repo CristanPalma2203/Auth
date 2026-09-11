@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Domain.Helpers;
+using Domain.Models;
 using Domain.Utilities;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace Domain.Specifications
 
         public FindUserByIdentifierAndPassword(string identifier, string password)
         {
-            this.identifier = identifier;
+            this.identifier = AccessIdentifierNormalizer.Normalize(identifier);
             this.password = password;
         }
         public Func<AppUser, bool> Traer()
