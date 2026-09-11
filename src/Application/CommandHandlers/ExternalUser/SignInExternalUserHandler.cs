@@ -72,6 +72,9 @@ namespace Application.CommandHandlers.ExternalUser
                 throw new HttpException(422, StorefrontLoginMessages.AccessNotApproved);
             }
 
+            // SKIP user_role / role_permission. STG smoke Id=6 and Google Id=4 have
+            // no storefront client role (only Admin sistema / Administrador Tempora /
+            // Administrador Carbonera exist). Token claims omit "permisos" if empty.
             appUser.Roles ??= new List<UserRole>();
             var respuesta = UserMappingHelper.ToDtoLogin(appUser, permissionRepository);
             respuesta.Token = tokenService.CreateOrGetToken(appUser);

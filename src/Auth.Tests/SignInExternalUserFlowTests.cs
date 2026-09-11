@@ -119,7 +119,10 @@ namespace Auth.Tests
         [Test]
         public void Storefront_accepts_external_user_with_verified_approved_profile_without_roles()
         {
+            // Database: no storefront client role. Smoke Id=6 and Google Id=4 have
+            // zero user_role rows (same as InitializeExternal / OAuth upsert).
             var user = ExternalCustomer("buyer@luxware.co", "secret");
+            user.Roles = null;
             var profile = new ExternalUser
             {
                 Email = user.AccessIdentifier,
@@ -140,6 +143,7 @@ namespace Auth.Tests
             Assert.That(login.Token, Is.EqualTo("storefront-token"));
             Assert.That(login.UserType, Is.EqualTo(AppUser.externalUserType));
             Assert.That(login.AccessIdentifier, Is.EqualTo(user.AccessIdentifier));
+            Assert.That(login.Roles, Is.Empty);
         }
 
         [Test]
