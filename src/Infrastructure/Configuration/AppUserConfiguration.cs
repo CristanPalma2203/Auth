@@ -11,7 +11,13 @@ namespace Infrastructure.Configuration
     {
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
-            builder.Property(c => c.AccessIdentifier).HasMaxLength(100);
+            // STG SQL (qa.smoke Id=5): columns are AccessIdentifier and Password.
+            // There is no PasswordHash column — map the real names so EF cannot drop the hash.
+            builder.Property(c => c.AccessIdentifier)
+                .HasColumnName("AccessIdentifier")
+                .HasMaxLength(100);
+            builder.Property(c => c.Password)
+                .HasColumnName("Password");
 
             builder.HasIndex(c => c.AccessIdentifier).IsUnique();
         }

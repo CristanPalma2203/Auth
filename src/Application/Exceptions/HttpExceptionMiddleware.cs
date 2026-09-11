@@ -16,6 +16,33 @@ namespace Application.Exceptions
             this.next = next;
         }
 
+        private static bool IsDevelopment()
+        {
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            return string.Equals(env, "Development", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static async Task WriteJsonError(HttpContext context, int statusCode, string message)
+        {
+            if (context.Response.HasStarted)
+            {
+                throw new InvalidOperationException(
+                    "The response has already started, cannot write exception body.");
+            }
+
+            context.Response.StatusCode = statusCode;
+            var responseFeature = context.Features.Get<IHttpResponseFeature>();
+            if (responseFeature != null)
+            {
+                responseFeature.ReasonPhrase = message;
+            }
+
+            context.Response.ContentType = "application/json; charset=utf-8";
+            var payload = Encoding.UTF8.GetBytes(
+                $"{{\"message\":{System.Text.Json.JsonSerializer.Serialize(message ?? "")}}}");
+            await context.Response.Body.WriteAsync(payload);
+        }
+
         public async Task Invoke(HttpContext context)
         {
             try
@@ -24,18 +51,18 @@ namespace Application.Exceptions
             }
             catch (HttpException httpException)
             {
-                context.Response.StatusCode = httpException.StatusCode;
-                var responseFeature = context.Features.Get<IHttpResponseFeature>();
-                responseFeature.ReasonPhrase = httpException.Message;
-
-                // El front necesita body JSON; ReasonPhrase solo no llega a fetch().
-                if (!context.Response.HasStarted)
+                await WriteJsonError(context, httpException.StatusCode, httpException.Message);
+            }
+            catch (Exception)
+            {
+                // Development: let UseDeveloperExceptionPage surface the real error.
+                // Staging/Production: JSON 500 (never empty body / remapped 404).
+                if (IsDevelopment())
                 {
-                    context.Response.ContentType = "application/json; charset=utf-8";
-                    var payload = Encoding.UTF8.GetBytes(
-                        $"{{\"message\":{System.Text.Json.JsonSerializer.Serialize(httpException.Message ?? "")}}}");
-                    await context.Response.Body.WriteAsync(payload);
+                    throw;
                 }
+
+                await WriteJsonError(context, StatusCodes.Status500InternalServerError, "Error interno del servidor");
             }
         }
     }

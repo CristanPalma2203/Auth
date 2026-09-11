@@ -23,6 +23,7 @@ namespace Domain.Models
         public string Nit { get; set; }
         public string Phone { get; set; }
         public bool IsActive { get; set; }
+        /// <summary>Stored SHA-256 hex in column <c>Password</c> (app_user). No PasswordHash column.</summary>
         public string Password { get; set; }
         public string TemporaryCode { get; set; }
         public int? DepartmentId { get; set; }
