@@ -9,6 +9,7 @@ using System;
 
 namespace Infrastructure.Data
 {
+    /// <summary>Schema EF lo dueña Backend (ReceiptsContext + Data/Migrations). Auth no llama Database.Migrate().</summary>
     public class AutenticationContext : DbContext
     {
         private readonly DbContextOptions<AutenticationContext> options;
