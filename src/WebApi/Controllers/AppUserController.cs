@@ -49,6 +49,11 @@ namespace WebApi.Controllers
             return respuesta;
         }
 
+        /// <summary>
+        /// Login ERP / portal interno. No filtra UserType (internal-user y
+        /// external-user pueden entrar). Storefront Tempora debe usar
+        /// POST /api/ExternalUser/login.
+        /// </summary>
         [HttpPost]
         [Route("login")]
         public IResponse iniciarSesion([FromBody] SignIn crenciales)

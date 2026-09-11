@@ -23,6 +23,18 @@ namespace WebApi.Controllers
             return CommandBus.execute(value);
         }
 
+        /// <summary>
+        /// Login storefront (Tempora). Solo UserType=external-user con fila
+        /// external_user verificada y aprobada. Gestores/internal-user → 403.
+        /// ERP internos siguen en POST /api/AppUser/login.
+        /// Body: { "appUser", "password" } (igual que AppUser/login).
+        /// </summary>
+        [HttpPost("login", Name = "loginUsuarioExterno")]
+        public IResponse Login([FromBody] SignInExternalUser value)
+        {
+            return CommandBus.execute(value);
+        }
+
         [HttpPut("verificar-correo", Name = "verificarCorreoUsuarioExterno")]
         public IResponse VerifyEmail([FromBody] VerifyEmail verificarCorreo)
         {
