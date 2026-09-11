@@ -22,8 +22,7 @@ namespace Application.Validators.ExternalUser
             this.appUserRepository = appUserRepository;
 
             RuleFor(x => x.Identifier).NotEmpty().WithMessage("Ingrese el identifier")
-                .Must(c => appUserRepository.Filter(new Func<AppUser, bool>(p =>
-                    p.AccessIdentifier == c && p.IsActive == false)).Count() == 0)
+                .Must(c => !HasInactiveUser(c))
                 .WithMessage(StorefrontLoginMessages.InactiveUser);
 
             RuleFor(x => x.Password).NotEmpty().WithMessage("Ingrese la Contraseña");
@@ -31,6 +30,17 @@ namespace Application.Validators.ExternalUser
             RuleFor(x => x)
                 .Must(c => CredentialsMatch(c.Identifier, c.Password))
                 .WithMessage(StorefrontLoginMessages.InvalidCredentials);
+        }
+
+        private bool HasInactiveUser(string username)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return false;
+            }
+
+            return appUserRepository.Filter(new FindUserByIdentifier(username))
+                .Any(p => p.IsActive == false);
         }
 
         private bool CredentialsMatch(string username, string password)

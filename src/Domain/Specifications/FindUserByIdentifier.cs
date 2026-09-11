@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Domain.Helpers;
+using Domain.Models;
 using Domain.Utilities;
 using System;
 
@@ -10,7 +11,7 @@ namespace Domain.Specifications
 
         public FindUserByIdentifier(string identifier)
         {
-            this.identifier = identifier;
+            this.identifier = AccessIdentifierNormalizer.Normalize(identifier);
         }
         public Func<AppUser, bool> Traer()
         {

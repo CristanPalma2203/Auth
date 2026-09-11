@@ -27,7 +27,9 @@ namespace WebApi.Controllers
         /// Login storefront (Tempora). Solo UserType=external-user con fila
         /// external_user verificada y aprobada. Gestores/internal-user → 403.
         /// ERP internos siguen en POST /api/AppUser/login.
-        /// Body: { "appUser", "password" } (igual que AppUser/login).
+        /// Body JSON: { "appUser", "password" } (igual que AppUser/login).
+        /// Content-Type: application/json — el '+' del email se conserva.
+        /// application/x-www-form-urlencoded no se bindea (415, no 422).
         /// </summary>
         [HttpPost("login", Name = "loginUsuarioExterno")]
         public IResponse Login([FromBody] SignInExternalUser value)

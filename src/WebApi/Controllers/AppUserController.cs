@@ -53,6 +53,8 @@ namespace WebApi.Controllers
         /// Login ERP / portal interno. No filtra UserType (internal-user y
         /// external-user pueden entrar). Storefront Tempora debe usar
         /// POST /api/ExternalUser/login.
+        /// Binder: [FromBody] JSON únicamente (Content-Type: application/json).
+        /// Un '+' en appUser se conserva. form-urlencoded no se bindea (415).
         /// </summary>
         [HttpPost]
         [Route("login")]

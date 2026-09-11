@@ -1,3 +1,4 @@
+using Domain.Helpers;
 using Domain.Models;
 using System;
 
@@ -9,7 +10,7 @@ namespace Domain.Specifications
 
         public FindExternalUserByIdentifier(string identifier)
         {
-            this.identifier = identifier;
+            this.identifier = AccessIdentifierNormalizer.Normalize(identifier);
         }
 
         public Func<ExternalUser, bool> Traer()

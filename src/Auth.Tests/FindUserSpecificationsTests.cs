@@ -77,6 +77,33 @@ namespace Auth.Tests
         }
 
         [Test]
+        public void FindUserByIdentifierAndPassword_json_plus_address_matches()
+        {
+            const string stored = "qa.smoke+stg@luxware.co";
+            var hashed = PasswordHelper.getPassword("secret");
+            var user = new AppUser { AccessIdentifier = stored, Password = hashed };
+            var spec = new FindUserByIdentifierAndPassword(stored, "secret");
+
+            Assert.That(spec.Traer()(user), Is.True);
+        }
+
+        [Test]
+        public void FindUserByIdentifierAndPassword_form_decoded_plus_as_space_still_matches()
+        {
+            // application/x-www-form-urlencoded: '+' → ' '
+            const string stored = "qa.smoke+stg@luxware.co";
+            const string incoming = "qa.smoke stg@luxware.co";
+            var hashed = PasswordHelper.getPassword("secret");
+            var user = new AppUser { AccessIdentifier = stored, Password = hashed };
+
+            Assert.That(Domain.Utilities.RegexUtilities.IsValidEmail(incoming), Is.False,
+                "espacio en local-part no es email válido; sin normalizar caía al compare de documento");
+
+            var spec = new FindUserByIdentifierAndPassword(incoming, "secret");
+            Assert.That(spec.Traer()(user), Is.True);
+        }
+
+        [Test]
         public void FindUserByIdentifierAndPassword_unknown_user_is_empty()
         {
             var spec = new FindUserByIdentifierAndPassword("nobody@example.com", "secret");

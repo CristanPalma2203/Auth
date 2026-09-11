@@ -1,4 +1,5 @@
 using Application.Common;
+using Domain.Helpers;
 
 namespace Application.Commands.ExternalUser
 {
@@ -13,6 +14,7 @@ namespace Application.Commands.ExternalUser
         public string Password { get; set; }
 
         public string Identifier =>
-            !string.IsNullOrWhiteSpace(AppUser) ? AppUser : Email;
+            AccessIdentifierNormalizer.Normalize(
+                !string.IsNullOrWhiteSpace(AppUser) ? AppUser : Email);
     }
 }
