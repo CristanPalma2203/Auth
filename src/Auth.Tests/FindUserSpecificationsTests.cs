@@ -40,6 +40,43 @@ namespace Auth.Tests
         }
 
         [Test]
+        public void FindUserByIdentifierAndPassword_stg_shape_compares_Password_column()
+        {
+            // STG qa.smoke Id=5: AccessIdentifier len 23, Password len 64, both non-null. Seed is not empty-hash.
+            const string identifier = "qa.smoke@luxware.co";
+
+            var storedPassword = PasswordHelper.getPassword("Secret1!");
+            Assert.That(storedPassword, Has.Length.EqualTo(64));
+
+            var user = new AppUser
+            {
+                Id = 5,
+                AccessIdentifier = identifier,
+                Password = storedPassword
+            };
+
+            var spec = new FindUserByIdentifierAndPassword(identifier, "Secret1!");
+            Assert.DoesNotThrow(() => spec.Traer()(user));
+            Assert.That(spec.Traer()(user), Is.True);
+            Assert.That(user.Password, Is.EqualTo(storedPassword));
+        }
+
+        [Test]
+        public void FindUserByIdentifierAndPassword_null_request_password_does_not_throw()
+        {
+            var storedPassword = PasswordHelper.getPassword("Secret1!");
+            var user = new AppUser
+            {
+                AccessIdentifier = "qa.smoke@luxware.co",
+                Password = storedPassword
+            };
+
+            var spec = new FindUserByIdentifierAndPassword(user.AccessIdentifier, null);
+            Assert.DoesNotThrow(() => spec.Traer()(user));
+            Assert.That(spec.Traer()(user), Is.False);
+        }
+
+        [Test]
         public void FindUserByIdentifierAndPassword_unknown_user_is_empty()
         {
             var spec = new FindUserByIdentifierAndPassword("nobody@example.com", "secret");

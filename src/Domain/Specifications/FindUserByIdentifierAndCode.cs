@@ -29,18 +29,18 @@ namespace Domain.Specifications
                 return _ => false;
             }
 
+            // Compare AppUser.Password (EF → column Password). Never PasswordHash (column does not exist).
+            // Original NRE at this file ~L28: AccessIdentifier.Replace or identifier.Replace when either was null.
             if (RegexUtilities.IsValidEmail(identifier))
             {
                 return new Func<AppUser, bool>(c =>
                     AccessIdentifiersEqualEmail(c?.AccessIdentifier, identifier)
-                    && !string.IsNullOrEmpty(c?.Password)
-                    && c.Password == pass);
+                    && StoredPasswordEquals(c?.Password, pass));
             }
 
             return new Func<AppUser, bool>(c =>
                 AccessIdentifiersEqualDocument(c?.AccessIdentifier, identifier)
-                && !string.IsNullOrEmpty(c?.Password)
-                && c.Password == pass);
+                && StoredPasswordEquals(c?.Password, pass));
         }
 
         private static bool AccessIdentifiersEqualEmail(string stored, string incoming)
@@ -61,6 +61,13 @@ namespace Domain.Specifications
             }
 
             return stored.Replace("-", "").Trim() == incoming.Replace("-", "").Trim();
+        }
+
+        private static bool StoredPasswordEquals(string storedPassword, string incomingHash)
+        {
+            return !string.IsNullOrEmpty(storedPassword)
+                && !string.IsNullOrEmpty(incomingHash)
+                && storedPassword == incomingHash;
         }
     }
 }
