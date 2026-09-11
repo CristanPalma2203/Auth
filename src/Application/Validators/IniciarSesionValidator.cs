@@ -33,8 +33,13 @@ namespace Application.Validators
         }
         private bool ValidarCredencialesUsuario(string username, string password)
         {
+                if (string.IsNullOrWhiteSpace(username) || string.IsNullOrEmpty(password))
+                {
+                    return false;
+                }
+
                 var resultado = appUserRepository.Filter(new FindUserByIdentifierAndPassword(username, password));
-                return resultado.Count() > 0;
+                return resultado != null && resultado.Count() > 0;
         }
 
         public override IList<string> RequiredPermissions => new List<string>();

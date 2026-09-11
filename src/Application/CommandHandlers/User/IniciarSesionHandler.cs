@@ -1,6 +1,7 @@
 using Application.Commands.AppUser;
 using Application.Dtos;
 using Application.Dtos.AppUser;
+using Application.Exceptions;
 using Application.Mappers;
 using Domain.Specifications;
 using Domain.Repositories;
@@ -28,8 +29,20 @@ namespace Application.CommandHandlers.AppUser
 
         public override IResponse Handle(SignIn message)
         {
+            if (message == null
+                || string.IsNullOrWhiteSpace(message.AppUser)
+                || string.IsNullOrEmpty(message.Password))
+            {
+                throw new HttpException(422, "AppUser o contraseña es incorrecto");
+            }
+
             var appUser = appUserRepository.GetUserWithRolePermissions(
                 new FindUserByIdentifierAndPassword(message.AppUser, message.Password));
+
+            if (appUser == null || string.IsNullOrEmpty(appUser.Password))
+            {
+                throw new HttpException(422, "AppUser o contraseña es incorrecto");
+            }
 
             var respuesta = UserMappingHelper.ToDtoLogin(appUser, permissionRepository);
             respuesta.Token = tokenService.CreateOrGetToken(appUser);

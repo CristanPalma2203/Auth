@@ -18,14 +18,43 @@ namespace Domain.Specifications
         }
         public Func<AppUser, bool> Traer()
         {
+            if (string.IsNullOrWhiteSpace(identifier) || string.IsNullOrEmpty(codigo))
+            {
+                return _ => false;
+            }
+
             if (RegexUtilities.IsValidEmail(identifier))
             {
-                return new Func<AppUser, bool>(c => c.AccessIdentifier.ToLower().Trim() == this.identifier.ToLower().Trim() && c.TemporaryCode == codigo);
+                return new Func<AppUser, bool>(c =>
+                    AccessIdentifiersEqualEmail(c?.AccessIdentifier, identifier)
+                    && !string.IsNullOrEmpty(c?.TemporaryCode)
+                    && c.TemporaryCode == codigo);
             }
-            else {
-                return new Func<AppUser, bool>(c => c.AccessIdentifier.Replace("-", "").Trim() == this.identifier.Replace("-", "").Trim() && c.TemporaryCode == codigo);
+
+            return new Func<AppUser, bool>(c =>
+                AccessIdentifiersEqualDocument(c?.AccessIdentifier, identifier)
+                && !string.IsNullOrEmpty(c?.TemporaryCode)
+                && c.TemporaryCode == codigo);
+        }
+
+        private static bool AccessIdentifiersEqualEmail(string stored, string incoming)
+        {
+            if (string.IsNullOrWhiteSpace(stored) || string.IsNullOrWhiteSpace(incoming))
+            {
+                return false;
             }
-        
+
+            return stored.ToLower().Trim() == incoming.ToLower().Trim();
+        }
+
+        private static bool AccessIdentifiersEqualDocument(string stored, string incoming)
+        {
+            if (string.IsNullOrWhiteSpace(stored) || string.IsNullOrWhiteSpace(incoming))
+            {
+                return false;
+            }
+
+            return stored.Replace("-", "").Trim() == incoming.Replace("-", "").Trim();
         }
     }
 }

@@ -71,7 +71,13 @@ namespace WebApi
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                // Path must map to ErrorController. AllowStatusCode404Response = false
+                // prevents a missing handler from masking the real exception as HTTP 404.
+                app.UseExceptionHandler(new ExceptionHandlerOptions
+                {
+                    ExceptionHandlingPath = "/Error",
+                    AllowStatusCode404Response = false
+                });
                 app.UseHsts();
             }
 
