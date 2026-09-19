@@ -10,6 +10,9 @@ namespace Domain.Models
         public Tenant Tenant { get; set; }
         /// <summary>Código del pack (payments, dte, cms, …).</summary>
         public string ModuleCode { get; set; }
+        public string TierCode { get; set; }
+        public int? QuoteId { get; set; }
+        public string SettingsJson { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

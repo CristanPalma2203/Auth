@@ -11,6 +11,8 @@ namespace Infrastructure.Configuration
             builder.ToTable("tenant_module");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.ModuleCode).HasMaxLength(40).IsRequired();
+            builder.Property(x => x.TierCode).HasMaxLength(40);
+            builder.Property(x => x.SettingsJson).HasColumnType("nvarchar(max)");
             builder.HasIndex(x => new { x.TenantId, x.ModuleCode }).IsUnique();
             builder.HasOne(x => x.Tenant)
                 .WithMany()

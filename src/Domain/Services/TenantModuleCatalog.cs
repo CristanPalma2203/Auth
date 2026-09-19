@@ -28,6 +28,11 @@ namespace Domain.Services
             "roles", "role-list", "role-create", "role-edit", "role-view",
         };
 
+        private static readonly string[] CrmPermissionCodes =
+        {
+            "marketing", "meta-crm", "meta-crm-config",
+        };
+
         public static readonly ModuleDef[] All =
         {
             new ModuleDef
@@ -151,10 +156,79 @@ namespace Domain.Services
                 Description = "Inbox de Instagram, Messenger y WhatsApp.",
                 Group = "Marketing",
                 Recommended = false,
-                PermissionCodes = new[]
-                {
-                    "marketing", "meta-crm", "meta-crm-config",
-                },
+                PermissionCodes = CrmPermissionCodes,
+            },
+            new ModuleDef
+            {
+                Code = "crm",
+                Name = "CRM WhatsApp",
+                Description = "Inbox WhatsApp (Cloud API). Alias comercial de meta-crm.",
+                Group = "Marketing",
+                Recommended = false,
+                PermissionCodes = CrmPermissionCodes,
+            },
+            new ModuleDef
+            {
+                Code = "calendar",
+                Name = "Calendario",
+                Description = "Reservas y citas. El anticipo vive en SettingsJson.",
+                Group = "Tienda",
+                Recommended = false,
+                PermissionCodes = Array.Empty<string>(),
+            },
+            new ModuleDef
+            {
+                Code = "loyalty",
+                Name = "Clientes frecuentes",
+                Description = "Pases Apple Wallet / Google Wallet.",
+                Group = "Tienda",
+                Recommended = false,
+                PermissionCodes = Array.Empty<string>(),
+            },
+            new ModuleDef
+            {
+                Code = "luxia",
+                Name = "LuxIA",
+                Description = "Motor de IA de plataforma.",
+                Group = "IA",
+                Recommended = false,
+                PermissionCodes = Array.Empty<string>(),
+            },
+            new ModuleDef
+            {
+                Code = "luxia-crm",
+                Name = "LuxIA en WhatsApp",
+                Description = "Auto-reply y cierre de ventas en el inbox.",
+                Group = "IA",
+                Recommended = false,
+                PermissionCodes = Array.Empty<string>(),
+            },
+            new ModuleDef
+            {
+                Code = "luxia-ops",
+                Name = "LuxIA en operaciones",
+                Description = "Resumen del día y borradores.",
+                Group = "IA",
+                Recommended = false,
+                PermissionCodes = Array.Empty<string>(),
+            },
+            new ModuleDef
+            {
+                Code = "luxia-cms",
+                Name = "LuxIA en CMS",
+                Description = "Copy de tienda y secciones.",
+                Group = "IA",
+                Recommended = false,
+                PermissionCodes = Array.Empty<string>(),
+            },
+            new ModuleDef
+            {
+                Code = "luxia-dte",
+                Name = "LuxIA en DTE",
+                Description = "Ayuda a explicar rechazos MH.",
+                Group = "IA",
+                Recommended = false,
+                PermissionCodes = Array.Empty<string>(),
             },
             new ModuleDef
             {
@@ -182,6 +256,11 @@ namespace Domain.Services
             {
                 var c = (raw ?? "").Trim().ToLowerInvariant();
                 if (valid.Contains(c)) result.Add(c);
+            }
+            if (result.Contains("crm") || result.Contains("meta-crm"))
+            {
+                if (valid.Contains("crm")) result.Add("crm");
+                if (valid.Contains("meta-crm")) result.Add("meta-crm");
             }
             return result;
         }

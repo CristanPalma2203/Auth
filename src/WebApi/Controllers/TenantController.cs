@@ -59,6 +59,15 @@ namespace WebApi.Controllers
             public bool? IsActive { get; set; }
             /// <summary>Códigos de módulo SaaS (payments, dte, cms, …). Solo plataforma.</summary>
             public List<string> Modules { get; set; }
+            /// <summary>Asignaciones con piso y settings. Si viene, manda sobre Modules.</summary>
+            public List<ModuleAssignmentBody> ModuleAssignments { get; set; }
+        }
+
+        public class ModuleAssignmentBody
+        {
+            public string Code { get; set; }
+            public string TierCode { get; set; }
+            public string SettingsJson { get; set; }
         }
 
         /// <summary>Catálogo de módulos disponibles para contratar por empresa.</summary>
@@ -172,12 +181,15 @@ namespace WebApi.Controllers
 
             var tid = tenantContext.TenantId
                 ?? throw new HttpException(403, "Sin empresa");
-            var modules = db.TenantModules.AsNoTracking()
+            var rows = db.TenantModules.AsNoTracking()
                 .Where(m => m.TenantId == tid)
-                .Select(m => m.ModuleCode)
-                .OrderBy(c => c)
+                .OrderBy(m => m.ModuleCode)
                 .ToList();
-            return new { modules };
+            return new
+            {
+                modules = rows.Select(m => m.ModuleCode).ToList(),
+                assignments = rows.Select(m => new { code = m.ModuleCode, tier = m.TierCode }).ToList(),
+            };
         }
 
         [HttpGet("{id:int}/email-preview")]
@@ -211,10 +223,11 @@ namespace WebApi.Controllers
             if (db.Tenants.Any(t => t.Code == code))
                 throw new HttpException(422, "Ya existe una empresa con ese código");
 
+            var requestedCodes = body.ModuleAssignments != null || body.Modules != null
+                ? CodesFromBody(body) ?? body.Modules ?? new List<string>()
+                : null;
             var modules = TenantModuleCatalog.NormalizeCodes(
-                body.Modules != null && body.Modules.Count > 0
-                    ? body.Modules
-                    : TenantModuleCatalog.DefaultCodesForNewTenant());
+                requestedCodes ?? TenantModuleCatalog.DefaultCodesForNewTenant());
 
             var tenant = new Tenant
             {
@@ -241,7 +254,7 @@ namespace WebApi.Controllers
             db.Tenants.Add(tenant);
             db.SaveChanges();
 
-            ReplaceModules(tenant.Id, modules);
+            ReplaceModules(tenant.Id, modules, body.ModuleAssignments);
             EnsureTenantAdminRole(tenant, modules);
             PruneOrphanRolePermissions(tenant.Id, modules);
             db.SaveChanges();
@@ -286,10 +299,11 @@ namespace WebApi.Controllers
                 }
                 if (body.IsActive.HasValue) tenant.IsActive = body.IsActive.Value;
 
-                if (body.Modules != null)
+                if (body.Modules != null || body.ModuleAssignments != null)
                 {
-                    var modules = TenantModuleCatalog.NormalizeCodes(body.Modules);
-                    ReplaceModules(tenant.Id, modules);
+                    var requested = CodesFromBody(body) ?? body.Modules ?? new List<string>();
+                    var modules = TenantModuleCatalog.NormalizeCodes(requested);
+                    ReplaceModules(tenant.Id, modules, body.ModuleAssignments);
                     EnsureTenantAdminRole(tenant, modules);
                     PruneOrphanRolePermissions(tenant.Id, modules);
                 }
@@ -301,10 +315,9 @@ namespace WebApi.Controllers
 
         private object MapTenant(Tenant tenant)
         {
-            var modules = db.TenantModules.AsNoTracking()
+            var rows = db.TenantModules.AsNoTracking()
                 .Where(m => m.TenantId == tenant.Id)
-                .Select(m => m.ModuleCode)
-                .OrderBy(c => c)
+                .OrderBy(m => m.ModuleCode)
                 .ToList();
 
             return new
@@ -328,24 +341,68 @@ namespace WebApi.Controllers
                 tenant.EmailFromDisplay,
                 tenant.IsActive,
                 tenant.CreatedAt,
-                modules
+                modules = rows.Select(m => m.ModuleCode).ToList(),
+                moduleAssignments = rows.Select(m => new
+                {
+                    code = m.ModuleCode,
+                    tierCode = m.TierCode,
+                    settingsJson = m.SettingsJson,
+                }).ToList(),
             };
         }
 
-        private void ReplaceModules(int tenantId, HashSet<string> modules)
+        private void ReplaceModules(int tenantId, HashSet<string> modules, List<ModuleAssignmentBody> assignments)
         {
             var existing = db.TenantModules.Where(m => m.TenantId == tenantId).ToList();
-            db.TenantModules.RemoveRange(existing);
+            var assignBy = (assignments ?? new List<ModuleAssignmentBody>())
+                .Where(a => !string.IsNullOrWhiteSpace(a.Code))
+                .GroupBy(a => a.Code.Trim().ToLowerInvariant())
+                .ToDictionary(g => g.Key, g => g.Last(), StringComparer.OrdinalIgnoreCase);
+
+            foreach (var row in existing.Where(e => !modules.Contains(e.ModuleCode)).ToList())
+            {
+                db.TenantModules.Remove(row);
+                existing.Remove(row);
+            }
+
             var now = DateTime.UtcNow;
             foreach (var code in modules.OrderBy(c => c))
             {
+                assignBy.TryGetValue(code, out var assignment);
+                if (assignment == null && (code == "crm" || code == "meta-crm"))
+                {
+                    assignBy.TryGetValue("crm", out assignment);
+                    if (assignment == null) assignBy.TryGetValue("meta-crm", out assignment);
+                }
+
+                var found = existing.FirstOrDefault(e =>
+                    string.Equals(e.ModuleCode, code, StringComparison.OrdinalIgnoreCase));
+                if (found != null)
+                {
+                    if (assignment != null)
+                    {
+                        if (assignment.TierCode != null) found.TierCode = Trim(assignment.TierCode);
+                        if (assignment.SettingsJson != null) found.SettingsJson = assignment.SettingsJson;
+                    }
+                    continue;
+                }
+
                 db.TenantModules.Add(new TenantModule
                 {
                     TenantId = tenantId,
                     ModuleCode = code,
-                    CreatedAt = now
+                    TierCode = Trim(assignment?.TierCode),
+                    SettingsJson = assignment?.SettingsJson,
+                    CreatedAt = now,
                 });
             }
+        }
+
+        private static List<string> CodesFromBody(TenantBody body)
+        {
+            if (body?.ModuleAssignments != null && body.ModuleAssignments.Count > 0)
+                return body.ModuleAssignments.Select(a => a.Code).ToList();
+            return body?.Modules;
         }
 
         /// <summary>
