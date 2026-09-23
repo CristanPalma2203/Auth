@@ -110,6 +110,12 @@ namespace WebApi.Controllers
             commandBus.execute(new EditUser { AppUser = value });
         }
 
+        [HttpDelete("{id}")]
+        public IResponse Delete(int id)
+        {
+            return commandBus.execute(new DeleteUser { Id = id });
+        }
+
         [HttpPost]
         [Route("temporary-code")]
         public IResponse CodigoTemportal([FromBody] TemporaryCode codigoTemporal)
