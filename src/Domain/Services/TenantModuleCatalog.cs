@@ -152,17 +152,8 @@ namespace Domain.Services
             new ModuleDef
             {
                 Code = "meta-crm",
-                Name = "Meta CRM",
-                Description = "Inbox de Instagram, Messenger y WhatsApp.",
-                Group = "Marketing",
-                Recommended = false,
-                PermissionCodes = CrmPermissionCodes,
-            },
-            new ModuleDef
-            {
-                Code = "crm",
-                Name = "CRM WhatsApp",
-                Description = "Inbox WhatsApp (Cloud API). Alias comercial de meta-crm.",
+                Name = "WhatsApp",
+                Description = "Inbox, conocimiento y LuxIA. El plan se elige cuando el módulo ya está activo.",
                 Group = "Marketing",
                 Recommended = false,
                 PermissionCodes = CrmPermissionCodes,
@@ -255,12 +246,14 @@ namespace Domain.Services
             foreach (var raw in codes)
             {
                 var c = (raw ?? "").Trim().ToLowerInvariant();
+                if (c == "crm") c = "meta-crm";
                 if (valid.Contains(c)) result.Add(c);
             }
-            if (result.Contains("crm") || result.Contains("meta-crm"))
+            // crm no es otro módulo: es el código del plan. Se guarda junto a meta-crm.
+            if (result.Contains("meta-crm"))
             {
-                if (valid.Contains("crm")) result.Add("crm");
-                if (valid.Contains("meta-crm")) result.Add("meta-crm");
+                result.Add("meta-crm");
+                result.Add("crm");
             }
             return result;
         }
