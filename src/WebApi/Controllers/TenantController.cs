@@ -57,9 +57,9 @@ namespace WebApi.Controllers
             public string StorefrontPublicUrl { get; set; }
             public string EmailFromDisplay { get; set; }
             public bool? IsActive { get; set; }
-            /// <summary>Códigos de módulo SaaS (payments, dte, cms, …). Solo plataforma.</summary>
+            /// <summary>Códigos de módulo SaaS (payments, dte, cms, …). Si no es null, este es el set contratado (lista vacía = ninguno). Solo plataforma.</summary>
             public List<string> Modules { get; set; }
-            /// <summary>Asignaciones con piso y settings. Si viene, manda sobre Modules.</summary>
+            /// <summary>Piso y settings por código. No sustituye el set cuando <see cref="Modules"/> viene; ReplaceModules los aplica solo al código que coincida. Si Modules es null y hay filas, sus códigos son el set.</summary>
             public List<ModuleAssignmentBody> ModuleAssignments { get; set; }
         }
 
@@ -398,8 +398,14 @@ namespace WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Set de módulos del body. <see cref="TenantBody.Modules"/> manda cuando no es null
+        /// (incluso vacío). Las asignaciones solo aportan el set si Modules es null.
+        /// </summary>
         private static List<string> CodesFromBody(TenantBody body)
         {
+            if (body?.Modules != null)
+                return body.Modules;
             if (body?.ModuleAssignments != null && body.ModuleAssignments.Count > 0)
                 return body.ModuleAssignments.Select(a => a.Code).ToList();
             return body?.Modules;
