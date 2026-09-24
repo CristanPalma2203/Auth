@@ -19,7 +19,6 @@ namespace Application.CommandHandlers.Role
         private readonly ITokenService tokenService;
         private readonly IAppUserRepository appUserRepository;
         private readonly ITenantContext tenantContext;
-        private readonly ITenantContractPermissionService contractPermissions;
 
         public CreateRoleHandler(
             IRoleRepository roleRepository,
@@ -28,8 +27,7 @@ namespace Application.CommandHandlers.Role
             IEmailHelper correoHelper,
             ITokenService tokenService,
             IAppUserRepository appUserRepository,
-            ITenantContext tenantContext,
-            ITenantContractPermissionService contractPermissions)
+            ITenantContext tenantContext)
         {
             this.roleRepository = roleRepository;
             this.tenantRepository = tenantRepository;
@@ -38,7 +36,6 @@ namespace Application.CommandHandlers.Role
             this.tokenService = tokenService;
             this.appUserRepository = appUserRepository;
             this.tenantContext = tenantContext;
-            this.contractPermissions = contractPermissions;
         }
 
         public override IResponse Handle(CreateRole message)
@@ -54,7 +51,7 @@ namespace Application.CommandHandlers.Role
                 throw new HttpException(422, "La empresa seleccionada no existe o está inactiva");
 
             var permissionIds = DistinctPermissionIds(message.Role?.PermissionIds);
-            EnsureInheritablePermissions(permissionIds, tenantId);
+            EnsureInheritablePermissions(permissionIds);
 
             var Roles = mapper.Map<Domain.Models.Role>(message.Role);
             Roles.SetCreatedAt();
@@ -79,22 +76,18 @@ namespace Application.CommandHandlers.Role
             return permisoIds.Where(id => id > 0).Distinct().ToList();
         }
 
-        private void EnsureInheritablePermissions(IList<int> permisoIds, int? roleTenantId)
+        private void EnsureInheritablePermissions(IList<int> permisoIds)
         {
             if (permisoIds == null || permisoIds.Count == 0) return;
 
-            HashSet<int> allowed = null;
-            if (!tenantContext.IsPlatformAdmin)
-            {
-                allowed = new HashSet<int>(
-                    tokenService.GetPermissions().Where(p => p != null).Select(p => p.Id));
-            }
-            else if (roleTenantId.HasValue)
-            {
-                allowed = contractPermissions.AllowedPermissionIds(roleTenantId);
-            }
+            // Platform admin may assign any permissionId to a new tenant role, even when
+            // the tenant has not contracted that module. A null TenantId never reaches
+            // this check: Handle still requires an active company.
+            if (tenantContext.IsPlatformAdmin)
+                return;
 
-            if (allowed == null) return;
+            var allowed = new HashSet<int>(
+                tokenService.GetPermissions().Where(p => p != null).Select(p => p.Id));
             if (permisoIds.Any(id => !allowed.Contains(id)))
                 throw new HttpException(403, "Solo puede asignar permisos de los módulos contratados / que usted tiene");
         }
