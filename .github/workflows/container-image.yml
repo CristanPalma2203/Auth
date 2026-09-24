@@ -41,3 +41,42 @@ jobs:
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+
+  # CD STG: only after a successful image push on main (never on PRs).
+  # Setup: docs/cd-auth-stg.md
+  deploy-stg:
+    name: Deploy STG
+    needs: [test, build]
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment: stg
+    permissions:
+      id-token: write
+      contents: read
+    concurrency:
+      group: deploy-auth-stg
+      cancel-in-progress: false
+    env:
+      ACA_NAME: ca-corelux-auth-stg
+      ACA_RESOURCE_GROUP: rg-corelux-stg
+      IMAGE: ghcr.io/cristanpalma2203/corelux-auth:${{ github.sha }}
+    steps:
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Update Container App
+        run: |
+          az extension add --name containerapp --upgrade
+          az containerapp update \
+            --name "${ACA_NAME}" \
+            --resource-group "${ACA_RESOURCE_GROUP}" \
+            --image "${IMAGE}"
+          az containerapp show \
+            --name "${ACA_NAME}" \
+            --resource-group "${ACA_RESOURCE_GROUP}" \
+            --query "{name:name,fqdn:properties.configuration.ingress.fqdn,image:properties.template.containers[0].image,latestRevision:properties.latestRevisionName}" \
+            --output json
