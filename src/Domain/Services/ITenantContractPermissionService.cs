@@ -4,7 +4,8 @@ namespace Domain.Service
 {
     /// <summary>
     /// Permisos permitidos según módulos contratados del tenant.
-    /// Usado al crear/editar roles (evita asignar packs no contratados).
+    /// Usado al crear roles y al listar permisos (evita asignar packs no contratados).
+    /// La edición de un rol por un platform admin no aplica este filtro.
     /// </summary>
     public interface ITenantContractPermissionService
     {
