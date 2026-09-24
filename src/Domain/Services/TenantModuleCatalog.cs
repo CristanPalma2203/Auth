@@ -48,8 +48,6 @@ namespace Domain.Services
                     "payment-subscriptions", "payment-subscription-create",
                     "payment-customers", "payment-customer-create", "payment-customer-view",
                     "payment-products", "payment-product-create",
-                    "external-users", "external-user-list", "external-user-view", "external-user-edit",
-                    "manage-external-user",
                 },
             },
             new ModuleDef

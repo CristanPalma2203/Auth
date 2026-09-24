@@ -11,6 +11,8 @@ WORKDIR /src/WebApi
 RUN dotnet publish "WebApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
+ARG GIT_COMMIT=local
+ENV GIT_COMMIT=$GIT_COMMIT
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "WebApi.dll"]

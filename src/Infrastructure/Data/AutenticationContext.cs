@@ -35,7 +35,6 @@ namespace Infrastructure.Data
         {
             PermissionSeeder.Seed(builder);
             AppUserSeeder.Seed(builder);
-            ImporterPermissionSeeder.Seed(builder);
             CatalogPermissionsSeeder.Seed(builder);
             builder.ApplyConfigurationsFromAssembly(typeof(AutenticationContext).Assembly);
             EnglishTableConfiguration.Apply(builder);
